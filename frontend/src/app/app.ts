@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {ItemListComponent} from './components/item-list/item-list.component';
+import { ItemListComponent } from './components/item-list/item-list.component';
+import { ApiModule } from './core/modules/openapi';
 
 @Component({
+  standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, ItemListComponent],
+  imports: [ItemListComponent, ApiModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
