@@ -9,7 +9,15 @@ cd frontend
 ```bash
 npm start
 ```
+Django starten:
 
+```bash
+cd backend
+```
+
+```bash
+python manage.py runserver
+```
 
 ## DEV
 
