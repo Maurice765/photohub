@@ -1,43 +1,82 @@
-from typing import Union
-import oracledb
-from fastapi import FastAPI
-from pydantic import BaseModel
-from sqlmodel import Field, Session, SQLModel, create_engine
-from sqlalchemy.engine import URL
-
-
-class Hero(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(max_length=255)
-    secret_name: str = Field(max_length=255)
-    age: int | None = None
-
-engine = create_engine(
-    f'oracle+oracledb://:@',
-        thick_mode=False,
-        connect_args={
-            "user": "photohub",
-            "password": "admin",
-            "host": "localhost",
-            "port": 1521,
-            "service_name": "ORCLPDB1"
-    })
-
-SQLModel.metadata.create_all(engine)
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from database import get_connection
+from datetime import datetime
 
 app = FastAPI()
 
-def create_heroes():
-    hero_1 = Hero(name="Deadpond", secret_name="Dive Wilson")
-    hero_2 = Hero(name="Spider-Boy", secret_name="Pedro Parqueador")
-    hero_3 = Hero(name="Rusty-Man", secret_name="Tommy Sharp", age=48)
 
-    with Session(engine) as session:
-        session.add(hero_1)
-        session.add(hero_2)
-        session.add(hero_3)
+@app.post("/upload")
+async def upload_photo(
+    user_id: int = Form(...),
+    title: str = Form(...),
+    description: str = Form(""),
+    file: UploadFile = File(...),
+):
+    file_content = await file.read()
+    file_type = file.content_type
+    file_size = len(file_content)
 
-        session.commit()
+    conn = get_connection()
+    cur = conn.cursor()
 
+    try:
+        # CONTENT einfügen und ID zurückbekommen
+        content_id_var = cur.var(int)
+        cur.execute("""
+            INSERT INTO CONTENT (
+                user_id,
+                title,
+                description,
+                content_type
+            ) VALUES (
+                :user_id,
+                :title,
+                :description,
+                :content_type
+            ) RETURNING id INTO :content_id
+        """, {
+            "user_id": user_id,
+            "title": title,
+            "description": description,
+            "content_type": "PHOTO",
+            "content_id": content_id_var
+        })
+        
+        # ID aus dem Cursor holen
+        content_id = content_id_var.getvalue()[0]
 
-create_heroes()
+        # PHOTO einfügen mit der content_id
+        cur.execute("""
+            INSERT INTO PHOTO (
+                content_id, 
+                image, 
+                file_type, 
+                file_size
+            ) VALUES (
+                :cid, 
+                :blob, 
+                :ftype, 
+                :fsize
+            )
+        """, {
+            "cid": content_id,
+            "blob": file_content,
+            "ftype": file_type,
+            "fsize": file_size
+        })
+
+        conn.commit()
+
+        return {
+            "status": "Foto erfolgreich hochgeladen",
+            "content_id": content_id,
+            "filename": file.filename
+        }
+    except Exception as e:
+        # Rollback in case of error
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # Close the cursor and connection
+        cur.close()
+        conn.close()

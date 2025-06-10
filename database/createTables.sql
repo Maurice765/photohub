@@ -53,7 +53,6 @@ CREATE TABLE PHOTO (
     location VARCHAR2(255),
     take_date TIMESTAMP,
     hash VARCHAR2(64),
-    color_histogram CLOB,
     camera_model VARCHAR2(100),
     CONSTRAINT fk_photo_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_photo_content UNIQUE (content_id)
@@ -102,3 +101,5 @@ CREATE TABLE TAGS (
     title VARCHAR2(50) NOT NULL,
     CONSTRAINT fk_tag_content FOREIGN KEY (content_id) REFERENCES CONTENT(id)
 );
+
+CREATE SEQUENCE content_seq START WITH 1 INCREMENT BY 1;
