@@ -9,14 +9,14 @@ cd frontend
 ```bash
 npm start
 ```
-Django starten:
+FastApi starten:
 
 ```bash
 cd backend
 ```
 
 ```bash
-python manage.py runserver
+fastapi dev main.py
 ```
 
 ## DEV
