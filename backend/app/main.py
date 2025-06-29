@@ -6,6 +6,9 @@ import numpy as np
 
 app = FastAPI()
 
+@app.get("/")
+async def read_main():
+    return {"msg": "Hello World"}
 
 @app.post("/upload")
 async def upload_photo(
