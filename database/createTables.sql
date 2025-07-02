@@ -24,7 +24,7 @@ CREATE TABLE "USER" (
 
 CREATE TABLE CATEGORY (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR2(255) NOT NULL,
+    name VARCHAR2(255) UNIQUE NOT NULL,
     description VARCHAR2(255),
     parent_category_id NUMBER
 );
@@ -53,18 +53,23 @@ CREATE TABLE PHOTO (
     file_size NUMBER,
     location VARCHAR2(255),
     take_date TIMESTAMP,
-    hash VARCHAR2(64),
+    hash UNIQUE VARCHAR2(64),
     camera_model VARCHAR2(100),
     CONSTRAINT fk_photo_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_photo_content UNIQUE (content_id)
 );
 
+CREATE OR REPLACE TYPE int_array_256_t AS VARRAY(256) OF NUMBER;
+
 CREATE TABLE COLOR_HISTOGRAM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     photo_id NUMBER NOT NULL,
-    r_bins SYS.ODCINUMBERLIST,
-    g_bins SYS.ODCINUMBERLIST,
-    b_bins SYS.ODCINUMBERLIST,
+    r_bins int_array_256_t,
+    g_bins int_array_256_t,
+    b_bins int_array_256_t,
+    r_mean NUMBER(5,4),
+    g_mean NUMBER(5,4),
+    b_mean NUMBER(5,4),
     CONSTRAINT fk_color_histogram_Photo FOREIGN KEY (photo_id) REFERENCES PHOTO(id)
 );
 
@@ -72,6 +77,7 @@ CREATE TABLE ALBUM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content_id NUMBER NOT NULL,
     cover_photo_id NUMBER,
+    sort_order NUMBER,
     CONSTRAINT fk_album_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_album_content UNIQUE (content_id)
 );
