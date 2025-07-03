@@ -53,7 +53,7 @@ CREATE TABLE PHOTO (
     file_size NUMBER,
     location VARCHAR2(255),
     take_date TIMESTAMP,
-    hash UNIQUE VARCHAR2(64),
+    hash VARCHAR2(64) UNIQUE,
     camera_model VARCHAR2(100),
     CONSTRAINT fk_photo_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_photo_content UNIQUE (content_id)
@@ -64,12 +64,15 @@ CREATE OR REPLACE TYPE int_array_256_t AS VARRAY(256) OF NUMBER;
 CREATE TABLE COLOR_HISTOGRAM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     photo_id NUMBER NOT NULL,
-    r_bins int_array_256_t,
-    g_bins int_array_256_t,
-    b_bins int_array_256_t,
-    r_mean NUMBER(5,4),
-    g_mean NUMBER(5,4),
-    b_mean NUMBER(5,4),
+    r_bins int_array_256_t NOT NULL,
+    g_bins int_array_256_t NOT NULL,
+    b_bins int_array_256_t NOT NULL,
+    r_bins_norm int_array_256_t NOT NULL,
+    g_bins_norm int_array_256_t NOT NULL,
+    b_bins_norm int_array_256_t NOT NULL,
+    r_mean NUMBER(5,4) NOT NULL,
+    g_mean NUMBER(5,4) NOT NULL,
+    b_mean NUMBER(5,4) NOT NULL,
     CONSTRAINT fk_color_histogram_Photo FOREIGN KEY (photo_id) REFERENCES PHOTO(id)
 );
 

@@ -106,6 +106,11 @@ async def upload_photo(
         g_hist = cv2.calcHist([image_rgb], [1], None, [256], [0, 256]).flatten()
         b_hist = cv2.calcHist([image_rgb], [2], None, [256], [0, 256]).flatten()
 
+        # Normalisieren der Histogramme
+        total_pixels = image_rgb.shape[0] * image_rgb.shape[1]
+        r_hist_norm = r_hist / total_pixels
+        g_hist_norm = g_hist / total_pixels
+        b_hist_norm = b_hist / total_pixels
         
         r_mean = np.average(np.arange(256), weights=r_hist) / 255
         g_mean = np.average(np.arange(256), weights=g_hist) / 255
@@ -120,6 +125,9 @@ async def upload_photo(
                 r_bins,
                 g_bins,
                 b_bins,
+                r_bins_norm,
+                g_bins_norm,
+                b_bins_norm,
                 r_mean,
                 g_mean,
                 b_mean
@@ -128,6 +136,9 @@ async def upload_photo(
                 :r_bins, 
                 :g_bins, 
                 :b_bins,
+                :r_bins_norm,
+                :g_bins_norm,
+                :b_bins_norm,
                 :r_mean,
                 :g_mean,
                 :b_mean
@@ -137,6 +148,9 @@ async def upload_photo(
             "r_bins": array_type.newobject(list(map(float, r_hist))),
             "g_bins": array_type.newobject(list(map(float, g_hist))),
             "b_bins": array_type.newobject(list(map(float, b_hist))),
+            "r_bins_norm": array_type.newobject(list(map(float, r_hist_norm))),
+            "g_bins_norm": array_type.newobject(list(map(float, g_hist_norm))),
+            "b_bins_norm": array_type.newobject(list(map(float, b_hist_norm))),
             "r_mean": float(r_mean),
             "g_mean": float(g_mean),
             "b_mean": float(b_mean)
@@ -173,8 +187,11 @@ async def search_by_color(color: RGBVector, limit: int = 10):
         b_varray = array_type.newobject(list(map(float, b_hist)))
 
         sql = """
-            SELECT photo_id, 
-                   euclidean_distance_rgb_hist(r_bins, g_bins, b_bins, :r_bins, :g_bins, :b_bins) AS distance
+            SELECT photo_id,
+                euclidean_distance_rgb_hist(
+                    r_bins_norm, g_bins_norm, b_bins_norm,
+                    :r_bins, :g_bins, :b_bins
+                ) AS distance
             FROM color_histogram
             ORDER BY distance ASC
             FETCH FIRST :limit ROWS ONLY
