@@ -1,8 +1,26 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Body, Query
+from typing import Optional
+from pydantic import BaseModel, conint
 from database import get_connection
 from datetime import datetime
 import cv2
 import numpy as np
+
+class RGBVector(BaseModel):
+    r_target: conint(ge=0, le=255)
+    g_target: conint(ge=0, le=255)
+    b_target: conint(ge=0, le=255)
+
+
+def create_single_color_histogram(r: int, g: int, b: int):
+    def color_to_hist(c):
+        hist = np.zeros(256, dtype=float)
+        hist[c] = 1.0
+        return hist
+    r_hist = color_to_hist(r)
+    g_hist = color_to_hist(g)
+    b_hist = color_to_hist(b)
+    return r_hist, g_hist, b_hist
 
 app = FastAPI()
 
@@ -14,7 +32,7 @@ async def read_main():
 async def upload_photo(
     user_id: int,
     title: str,
-    description: str,
+    description: Optional[str] = None,
     file: UploadFile = File(),
 ):
     file_content = await file.read()
@@ -90,27 +108,54 @@ async def upload_photo(
         g_hist = cv2.calcHist([image_rgb], [1], None, [256], [0, 256]).flatten()
         b_hist = cv2.calcHist([image_rgb], [2], None, [256], [0, 256]).flatten()
 
-        number_list_type = conn.gettype("SYS.ODCINUMBERLIST")
+        # Normalisieren der Histogramme
+        total_pixels = image_rgb.shape[0] * image_rgb.shape[1]
+        r_hist_norm = r_hist / total_pixels
+        g_hist_norm = g_hist / total_pixels
+        b_hist_norm = b_hist / total_pixels
+        
+        r_mean = np.average(np.arange(256), weights=r_hist) / 255
+        g_mean = np.average(np.arange(256), weights=g_hist) / 255
+        b_mean = np.average(np.arange(256), weights=b_hist) / 255
+
+
+        array_type = conn.gettype("INT_ARRAY_256_T")
 
         cur.execute("""
-            BEGIN
-                INSERT INTO COLOR_HISTOGRAM (
-                    photo_id,
-                    r_bins,
-                    g_bins,
-                    b_bins
-                ) VALUES (
-                    :photo_id,
-                    :r_bins, 
-                    :g_bins, 
-                    :b_bins
-                );
-            END;
+            INSERT INTO COLOR_HISTOGRAM (
+                photo_id,
+                r_bins,
+                g_bins,
+                b_bins,
+                r_bins_norm,
+                g_bins_norm,
+                b_bins_norm,
+                r_mean,
+                g_mean,
+                b_mean
+            ) VALUES (
+                :photo_id,
+                :r_bins, 
+                :g_bins, 
+                :b_bins,
+                :r_bins_norm,
+                :g_bins_norm,
+                :b_bins_norm,
+                :r_mean,
+                :g_mean,
+                :b_mean
+            )
         """, {
             "photo_id": photo_id,
-            "r_bins": number_list_type.newobject(list(map(float, r_hist))),
-            "g_bins": number_list_type.newobject(list(map(float, g_hist))),
-            "b_bins": number_list_type.newobject(list(map(float, b_hist)))
+            "r_bins": array_type.newobject(list(map(float, r_hist))),
+            "g_bins": array_type.newobject(list(map(float, g_hist))),
+            "b_bins": array_type.newobject(list(map(float, b_hist))),
+            "r_bins_norm": array_type.newobject(list(map(float, r_hist_norm))),
+            "g_bins_norm": array_type.newobject(list(map(float, g_hist_norm))),
+            "b_bins_norm": array_type.newobject(list(map(float, b_hist_norm))),
+            "r_mean": float(r_mean),
+            "g_mean": float(g_mean),
+            "b_mean": float(b_mean)
         })
 
         conn.commit()
@@ -126,5 +171,49 @@ async def upload_photo(
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         # Close the cursor and connection
+        cur.close()
+        conn.close()
+
+
+@app.post("/search-by-color")
+async def search_by_color(color: RGBVector, limit: int = 10):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        r_hist, g_hist, b_hist = create_single_color_histogram(color.r_target, color.g_target, color.b_target)
+
+        array_type = conn.gettype("INT_ARRAY_256_T")
+        r_varray = array_type.newobject(list(map(float, r_hist)))
+        g_varray = array_type.newobject(list(map(float, g_hist)))
+        b_varray = array_type.newobject(list(map(float, b_hist)))
+
+        sql = """
+            SELECT photo_id,
+                euclidean_distance_rgb_hist(
+                    r_bins_norm, g_bins_norm, b_bins_norm,
+                    :r_bins, :g_bins, :b_bins
+                ) AS distance
+            FROM color_histogram
+            ORDER BY distance ASC
+            FETCH FIRST :limit ROWS ONLY
+        """
+
+        cur.execute(sql, {
+            "r_bins": r_varray,
+            "g_bins": g_varray,
+            "b_bins": b_varray,
+            "limit": limit
+        })
+
+        results = []
+        for photo_id, distance in cur:
+            results.append({"photo_id": photo_id, "distance": float(distance)})
+
+        return {"results": results}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
         cur.close()
         conn.close()

@@ -24,7 +24,7 @@ CREATE TABLE "USER" (
 
 CREATE TABLE CATEGORY (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR2(255) NOT NULL,
+    name VARCHAR2(255) UNIQUE NOT NULL,
     description VARCHAR2(255),
     parent_category_id NUMBER
 );
@@ -53,18 +53,26 @@ CREATE TABLE PHOTO (
     file_size NUMBER,
     location VARCHAR2(255),
     take_date TIMESTAMP,
-    hash VARCHAR2(64),
+    hash VARCHAR2(64) UNIQUE,
     camera_model VARCHAR2(100),
     CONSTRAINT fk_photo_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_photo_content UNIQUE (content_id)
 );
 
+CREATE OR REPLACE TYPE int_array_256_t AS VARRAY(256) OF NUMBER;
+
 CREATE TABLE COLOR_HISTOGRAM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     photo_id NUMBER NOT NULL,
-    r_bins SYS.ODCINUMBERLIST,
-    g_bins SYS.ODCINUMBERLIST,
-    b_bins SYS.ODCINUMBERLIST,
+    r_bins int_array_256_t NOT NULL,
+    g_bins int_array_256_t NOT NULL,
+    b_bins int_array_256_t NOT NULL,
+    r_bins_norm int_array_256_t NOT NULL,
+    g_bins_norm int_array_256_t NOT NULL,
+    b_bins_norm int_array_256_t NOT NULL,
+    r_mean NUMBER(5,4) NOT NULL,
+    g_mean NUMBER(5,4) NOT NULL,
+    b_mean NUMBER(5,4) NOT NULL,
     CONSTRAINT fk_color_histogram_Photo FOREIGN KEY (photo_id) REFERENCES PHOTO(id)
 );
 
@@ -72,6 +80,7 @@ CREATE TABLE ALBUM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content_id NUMBER NOT NULL,
     cover_photo_id NUMBER,
+    sort_order NUMBER,
     CONSTRAINT fk_album_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_album_content UNIQUE (content_id)
 );
@@ -87,11 +96,11 @@ CREATE TABLE ALBUM_PHOTO (
 ALTER TABLE ALBUM ADD CONSTRAINT fk_album_cover FOREIGN KEY (cover_photo_id) REFERENCES PHOTO(id);
 
 CREATE TABLE COMMENTS (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id NUMBER NOT NULL,
     content_id NUMBER NOT NULL,
     text VARCHAR2(1000) NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY (user_id, content_id),
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES "USER"(id),
     CONSTRAINT fk_comment_content FOREIGN KEY (content_id) REFERENCES CONTENT(id)
 );
