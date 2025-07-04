@@ -1,22 +1,21 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Body, Query
 from typing import Optional
-from pydantic import BaseModel, confloat
+from pydantic import BaseModel, conint
 from database import get_connection
 from datetime import datetime
 import cv2
 import numpy as np
 
 class RGBVector(BaseModel):
-    r_target: confloat(ge=0.0, le=1.0)
-    g_target: confloat(ge=0.0, le=1.0)
-    b_target: confloat(ge=0.0, le=1.0)
+    r_target: conint(ge=0, le=255)
+    g_target: conint(ge=0, le=255)
+    b_target: conint(ge=0, le=255)
 
 
-def create_single_color_histogram(r: float, g: float, b: float):
+def create_single_color_histogram(r: int, g: int, b: int):
     def color_to_hist(c):
         hist = np.zeros(256, dtype=float)
-        bin_idx = min(255, max(0, int(c * 255)))
-        hist[bin_idx] = 1.0
+        hist[c] = 1.0
         return hist
     r_hist = color_to_hist(r)
     g_hist = color_to_hist(g)
