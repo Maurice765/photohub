@@ -1,5 +1,5 @@
 /**
- * Photohub Backend Api
+ * FastAPI Photohub Service
  *
  * 
  *
@@ -9,9 +9,6 @@
  */
 
 
-export interface Item { 
-    readonly id: number;
-    name: string;
-    description: string;
+export interface ValidationErrorLocInner { 
 }
 

@@ -1,5 +1,5 @@
 /**
- * Photohub Backend Api
+ * FastAPI Photohub Service
  *
  * 
  *
@@ -7,11 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ValidationError } from './validationError';
 
 
-export interface PatchedItem { 
-    readonly id?: number;
-    name?: string;
-    description?: string;
+export interface HTTPValidationError { 
+    detail?: Array<ValidationError>;
 }
 
