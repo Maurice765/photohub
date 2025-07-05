@@ -1,11 +1,13 @@
 from fastapi import UploadFile
+from typing import List
 from src.database import get_connection
 from src.photo import utils
 from src.photo import exceptions
+from src.photo import schemas
 import numpy as np
 import cv2
 
-def process_and_store_photo(user_id: int, title: str, description: str, file: UploadFile):
+def process_and_store_photo(user_id: int, title: str, description: str, file: UploadFile) -> schemas.PhotoResponse:
     """
     Handles the core logic for processing an uploaded photo and storing its data.
     """
@@ -87,12 +89,12 @@ def process_and_store_photo(user_id: int, title: str, description: str, file: Up
         })
 
         conn.commit()
-        return {
-            "status": "Photo uploaded successfully",
-            "content_id": content_id,
-            "photo_id": photo_id,
-            "filename": file.filename
-        }
+
+        return schemas.PhotoResponse(
+            content_id=content_id,
+            photo_id=photo_id,
+            filename=file.filename
+        )
     except Exception as e:
         conn.rollback()
         raise exceptions.HistogramInsertError(str(e))
@@ -100,7 +102,7 @@ def process_and_store_photo(user_id: int, title: str, description: str, file: Up
         cur.close()
         conn.close()
 
-def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10):
+def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10) -> List[schemas.PhotoSearchResult]:
     """
     Searches the database for photos with similar color profiles.
     """
@@ -128,7 +130,11 @@ def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10):
             "limit": limit
         })
 
-        return [{"photo_id": photo_id, "distance": float(distance)} for photo_id, distance in cur]
+        return [
+            schemas.PhotoSearchResult(
+                photo_id=photo_id, 
+                distance=float(distance)) for photo_id, distance in cur
+        ]
     except Exception as e:
         raise exceptions.HistogramInsertError(str(e))
     finally:
