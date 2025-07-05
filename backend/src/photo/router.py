@@ -47,8 +47,7 @@ async def search_by_color(
     return schemas.PhotoSearchResponse(results=search_results)
 
 @router.get(
-    "/image/{photo_id}",
-    response_model=schemas.ImageStreamResponse
+    "/image/{photo_id}"
 )
 async def get_photo_image(photo_id: int):
     """
