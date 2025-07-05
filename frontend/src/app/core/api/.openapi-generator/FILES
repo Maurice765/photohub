@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
@@ -14,7 +13,7 @@ model/hTTPValidationError.ts
 model/models.ts
 model/photoResponse.ts
 model/photoSearchResponse.ts
-model/photoSearchResult.ts
+model/photoSearchResultItem.ts
 model/rGBVector.ts
 model/validationError.ts
 model/validationErrorLocInner.ts

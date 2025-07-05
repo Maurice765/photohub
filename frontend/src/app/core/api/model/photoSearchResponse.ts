@@ -7,10 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { PhotoSearchResult } from './photoSearchResult';
+import { PhotoSearchResultItem } from './photoSearchResultItem';
 
 
 export interface PhotoSearchResponse { 
-    results: Array<PhotoSearchResult>;
+    results: Array<PhotoSearchResultItem>;
 }
 
