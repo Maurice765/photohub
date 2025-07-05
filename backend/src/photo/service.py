@@ -97,7 +97,7 @@ def process_and_store_photo(user_id: int, title: str, description: str, file: Up
         )
     except Exception as e:
         conn.rollback()
-        raise exceptions.HistogramInsertError(str(e))
+        raise exceptions.PhotoUploadError(str(e))
     finally:
         cur.close()
         conn.close()
@@ -136,7 +136,7 @@ def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10) -> List[sch
                 distance=float(distance)) for photo_id, distance in cur
         ]
     except Exception as e:
-        raise exceptions.HistogramInsertError(str(e))
+        raise exceptions.PhotoSearchError(str(e))
     finally:
         cur.close()
         conn.close()

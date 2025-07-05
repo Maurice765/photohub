@@ -14,10 +14,18 @@ class InvalidImageFormat(AppException):
             detail="Image could not be processed. Ensure it is a valid image format."
         )
 
-class HistogramInsertError(AppException):
-    """Exception raised for errors during database insertion."""
+class PhotoUploadError(AppException):
+    """Exception raised for errors during the photo upload and processing."""
     def __init__(self, reason: str):
         super().__init__(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to store histogram data: {reason}"
+            detail=f"Failed to upload and process photo: {reason}"
+        )
+
+class PhotoSearchError(AppException):
+    """Exception raised for errors during a photo search operation."""
+    def __init__(self, reason: str):
+        super().__init__(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to search for photos: {reason}"
         )

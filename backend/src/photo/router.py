@@ -23,7 +23,7 @@ async def upload_photo(
     return service.process_and_store_photo(user_id, title, description, validated_file)
 
 @router.post(
-    "/searchByColor",
+    "/search-by-color",
     response_model=schemas.PhotoSearchResponse
 )
 async def search_by_color(
