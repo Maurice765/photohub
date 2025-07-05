@@ -1,3 +1,4 @@
+from typing import Sequence
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class AppConfig(BaseSettings):
@@ -7,6 +8,8 @@ class AppConfig(BaseSettings):
     ORACLE_USER: str
     ORACLE_PASSWORD: str
     ORACLE_DSN: str
+
+    CORS_ORIGINS: Sequence[str] = ["http://localhost:4200"]
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
