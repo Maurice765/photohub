@@ -39,3 +39,8 @@ cd frontend
 ```bash
 npm start
 ```
+
+Generate OpenApi Client
+```bash
+npm run generate:api
+```
