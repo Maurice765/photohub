@@ -3,12 +3,12 @@ import { RGBVectorClientModel } from "@core/clients/models/photo/rgb-vector.clie
 export class RGBVectorViewModel {
     public r: number;
     public g: number;
-    public b: number;
+    public b: number
 
-    constructor() { 
-        this.r = 0;
-        this.g = 0;
-        this.b = 0;
+    constructor(r: number, g: number, b: number) { 
+        this.r = r;
+        this.g = g;
+        this.b = b;
     }
     
     toClientModel(): RGBVectorClientModel {
