@@ -6,6 +6,7 @@ import { provideApi } from './core/api/provide-api';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import { environment } from '@environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
-    provideApi('http://localhost:8000'),
+    provideApi(environment.apiUrl),
     provideAnimationsAsync(),
         providePrimeNG({
             theme: {
