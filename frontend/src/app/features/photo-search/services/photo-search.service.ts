@@ -19,8 +19,9 @@ export class PhotoSearchService {
         return this.photoClient.searchByColor(rgbVectorClientModel, limit).pipe(
             map((response: PhotoSearchResponseClientModel) => {
                 return response.results.map((item: PhotoSearchResultItemClientModel) => {
-                    item.image_url = environment.apiUrl + item.image_url;
-                    return new PhotoSearchResultItemViewModel(item);
+                    const viewModel = new PhotoSearchResultItemViewModel(item);
+                    viewModel.imageUrl = environment.apiUrl + item.image_url;
+                    return viewModel;
                 })
             })
         );
