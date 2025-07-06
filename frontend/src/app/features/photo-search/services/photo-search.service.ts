@@ -5,6 +5,7 @@ import { PhotoClient } from '@core/clients/photo.client';
 import { map, Observable } from 'rxjs';
 import { PhotoSearchResultItemViewModel } from '../models/photo-search-result-item.view-model';
 import { RGBVectorViewModel } from '../models/rgb-vector.view-model';
+import { environment } from '@environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,7 @@ export class PhotoSearchService {
         return this.photoClient.searchByColor(rgbVectorClientModel, limit).pipe(
             map((response: PhotoSearchResponseClientModel) => {
                 return response.results.map((item: PhotoSearchResultItemClientModel) => {
+                    item.image_url = environment.apiUrl + item.image_url;
                     return new PhotoSearchResultItemViewModel(item);
                 })
             })
