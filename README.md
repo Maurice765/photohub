@@ -9,14 +9,9 @@ cd backend
 
 Configure Environment Variables:
 ```bash
-touch .env
+cp .env.dist .env
 ```
-Add the following content to `.env`:
-```bash
-ORACLE_USER=your_oracle_username
-ORACLE_PASSWORD=your_oracle_password
-ORACLE_DSN=your_oracle_dsn_string
-```
+Then edit `.env` with your actual Oracle database credentials.
 
 Install Dependencies:
 ```bash
