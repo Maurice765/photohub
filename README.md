@@ -1,5 +1,13 @@
 # Photohub
 
+A photo sharing application with color-based search capabilities, built with FastAPI backend and Angular frontend.
+
+## Documentation
+
+- [Image Fetching Flow Overview](docs/IMAGE_FETCHING_FLOW.md) - Complete analysis of image storage and retrieval
+- [Image Flow Sequence Diagrams](docs/IMAGE_FLOW_SEQUENCE.md) - Visual flow diagrams with Mermaid
+- [Implementation Guide](docs/IMAGE_IMPLEMENTATION_GUIDE.md) - Technical implementation details
+
 ## Backend:
 
 Navigate to the Backend Directory:
