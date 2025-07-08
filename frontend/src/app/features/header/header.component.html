@@ -1,0 +1,25 @@
+<p-menubar>
+
+    <ng-template #start>
+        <div class="flex items-center gap-x-6">
+            <span class="text-2xl font-bold">PhotoHub</span>
+            <p-button icon="pi pi-home" label="Feed" variant="text" severity="secondary" />
+            <p-button icon="pi pi-star" label="Explore" variant="text" severity="secondary" />
+            <p-inputgroup>
+                <p-select [(ngModel)]="selectedCategory" variant="filled" [options]="categories" optionLabel="name" optionValue="key" />
+                <input pInputText input type="text" [(ngModel)]="value" placeholder="Search..."/>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-search" severity="secondary" />
+                </p-inputgroup-addon>
+            </p-inputgroup>
+        </div>
+    </ng-template>
+
+    <ng-template #end>
+        <div class="flex items-center gap-2">
+            <p-button icon="pi pi-upload" label="Upload" />
+            <p-avatar icon="pi pi-user" size="large" shape="circle" />
+        </div>
+    </ng-template>
+
+</p-menubar>
