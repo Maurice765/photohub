@@ -1,5 +1,9 @@
-from fastapi import APIRouter, UploadFile, File, Form, Depends
+import io
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
 from typing import Optional
+
+from fastapi.responses import StreamingResponse
+from src.photo import exceptions
 from src.photo import service
 from src.photo import schemas
 from src.photo import dependencies
@@ -41,3 +45,12 @@ async def search_by_color(
         limit=limit
     )
     return schemas.PhotoSearchResponse(results=search_results)
+
+@router.get(
+    "/image/{photo_id}"
+)
+async def get_photo_image(photo_id: int):
+    """
+    Returns the raw image data for a specific photo.
+    """
+    return service.get_photo_image(photo_id)

@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from typing import List
+from typing import List, Optional, Tuple
 from src.database import get_connection
 from src.photo import utils
 from src.photo import exceptions
@@ -7,7 +7,7 @@ from src.photo import schemas
 import numpy as np
 import cv2
 
-def process_and_store_photo(user_id: int, title: str, description: str, file: UploadFile) -> schemas.PhotoResponse:
+def process_and_store_photo(user_id: int, title: str, description: Optional[str], file: UploadFile) -> schemas.PhotoResponse:
     """
     Handles the core logic for processing an uploaded photo and storing its data.
     """
@@ -102,16 +102,17 @@ def process_and_store_photo(user_id: int, title: str, description: str, file: Up
         cur.close()
         conn.close()
 
-def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10) -> List[schemas.PhotoSearchResult]:
+def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10) -> List[schemas.PhotoSearchResultItem]:
     """
     Searches the database for photos with similar color profiles.
+    Returns a list of results including photo metadata and a URL to the image.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
         r_hist, g_hist, b_hist = utils.create_single_color_histogram(r, g, b)
         array_type = conn.gettype("INT_ARRAY_256_T")
-        
+
         sql = """
             SELECT photo_id,
                    euclidean_distance_rgb_hist(
@@ -129,14 +130,39 @@ def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10) -> List[sch
             "b_bins": array_type.newobject(list(map(float, b_hist))),
             "limit": limit
         })
-
-        return [
-            schemas.PhotoSearchResult(
-                photo_id=photo_id, 
-                distance=float(distance)) for photo_id, distance in cur
-        ]
+        
+        results = []
+        for row in cur:
+            photo_id, distance = row
+            results.append(schemas.PhotoSearchResultItem(
+                photo_id=photo_id,
+                distance=float(distance),
+                image_url=f"/photo/image/{photo_id}" 
+            ))
+        return results
     except Exception as e:
         raise exceptions.PhotoSearchError(str(e))
+    finally:
+        cur.close()
+        conn.close()
+    
+def get_photo_image(photo_id: int) -> schemas.ImageStreamResponse:
+    """
+    Retrieves photo data and prepares a streaming response.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT image, file_type FROM PHOTO WHERE id = :id", {"id": photo_id})
+        result = cur.fetchone()
+        if result is None:
+            raise exceptions.PhotoNotFound()
+        
+        image_blob, file_type = result
+        data = image_blob.read()
+        media_type = file_type if file_type else "application/octet-stream"
+        
+        return schemas.ImageStreamResponse(content=data, media_type=media_type)
     finally:
         cur.close()
         conn.close()

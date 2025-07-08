@@ -9,9 +9,9 @@
  */
 
 
-export interface PhotoResponse { 
-    content_id: number;
+export interface PhotoSearchResultItem { 
     photo_id: number;
-    filename?: string | null;
+    distance: number;
+    image_url: string;
 }
 

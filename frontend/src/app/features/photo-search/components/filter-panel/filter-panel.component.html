@@ -1,0 +1,115 @@
+<p-panel header="Extended Search" [toggleable]="true">
+    <form [formGroup]="filterForm">
+        <div class="grid grid-cols-4 gap-8">
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-palette"></i>
+                    </p-inputgroup-addon>
+                    <ng-container formGroupName="rgbColor">
+                        <p-inputnumber formControlName="r" [min]="0" [max]="255" [useGrouping]="false" prefix="R: " />
+                        <p-inputnumber formControlName="g" [min]="0" [max]="255" [useGrouping]="false" prefix="G: " />
+                        <p-inputnumber formControlName="b" [min]="0" [max]="255" [useGrouping]="false" prefix="B: " />
+                    </ng-container>
+                    <p-inputgroup-addon>
+                        <p-colorpicker formControlName="rgbColor" format="rgb" inputId="cp-rgb" />
+                    </p-inputgroup-addon>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-arrow-up-right-and-arrow-down-left-from-center"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-inputnumber formControlName="minHeight" locale="de-DE" [min]="0" [max]="10000"
+                            [showClear]="true" suffix=" px" />
+                        <label>Min Height</label>
+                    </p-floatlabel>
+                    <p-floatlabel>
+                        <p-inputnumber formControlName="minWidth" locale="de-DE" [min]="0" [max]="10000"
+                            [showClear]="true" suffix=" px" />
+                        <label>Min Width</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-objects-column"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-select [options]="orientations" formControlName="orientation" [showClear]="true" optionValue="key" optionLabel="name" />
+                        <label>Orientation</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-file"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-select [options]="fileFormats" formControlName="fileFormat" [showClear]="true" optionValue="key" optionLabel="name" />
+                        <label>File Format</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-map"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-select [options]="countries" formControlName="country" [showClear]="true" [filter]="true" optionValue="key" optionLabel="name" />
+                        <label>Location</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-camera"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-select [options]="cameraModels" formControlName="cameraModel" [showClear]="true" [filter]="true" optionValue="key" optionLabel="name" />
+                        <label>Camera Model</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-calendar"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-datepicker formControlName="uploadDateRange" selectionMode="range" [showIcon]="true"
+                            [showClear]="true" />
+                        <label>Upload Date</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-calendar"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel>
+                        <p-datepicker formControlName="captureDateRange" selectionMode="range" [showIcon]="true"
+                            [showClear]="true" />
+                        <label>Capture Date</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+        </div>
+    </form>
+</p-panel>
