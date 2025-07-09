@@ -1,13 +1,8 @@
 import { FormControl, FormGroup } from '@angular/forms';
-
-export interface RgbColorForm {
-    r: FormControl<number | null>;
-    g: FormControl<number | null>;
-    b: FormControl<number | null>;
-}
+import { RGBColor } from '@shared/rgb-color-picker/models/rgbColor.interface';
 
 export interface FilterFormModel {
-    rgbColor: FormGroup<RgbColorForm>;
+    rgbColor: FormControl<RGBColor | null>;
     orientation: FormControl<string | null>;
     minWidth: FormControl<number | null>;
     minHeight: FormControl<number | null>;
@@ -19,11 +14,7 @@ export interface FilterFormModel {
 }
 
 export interface FilterFormValue {
-    rgbColor?: {
-        r?: number | null;
-        g?: number | null;
-        b?: number | null;
-    } | null;
+    rgbColor?: RGBColor | null;
     orientation?: string | null;
     minWidth?: number | null;
     minHeight?: number | null;

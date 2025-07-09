@@ -3,20 +3,8 @@
         <div class="grid grid-cols-4 gap-8">
 
             <div>
-                <p-input-group>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-palette"></i>
-                    </p-inputgroup-addon>
-                    <ng-container formGroupName="rgbColor">
-                        <p-inputnumber formControlName="r" [min]="0" [max]="255" [useGrouping]="false" prefix="R: " />
-                        <p-inputnumber formControlName="g" [min]="0" [max]="255" [useGrouping]="false" prefix="G: " />
-                        <p-inputnumber formControlName="b" [min]="0" [max]="255" [useGrouping]="false" prefix="B: " />
-                    </ng-container>
-                    <p-inputgroup-addon>
-                        <p-colorpicker formControlName="rgbColor" format="rgb" inputId="cp-rgb" />
-                    </p-inputgroup-addon>
-                </p-input-group>
-            </div>
+                <rgb-color-picker formControlName="rgbColor"/>
+            </div>    
 
             <div>
                 <p-input-group>

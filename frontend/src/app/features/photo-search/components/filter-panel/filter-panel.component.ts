@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FilterFormModel } from "@features/photo-search/models/filter-form.model";
+import { RGBColor } from "@shared/rgb-color-picker/models/rgbColor.interface";
+import { RgbColorPickerComponent } from "@shared/rgb-color-picker/rgb-color-picker.component";
 import { ButtonModule } from "primeng/button";
 import { ColorPickerModule } from "primeng/colorpicker";
 import { DatePickerModule } from 'primeng/datepicker';
@@ -25,17 +27,14 @@ import { SelectModule } from 'primeng/select';
         DatePickerModule,
         FloatLabelModule,
         PanelModule,
+        RgbColorPickerComponent
     ],
     templateUrl: "./filter-panel.component.html",
     styleUrls: ["./filter-panel.component.css"],
 })
 export class FilterPanelComponent {
     public filterForm = new FormGroup<FilterFormModel>({
-        rgbColor: new FormGroup({
-            r: new FormControl<number | null>(null),
-            g: new FormControl<number | null>(null),
-            b: new FormControl<number | null>(null),
-        }),
+        rgbColor: new FormControl<RGBColor | null>(null),
         orientation: new FormControl<string | null>(null),
         minWidth: new FormControl<number | null>(null),
         minHeight: new FormControl<number | null>(null),
