@@ -5,16 +5,18 @@ import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { InputNumberModule } from "primeng/inputnumber";
 import { RGBColor } from "./models/rgbColor.interface";
+import { ButtonModule } from "primeng/button";
 
 @Component({
     selector: "rgb-color-picker",
     imports: [
         FormsModule,
         ReactiveFormsModule,
-        ColorPickerModule,
         InputGroupModule,
         InputGroupAddonModule,
-        InputNumberModule
+        ColorPickerModule,
+        InputNumberModule,
+        ButtonModule,
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -45,6 +47,11 @@ export class RgbColorPickerComponent implements ControlValueAccessor {
         this.handleColorChange();
     }
 
+    public onClearColor(): void {
+        this.rgbColor = null;
+        this.handleColorChange();
+    }
+
     public writeValue(rgbColor: RGBColor | null): void {
         this.rgbColor = rgbColor;
     }
@@ -70,7 +77,7 @@ export class RgbColorPickerComponent implements ControlValueAccessor {
 
     private handleColorChange(): void {
         this.markAsTouched();
-        if (!this.disabled && this.rgbColor) {
+        if (!this.disabled) {
             this.onChange(this.rgbColor);
         }
     }
