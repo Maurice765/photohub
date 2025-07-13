@@ -29,3 +29,33 @@ class PhotoSearchError(AppException):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to search for photos: {reason}"
         )
+
+class EmptyFileError(AppException):
+    """Exception raised when an uploaded file is empty."""
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot upload an empty file."
+        )
+
+class InvalidPhotoContentType(AppException):
+    """Exception raised when the uploaded photo has an invalid MIME type."""
+    def __init__(self, allowed_mime_types: list[str]):
+        super().__init__(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail=(
+                f"The uploaded file is not a supported image type."
+                f"Supported types are: {', '.join(allowed_mime_types)}."
+            )
+        )
+
+class PhotoTooLarge(AppException):
+    """Exception raised when the uploaded photo exceeds allowed size."""
+    def __init__(self, max_size_bytes: int):
+        super().__init__(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=(
+                f"The uploaded photo exceeds the maximum allowed size."
+                f"Maximum size is {max_size_bytes // 1024 // 1024}MB."
+            )
+        )
