@@ -17,6 +17,7 @@ model/photoSearchResultItem.ts
 model/rGBVector.ts
 model/validationError.ts
 model/validationErrorLocInner.ts
+model/visibility.ts
 param.ts
 provide-api.ts
 variables.ts
