@@ -59,3 +59,11 @@ class PhotoTooLarge(AppException):
                 f"Maximum size is {max_size_bytes // 1024 // 1024}MB."
             )
         )
+
+class DuplicateFileError(AppException):
+    """Exception raised when a file with the same hash already exists."""
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="This photo has already been uploaded."
+        )

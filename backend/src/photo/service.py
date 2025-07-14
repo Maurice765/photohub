@@ -1,5 +1,7 @@
 from fastapi import UploadFile
 from typing import List, Optional
+
+import oracledb
 from src.database import get_connection
 from src.photo import utils
 from src.photo import exceptions
@@ -46,7 +48,14 @@ async def process_and_store_photo(file: UploadFile,
     cur = conn.cursor()
 
     try:
-        # 5a. Insert into CONTENT table
+        # 5a. Check for duplicate file based on hash
+        cur.execute("SELECT id FROM PHOTO WHERE file_hash = :fhash", {"fhash": file_hash})
+        existing_photo = cur.fetchone()
+        if existing_photo:
+            print(f"Duplicate file found with hash: {file_hash}")
+            raise exceptions.DuplicateFileError()
+
+        # 5b. Insert into CONTENT table
         content_id_var = cur.var(int)
         cur.execute("""
             INSERT INTO CONTENT (user_id, title, description, visibility, content_type) 
@@ -58,7 +67,7 @@ async def process_and_store_photo(file: UploadFile,
         })
         content_id = content_id_var.getvalue()[0]
 
-        # 5b. Insert into PHOTO table
+        # 5c. Insert into PHOTO table
         photo_id_var = cur.var(int)
         cur.execute("""
             INSERT INTO PHOTO (
@@ -78,7 +87,7 @@ async def process_and_store_photo(file: UploadFile,
         })
         photo_id = photo_id_var.getvalue()[0]
 
-        # 5c. Insert into COLOR_HISTOGRAM table
+        # 5d. Insert into COLOR_HISTOGRAM table
         array_type = conn.gettype("INT_ARRAY_256_T")
         cur.execute("""
             INSERT INTO COLOR_HISTOGRAM (
@@ -100,7 +109,9 @@ async def process_and_store_photo(file: UploadFile,
             photo_id=photo_id,
             filename=file.filename
         )
-    except Exception as e:
+    except exceptions.DuplicateFileError:
+        raise
+    except oracledb.DatabaseError as e:
         conn.rollback()
         raise exceptions.PhotoUploadError(reason=str(e))
     finally:
