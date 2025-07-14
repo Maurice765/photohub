@@ -1,0 +1,21 @@
+<div>
+    <p-input-group>
+        <p-inputgroup-addon>
+            <i class="pi pi-map"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel>
+            <p-select 
+                [options]="locations" 
+                [(ngModel)]="selectedLocation" 
+                [showClear]="true" 
+                [filter]="true" 
+                [disabled]="disabled"
+                appendTo="body"
+                optionValue="key" 
+                optionLabel="name" 
+                (onChange)="onLocationChange($event)"
+            />
+            <label>Location</label>
+        </p-floatlabel>
+    </p-input-group>
+</div>
