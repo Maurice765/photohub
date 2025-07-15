@@ -6,6 +6,7 @@ import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { InputNumberModule } from "primeng/inputnumber";
 import { RGBColor } from "../../models/rgbColor.interface";
 import { ButtonModule } from "primeng/button";
+import { FloatLabelModule } from "primeng/floatlabel";
 
 @Component({
     selector: "rgb-color-picker",
@@ -17,6 +18,7 @@ import { ButtonModule } from "primeng/button";
         ColorPickerModule,
         InputNumberModule,
         ButtonModule,
+        FloatLabelModule
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,

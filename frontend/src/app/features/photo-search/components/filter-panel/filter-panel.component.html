@@ -11,12 +11,12 @@
                     <p-inputgroup-addon>
                         <i class="pi pi-arrow-up-right-and-arrow-down-left-from-center"></i>
                     </p-inputgroup-addon>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-inputnumber formControlName="minHeight" locale="de-DE" [min]="0" [max]="10000"
                             [showClear]="true" suffix=" px" />
                         <label>Min Height</label>
                     </p-floatlabel>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-inputnumber formControlName="minWidth" locale="de-DE" [min]="0" [max]="10000"
                             [showClear]="true" suffix=" px" />
                         <label>Min Width</label>
@@ -29,7 +29,7 @@
                     <p-inputgroup-addon>
                         <i class="pi pi-objects-column"></i>
                     </p-inputgroup-addon>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-select [options]="orientations" formControlName="orientation" [showClear]="true" optionValue="key" optionLabel="name" />
                         <label>Orientation</label>
                     </p-floatlabel>
@@ -41,7 +41,7 @@
                     <p-inputgroup-addon>
                         <i class="pi pi-file"></i>
                     </p-inputgroup-addon>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-select [options]="fileFormats" formControlName="fileFormat" [showClear]="true" optionValue="key" optionLabel="name" />
                         <label>File Format</label>
                     </p-floatlabel>
