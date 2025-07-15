@@ -5,9 +5,9 @@ import { HeaderComponent } from '@features/header/header.component';
 @Component({
     selector: 'app-root',
     imports: [
-        RouterOutlet,
-        HeaderComponent
-    ],
+    RouterOutlet,
+    HeaderComponent
+],
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.css"],
 })
