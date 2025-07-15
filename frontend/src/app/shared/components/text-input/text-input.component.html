@@ -1,0 +1,16 @@
+<div>
+    <p-floatlabel variant="on">
+        <input 
+            type="text" 
+            pInputText 
+            [(ngModel)]="text" 
+            [invalid]="isInvalid"
+            [disabled]="disabled"
+            class="w-full" 
+            autocomplete="off"
+            (ngModelChange)="onTextChange()"
+        />
+        <label>{{ label() }}</label>
+    </p-floatlabel>
+    <form-error-message [label]="label()" (invalidState)="isInvalid = $event"/>
+</div>
