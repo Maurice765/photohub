@@ -9,6 +9,8 @@
                 [(ngModel)]="selectedLocation" 
                 [showClear]="true" 
                 [filter]="true" 
+                [editable]="true"
+                [invalid]="isInvalid"
                 [disabled]="disabled"
                 appendTo="body"
                 optionValue="key" 
@@ -18,4 +20,5 @@
             <label>Location</label>
         </p-floatlabel>
     </p-input-group>
+    <form-error-message label="Location" (invalidState)="isInvalid = $event"/>
 </div>

@@ -9,6 +9,8 @@
                 [(ngModel)]="selectedCameraModel"
                 [showClear]="true"
                 [filter]="true"
+                [editable]="true"
+                [invalid]="isInvalid"
                 [disabled]="disabled"
                 appendTo="body"
                 optionValue="key"
@@ -18,4 +20,5 @@
             <label>Camera Model</label>
         </p-floatlabel>
     </p-input-group>
+    <form-error-message label="Camera Model" (invalidState)="isInvalid = $event"/>
 </div>

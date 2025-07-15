@@ -1,9 +1,10 @@
-import { Component, input } from "@angular/core";
+import { Component, forwardRef, input } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { DatePickerModule } from "primeng/datepicker";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
+import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
 
 @Component({
     selector: "date-picker",
@@ -12,12 +13,13 @@ import { InputGroupAddonModule } from "primeng/inputgroupaddon";
         InputGroupModule,
         InputGroupAddonModule,
         FloatLabelModule,
-        DatePickerModule
+        DatePickerModule,
+        FormErrorMessageComponent
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         multi: true,
-        useExisting: DatePickerComponent
+        useExisting: forwardRef(() => DatePickerComponent),
     }],
     templateUrl: "./date-picker.component.html",
     styleUrls: ["./date-picker.component.css"],
@@ -29,6 +31,7 @@ export class DatePickerComponent implements ControlValueAccessor {
     public selectedDate: Date[] | Date | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
+    public isInvalid: boolean = false;
 
     public onChange = (date: Date[] | Date | null) => { };
     public onTouched = () => { };

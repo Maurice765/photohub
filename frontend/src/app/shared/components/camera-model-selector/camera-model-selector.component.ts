@@ -1,10 +1,12 @@
-import { Component } from "@angular/core";
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Component, forwardRef, inject } from "@angular/core";
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl } from "@angular/forms";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
 import { CAMERA_MODELS } from '@shared/constants/camera-models.const';
+import { MessageModule } from "primeng/message";
+import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
 
 @Component({
     selector: "camera-model-selector",
@@ -13,12 +15,13 @@ import { CAMERA_MODELS } from '@shared/constants/camera-models.const';
         InputGroupModule,
         InputGroupAddonModule,
         FloatLabelModule,
-        SelectModule
+        SelectModule,
+        FormErrorMessageComponent
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         multi: true,
-        useExisting: CameraModelSelectorComponent
+        useExisting: forwardRef(() => CameraModelSelectorComponent),
     }],
     templateUrl: "./camera-model-selector.component.html",
     styleUrls: ["./camera-model-selector.component.css"],
@@ -28,6 +31,7 @@ export class CameraModelSelectorComponent implements ControlValueAccessor {
     public selectedCameraModel: string | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
+    public isInvalid: boolean = false;
     
     public onChange = (cameraModel: string | null) => { };
     public onTouched = () => { };

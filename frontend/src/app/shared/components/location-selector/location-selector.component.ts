@@ -1,11 +1,12 @@
-import { Component } from "@angular/core";
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Component, forwardRef } from "@angular/core";
+import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from "@angular/forms";
 import { LOCATIONS } from "@shared/constants/locations.const";
 
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
+import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
 
 @Component({
     selector: "location-selector",
@@ -14,12 +15,13 @@ import { SelectChangeEvent, SelectModule } from "primeng/select";
         InputGroupModule,
         InputGroupAddonModule,
         FloatLabelModule,
-        SelectModule
+        SelectModule,
+        FormErrorMessageComponent
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         multi: true,
-        useExisting: LocationSelectorComponent
+        useExisting: forwardRef(() => LocationSelectorComponent),
     }],
     templateUrl: "./location-selector.component.html",
     styleUrls: ["./location-selector.component.css"],
@@ -29,6 +31,7 @@ export class LocationSelectorComponent implements ControlValueAccessor {
     public selectedLocation: string | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
+    public isInvalid: boolean = false;
 
     public onChange = (location: string | null) => { };
     public onTouched = () => { };

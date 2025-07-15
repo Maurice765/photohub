@@ -8,6 +8,7 @@
                 [(ngModel)]="selectedDate"
                 [showClear]="true"
                 [showButtonBar]="true"
+                [invalid]="isInvalid"
                 [disabled]="disabled"
                 appendTo="body"
                 [selectionMode] = "selectionMode()"
@@ -16,4 +17,5 @@
             <label>{{ label() }}</label>
         </p-floatlabel>
     </p-input-group>
+    <form-error-message [label]="label()" (invalidState)="isInvalid = $event"/>
 </div>

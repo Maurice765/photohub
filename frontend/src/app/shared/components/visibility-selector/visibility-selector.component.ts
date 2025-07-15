@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, forwardRef } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { VISIBILITIES } from "@shared/constants/visibilities.const";
 import { Visibility } from "@shared/enums/visibility.enum";
@@ -6,6 +6,7 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
+import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
 
 @Component({
     selector: "visibility-selector",
@@ -14,12 +15,13 @@ import { SelectChangeEvent, SelectModule } from "primeng/select";
         InputGroupModule,
         InputGroupAddonModule,
         FloatLabelModule,
-        SelectModule
+        SelectModule,
+        FormErrorMessageComponent
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         multi: true,
-        useExisting: VisibilitySelectorComponent
+        useExisting: forwardRef(() => VisibilitySelectorComponent),
     }],
     templateUrl: "./visibility-selector.component.html",
     styleUrls: ["./visibility-selector.component.css"],
@@ -29,6 +31,7 @@ export class VisibilitySelectorComponent implements ControlValueAccessor {
     public selectedVisibility: Visibility | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
+    public isInvalid: boolean = false;
 
     public onChange = (visibility: Visibility | null) => { };
     public onTouched = () => { };
