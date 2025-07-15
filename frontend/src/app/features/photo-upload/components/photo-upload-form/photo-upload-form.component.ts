@@ -3,8 +3,12 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CameraModelSelectorComponent } from "@shared/components/camera-model-selector/camera-model-selector.component";
 import { DatePickerComponent } from "@shared/components/date-picker/date-picker.component";
 import { FileUploadComponent } from "@shared/components/file-upload/file-upload.component";
+import { FormErrorMessageComponent } from "@shared/components/form-error-message/form-error-message.component";
 import { LocationSelectorComponent } from "@shared/components/location-selector/location-selector.component";
+import { TextAreaComponent } from "@shared/components/text-area/text-area.component";
+import { TextInputComponent } from "@shared/components/text-input/text-input.component";
 import { VisibilitySelectorComponent } from "@shared/components/visibility-selector/visibility-selector.component";
+import { Visibility } from "@shared/enums/visibility.enum";
 import { DatePickerModule } from "primeng/datepicker";
 import { FloatLabel } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
@@ -18,13 +22,8 @@ import { TextareaModule } from 'primeng/textarea';
     imports: [
         FormsModule,
         ReactiveFormsModule, 
-        FloatLabel,
-        MessageModule,
-        InputTextModule, 
-        TextareaModule,
-        DatePickerModule,
-        InputGroupModule,
-        InputGroupAddonModule,
+        TextInputComponent
+        TextAreaComponent,
         FileUploadComponent,
         CameraModelSelectorComponent,
         LocationSelectorComponent,
@@ -43,11 +42,11 @@ export class PhotoUploadFormComponent {
     constructor() {
         this.uploadForm = this.formBuilder.group({
             file: [null, Validators.required],
-            title: ['', Validators.required],
-            visibility: [null, Validators.required],
-            description: ['', Validators.maxLength(500)],
-            location: [null],
-            cameraModel: [null],
+            title: ['', [Validators.required, Validators.maxLength(255)]],
+            visibility: [Visibility.Public, Validators.required],
+            description: ['', Validators.maxLength(255)],
+            location: [null, Validators.maxLength(255)],
+            cameraModel: [null, Validators.maxLength(255)],
             captureDate: [null],
         });
     }

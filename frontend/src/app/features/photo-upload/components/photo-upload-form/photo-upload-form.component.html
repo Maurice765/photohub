@@ -6,23 +6,11 @@
         </div>
 
         <div class="col-span-2 row-span-1 row-start-4">
-            <p-floatlabel variant="on">
-                <input type="text" pInputText formControlName="title" class="w-full" autocomplete="off" [invalid]="isInvalid('title')" />
-                <label>Title</label>
-            </p-floatlabel>
-            @if (isInvalid('title')) {
-                <p-message severity="error" size="small" variant="simple">Title is required.</p-message>
-            }
+            <text-input formControlName="title" label="Title" />
         </div>
 
         <div class="col-span-2 row-span-3 row-start-5">
-            <p-floatlabel variant="on" class="w-full h-full"> 
-                <textarea pTextarea formControlName="description" rows="4" class="w-full h-full resize-none" [invalid]="isInvalid('description')"></textarea>
-                <label>Description</label>
-            </p-floatlabel>
-            @if (isInvalid('description')) {
-                <p-message severity="error" size="small" variant="simple">Maximum length is 500 characters.</p-message>
-            }
+            <text-area formControlName="description" label="Description" [rows]="4" />
         </div>
 
         <div class="col-start-1 row-start-8">
