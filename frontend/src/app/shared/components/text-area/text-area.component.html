@@ -1,0 +1,15 @@
+<div>
+    <p-floatlabel variant="on" class="w-full h-full"> 
+        <textarea 
+            pTextarea
+            [(ngModel)]="text" 
+            [rows]="rows()" 
+            [invalid]="isInvalid"
+            [disabled]="disabled"
+            class="w-full h-full resize-none"
+            (ngModelChange)="onTextChange()">
+        </textarea>
+        <label>{{ label() }}</label>
+    </p-floatlabel>
+    <form-error-message [label]="label()" (invalidState)="isInvalid = $event"/>
+</div>
