@@ -11,5 +11,5 @@ class Visibility(str, Enum):
 
 class Orientation(str, Enum):
     HORIZONTAL = 'horizontal'
-    VERTICAL = 'vertical',
+    VERTICAL = 'vertical'
     SQUARE = 'square'

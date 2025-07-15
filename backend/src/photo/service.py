@@ -52,7 +52,6 @@ async def process_and_store_photo(file: UploadFile,
         cur.execute("SELECT id FROM PHOTO WHERE file_hash = :fhash", {"fhash": file_hash})
         existing_photo = cur.fetchone()
         if existing_photo:
-            print(f"Duplicate file found with hash: {file_hash}")
             raise exceptions.DuplicateFileError()
 
         # 5b. Insert into CONTENT table
