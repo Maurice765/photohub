@@ -57,7 +57,7 @@ CREATE TABLE PHOTO (
     camera_model VARCHAR2(100),
     width NUMBER,
     height NUMBER,
-    orientation VARCHAR2(15) CHECK (orientation IN ('horizontal', 'vertical', 'square'))
+    orientation VARCHAR2(15) CHECK (orientation IN ('horizontal', 'vertical', 'square')),
     CONSTRAINT fk_photo_content FOREIGN KEY (content_id) REFERENCES CONTENT(id),
     CONSTRAINT uq_photo_content UNIQUE (content_id)
 );
