@@ -24,6 +24,8 @@ import { PhotoResponse } from '../model/photoResponse';
 import { PhotoSearchResponse } from '../model/photoSearchResponse';
 // @ts-ignore
 import { RGBVector } from '../model/rGBVector';
+// @ts-ignore
+import { Visibility } from '../model/visibility';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -170,22 +172,25 @@ export class PhotoApiService extends BaseService {
     /**
      * Upload Photo
      * Uploads a photo, processes it to generate a color histogram, and stores both the image and histogram in the database.
-     * @param userId 
      * @param title 
+     * @param visibility 
      * @param file 
      * @param description 
+     * @param location 
+     * @param captureDate 
+     * @param cameraModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public uploadPhoto(userId: number, title: string, file: Blob, description?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoResponse>;
-    public uploadPhoto(userId: number, title: string, file: Blob, description?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoResponse>>;
-    public uploadPhoto(userId: number, title: string, file: Blob, description?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoResponse>>;
-    public uploadPhoto(userId: number, title: string, file: Blob, description?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling uploadPhoto.');
-        }
+    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoResponse>;
+    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoResponse>>;
+    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoResponse>>;
+    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (title === null || title === undefined) {
             throw new Error('Required parameter title was null or undefined when calling uploadPhoto.');
+        }
+        if (visibility === null || visibility === undefined) {
+            throw new Error('Required parameter visibility was null or undefined when calling uploadPhoto.');
         }
         if (file === null || file === undefined) {
             throw new Error('Required parameter file was null or undefined when calling uploadPhoto.');
@@ -223,14 +228,23 @@ export class PhotoApiService extends BaseService {
             localVarFormParams = new HttpParams({encoder: this.encoder});
         }
 
-        if (userId !== undefined) {
-            localVarFormParams = localVarFormParams.append('user_id', <any>userId) as any || localVarFormParams;
-        }
         if (title !== undefined) {
             localVarFormParams = localVarFormParams.append('title', <any>title) as any || localVarFormParams;
         }
         if (description !== undefined) {
             localVarFormParams = localVarFormParams.append('description', <any>description) as any || localVarFormParams;
+        }
+        if (visibility !== undefined) {
+            localVarFormParams = localVarFormParams.append('visibility', <any>visibility) as any || localVarFormParams;
+        }
+        if (location !== undefined) {
+            localVarFormParams = localVarFormParams.append('location', <any>location) as any || localVarFormParams;
+        }
+        if (captureDate !== undefined) {
+            localVarFormParams = localVarFormParams.append('capture_date', <any>captureDate) as any || localVarFormParams;
+        }
+        if (cameraModel !== undefined) {
+            localVarFormParams = localVarFormParams.append('camera_model', <any>cameraModel) as any || localVarFormParams;
         }
         if (file !== undefined) {
             localVarFormParams = localVarFormParams.append('file', <any>file) as any || localVarFormParams;

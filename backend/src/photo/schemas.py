@@ -10,6 +10,13 @@ class RGBVector(CustomModel):
     g_target: Annotated[int, Field(ge=0, le=255)]
     b_target: Annotated[int, Field(ge=0, le=255)]
 
+HistogramValue = Annotated[float, Field(ge=0.0, le=1.0)]
+
+class ColorHistogram(CustomModel):
+    r_bins: Annotated[List[HistogramValue], Field(min_length=256, max_length=256)]
+    g_bins: Annotated[List[HistogramValue], Field(min_length=256, max_length=256)]
+    b_bins: Annotated[List[HistogramValue], Field(min_length=256, max_length=256)]
+
 class PhotoResponse(CustomModel):
     content_id: int
     photo_id: int
@@ -26,4 +33,3 @@ class PhotoSearchResponse(CustomModel):
 class ImageStreamResponse(StreamingResponse):
     def __init__(self, content: bytes, media_type: str):
         super().__init__(content=io.BytesIO(content), media_type=media_type)
-

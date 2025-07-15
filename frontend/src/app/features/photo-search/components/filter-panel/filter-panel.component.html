@@ -11,12 +11,12 @@
                     <p-inputgroup-addon>
                         <i class="pi pi-arrow-up-right-and-arrow-down-left-from-center"></i>
                     </p-inputgroup-addon>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-inputnumber formControlName="minHeight" locale="de-DE" [min]="0" [max]="10000"
                             [showClear]="true" suffix=" px" />
                         <label>Min Height</label>
                     </p-floatlabel>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-inputnumber formControlName="minWidth" locale="de-DE" [min]="0" [max]="10000"
                             [showClear]="true" suffix=" px" />
                         <label>Min Width</label>
@@ -29,7 +29,7 @@
                     <p-inputgroup-addon>
                         <i class="pi pi-objects-column"></i>
                     </p-inputgroup-addon>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-select [options]="orientations" formControlName="orientation" [showClear]="true" optionValue="key" optionLabel="name" />
                         <label>Orientation</label>
                     </p-floatlabel>
@@ -41,62 +41,20 @@
                     <p-inputgroup-addon>
                         <i class="pi pi-file"></i>
                     </p-inputgroup-addon>
-                    <p-floatlabel>
+                    <p-floatlabel variant="on">
                         <p-select [options]="fileFormats" formControlName="fileFormat" [showClear]="true" optionValue="key" optionLabel="name" />
                         <label>File Format</label>
                     </p-floatlabel>
                 </p-input-group>
             </div>
 
-            <div>
-                <p-input-group>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-map"></i>
-                    </p-inputgroup-addon>
-                    <p-floatlabel>
-                        <p-select [options]="countries" formControlName="country" [showClear]="true" [filter]="true" optionValue="key" optionLabel="name" />
-                        <label>Location</label>
-                    </p-floatlabel>
-                </p-input-group>
-            </div>
+            <location-selector formControlName="location" />
 
-            <div>
-                <p-input-group>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-camera"></i>
-                    </p-inputgroup-addon>
-                    <p-floatlabel>
-                        <p-select [options]="cameraModels" formControlName="cameraModel" [showClear]="true" [filter]="true" optionValue="key" optionLabel="name" />
-                        <label>Camera Model</label>
-                    </p-floatlabel>
-                </p-input-group>
-            </div>
+            <camera-model-selector formControlName="cameraModel" />
 
-            <div>
-                <p-input-group>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-calendar"></i>
-                    </p-inputgroup-addon>
-                    <p-floatlabel>
-                        <p-datepicker formControlName="uploadDateRange" selectionMode="range" [showIcon]="true"
-                            [showClear]="true" />
-                        <label>Upload Date</label>
-                    </p-floatlabel>
-                </p-input-group>
-            </div>
+            <date-picker formControlName="uploadDateRange" selectionMode="range" label="Upload Date" />
 
-            <div>
-                <p-input-group>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-calendar"></i>
-                    </p-inputgroup-addon>
-                    <p-floatlabel>
-                        <p-datepicker formControlName="captureDateRange" selectionMode="range" [showIcon]="true"
-                            [showClear]="true" />
-                        <label>Capture Date</label>
-                    </p-floatlabel>
-                </p-input-group>
-            </div>
+            <date-picker formControlName="captureDateRange" selectionMode="range" label="Capture Date" />
 
         </div>
     </form>

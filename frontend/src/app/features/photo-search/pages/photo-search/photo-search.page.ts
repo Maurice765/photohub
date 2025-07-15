@@ -1,15 +1,15 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject, signal, ViewChild } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FilterPanelComponent } from "@features/photo-search/components/filter-panel/filter-panel.component";
+import { PhotoGridComponent } from "@features/photo-search/components/photo-grid/photo-grid.component";
+import { FilterPanelViewModel } from "@features/photo-search/models/filter-panel.view-model";
+import { PhotoSearchResultItemViewModel } from "@features/photo-search/models/photo-search-result-item.view-model";
+import { PhotoSearchService } from "@features/photo-search/services/photo-search.service";
 import { ButtonModule } from 'primeng/button';
-import { FilterPanelComponent } from "./components/filter-panel/filter-panel.component";
-import { PhotoGridComponent } from "./components/photo-grid/photo-grid.component";
-import { FilterPanelViewModel } from "./models/filter-panel.view-model";
-import { PhotoSearchResultItemViewModel } from "./models/photo-search-result-item.view-model";
-import { PhotoSearchService } from "./services/photo-search.service";
 
 @Component({
-    selector: "app-photo-search",
+    selector: "photo-search-page",
     imports: [
         CommonModule,
         FormsModule,
@@ -18,10 +18,10 @@ import { PhotoSearchService } from "./services/photo-search.service";
         FilterPanelComponent,
         PhotoGridComponent
     ],
-    templateUrl: "./photo-search.component.html",
-    styleUrls: ["./photo-search.component.css"],
+    templateUrl: "./photo-search.page.html",
+    styleUrls: ["./photo-search.page.css"],
 })
-export class PhotoSearchComponent {
+export class PhotoSearchPage {
     @ViewChild(FilterPanelComponent)
     private filterPanel!: FilterPanelComponent;
 

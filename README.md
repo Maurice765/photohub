@@ -25,17 +25,22 @@ uv run uvicorn src.main:app --reload
 
 ## Frontend:
 
-Angular starten:
-
+Navigate to the Frontend Directory:
 ```bash
 cd frontend
 ```
 
+Install Dependencies:
 ```bash
-npm start
+npm install
 ```
 
-Generate OpenApi Client
+Start Angular Project:
+```bash
+npm run start
+```
+
+Generate OpenApi Client:
 ```bash
 npm run generate:api
 ```

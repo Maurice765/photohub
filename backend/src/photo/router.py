@@ -1,9 +1,8 @@
-import io
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
+from datetime import datetime
+from fastapi import APIRouter, UploadFile, Form, Depends
 from typing import Optional
 
-from fastapi.responses import StreamingResponse
-from src.photo import exceptions
+from src.photo import constants
 from src.photo import service
 from src.photo import schemas
 from src.photo import dependencies
@@ -15,16 +14,28 @@ router = APIRouter()
     response_model=schemas.PhotoResponse 
 )
 async def upload_photo(
-    user_id: int = Form(...),
-    title: str = Form(...),
-    description: Optional[str] = Form(None),
-    validated_file: UploadFile = Depends(dependencies.validate_photo_upload)
+    title: str = Form(..., max_length=255),
+    description: Optional[str] = Form(None, max_length=1000),
+    visibility: constants.Visibility = Form(...),
+    location: Optional[str] = Form(None, max_length=255),
+    capture_date: Optional[datetime] = Form(None),
+    camera_model: Optional[str] = Form(None, max_length=255),
+    file: UploadFile = Depends(dependencies.validate_photo_upload)
 ):
     """
     Uploads a photo, processes it to generate a color histogram,
     and stores both the image and histogram in the database.
     """
-    return service.process_and_store_photo(user_id, title, description, validated_file)
+
+    return await service.process_and_store_photo(
+        file=file,
+        title=title,
+        description=description,
+        visibility=visibility,
+        location=location,
+        capture_date=capture_date,
+        camera_model=camera_model
+    )
 
 @router.post(
     "/search-by-color",

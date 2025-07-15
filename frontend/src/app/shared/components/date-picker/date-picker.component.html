@@ -1,0 +1,21 @@
+<div>
+    <p-input-group>
+        <p-inputgroup-addon>
+            <i class="pi pi-calendar"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+            <p-datepicker
+                [(ngModel)]="selectedDate"
+                [showClear]="true"
+                [showButtonBar]="true"
+                [invalid]="isInvalid"
+                [disabled]="disabled"
+                appendTo="body"
+                [selectionMode] = "selectionMode()"
+                (ngModelChange)="onDateChange()"
+            />
+            <label>{{ label() }}</label>
+        </p-floatlabel>
+    </p-input-group>
+    <form-error-message [label]="label()" (invalidState)="isInvalid = $event"/>
+</div>

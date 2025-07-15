@@ -1,0 +1,16 @@
+<p-dialog [(visible)]="visible" [modal]="true" (onHide)="closeDialog()">
+    <ng-template #header>
+        <div class="inline-flex items-center justify-center gap-2">
+            <span class="font-bold whitespace-nowrap">Upload Photo</span>
+        </div>
+    </ng-template>
+
+    <ng-template #content>
+        <photo-upload-form />
+    </ng-template>
+    
+    <ng-template #footer>
+        <p-button label="Cancel" [text]="true" severity="secondary" (click)="closeDialog()" />
+        <p-button label="Upload" (click)="uploadPhoto()" [disabled]="uploadDisabled()"/>
+    </ng-template>
+</p-dialog>

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MenubarModule } from 'primeng/menubar';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SelectModule } from 'primeng/select';
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-header",
@@ -28,6 +29,8 @@ import { SelectModule } from 'primeng/select';
     styleUrls: ["./header.component.css"],
 })
 export class HeaderComponent {
+    private _router: Router = inject(Router);
+
     public value: string = '';
     public selectedCategory: string = 'all';
     public categories = [
@@ -35,4 +38,8 @@ export class HeaderComponent {
         { name: 'Nature', key: 'nature' },
         { name: 'Architecture', key: 'architecture' },
     ];
+
+    public onUploadClick(): void {
+        this._router.navigate([{ outlets: { dialog: ['photo-upload'] } }]);
+    }
 }

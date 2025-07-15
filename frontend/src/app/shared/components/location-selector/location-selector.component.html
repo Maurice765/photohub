@@ -1,0 +1,24 @@
+<div>
+    <p-input-group>
+        <p-inputgroup-addon>
+            <i class="pi pi-map"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+            <p-select 
+                [options]="locations" 
+                [(ngModel)]="selectedLocation" 
+                [showClear]="true" 
+                [filter]="true" 
+                [editable]="true"
+                [invalid]="isInvalid"
+                [disabled]="disabled"
+                appendTo="body"
+                optionValue="key" 
+                optionLabel="name" 
+                (onChange)="onLocationChange($event)"
+            />
+            <label>Location</label>
+        </p-floatlabel>
+    </p-input-group>
+    <form-error-message label="Location" (invalidState)="isInvalid = $event"/>
+</div>

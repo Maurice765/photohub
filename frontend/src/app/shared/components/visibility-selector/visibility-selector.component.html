@@ -1,0 +1,21 @@
+<div>
+    <p-input-group>
+        <p-inputgroup-addon>
+            <i class="pi pi-eye"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+            <p-select 
+                [options]="visibilities" 
+                [(ngModel)]="selectedVisibility" 
+                [invalid]="isInvalid"
+                [disabled]="disabled"
+                appendTo="body"
+                optionValue="key" 
+                optionLabel="name" 
+                (onChange)="onVisibilityChange($event)"
+            />
+            <label>Visibility</label>
+        </p-floatlabel>
+    </p-input-group>
+    <form-error-message label="Visibility" (invalidState)="isInvalid = $event"/>
+</div>

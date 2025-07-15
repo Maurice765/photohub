@@ -6,7 +6,7 @@ export class FilterPanelViewModel {
     orientation?: string;
     minWidth?: number;
     minHeight?: number;
-    country?: string;
+    location?: string;
     cameraModel?: string;
     fileFormat?: string;
     uploadDateStart?: Date;
@@ -23,7 +23,7 @@ export class FilterPanelViewModel {
         this.orientation = filterForm?.orientation ?? undefined;
         this.minWidth = filterForm?.minWidth ?? undefined;
         this.minHeight = filterForm?.minHeight ?? undefined;
-        this.country = filterForm?.country ?? undefined;
+        this.location = filterForm?.location ?? undefined;
         this.cameraModel = filterForm?.cameraModel ?? undefined;
         this.fileFormat = filterForm?.fileFormat ?? undefined;
         this.uploadDateStart = filterForm.uploadDateRange?.[0] ?? undefined;
