@@ -1,0 +1,45 @@
+<form [formGroup]="uploadForm">
+    <div class="grid grid-cols-2 grid-rows-9 gap-8">
+
+        <div class="col-span-2 row-span-3 row-start-1">
+            <file-upload  formControlName="file" />
+        </div>
+
+        <div class="col-span-2 row-span-1 row-start-4">
+            <p-floatlabel>
+                <input type="text" pInputText formControlName="title" class="w-full" autocomplete="off" [invalid]="isInvalid('title')" />
+                <label>Title</label>
+            </p-floatlabel>
+            @if (isInvalid('title')) {
+                <p-message severity="error" size="small" variant="simple">Title is required.</p-message>
+            }
+        </div>
+
+        <div class="col-span-2 row-span-3 row-start-5">
+            <p-floatlabel class="w-full h-full"> 
+                <textarea pTextarea formControlName="description" class="w-full h-full resize-none" [invalid]="isInvalid('description')"></textarea>
+                <label>Description</label>
+            </p-floatlabel>
+            @if (isInvalid('description')) {
+                <p-message severity="error" size="small" variant="simple">Maximum length is 500 characters.</p-message>
+            }
+        </div>
+
+        <div class="col-start-1 row-start-8">
+            <date-picker formControlName="captureDate" selectionMode="single" label="Capture Date" />
+        </div>
+
+        <div class="col-start-2 row-start-8">
+            <visibility-selector formControlName="visibility" />
+        </div>
+
+        <div class="col-start-1 row-start-9">
+            <location-selector formControlName="location" />
+        </div>
+
+        <div class="col-start-2 row-start-9">
+            <camera-model-selector formControlName="cameraModel" />
+        </div>
+
+    </div>
+</form>
