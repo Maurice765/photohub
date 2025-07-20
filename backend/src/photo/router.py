@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.post(
     "/upload", 
-    response_model=schemas.PhotoResponse 
+    response_model=schemas.PhotoUploadResponse 
 )
 async def upload_photo(
     title: str = Form(..., max_length=255),

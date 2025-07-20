@@ -1,7 +1,5 @@
-from urllib import request
 from fastapi import UploadFile
-from typing import List, Optional
-
+from typing import Optional
 import oracledb
 from src.database import get_connection
 from src.photo import utils
@@ -18,7 +16,7 @@ async def process_and_store_photo(file: UploadFile,
     location: Optional[str],
     capture_date: Optional[datetime],
     camera_model: Optional[str]
-) -> schemas.PhotoResponse:
+) -> schemas.PhotoUploadResponse:
     """
     Handles the core logic for processing an uploaded photo and storing its data.
     """
@@ -104,7 +102,7 @@ async def process_and_store_photo(file: UploadFile,
 
         conn.commit()
 
-        return schemas.PhotoResponse(
+        return schemas.PhotoUploadResponse(
             content_id=content_id,
             photo_id=photo_id,
             filename=file.filename

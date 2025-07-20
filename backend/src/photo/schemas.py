@@ -54,7 +54,7 @@ class PhotoSearchRequest(CustomModel):
         return values
 
 
-class PhotoResponse(CustomModel):
+class PhotoUploadResponse(CustomModel):
     content_id: int
     photo_id: int
     filename: Optional[str] = None
