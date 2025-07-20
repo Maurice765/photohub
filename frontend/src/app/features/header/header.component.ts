@@ -12,7 +12,7 @@ import { SelectModule } from 'primeng/select';
 import { Router } from "@angular/router";
 
 @Component({
-    selector: "app-header",
+    selector: "header",
     imports: [
         CommonModule,
         FormsModule,
