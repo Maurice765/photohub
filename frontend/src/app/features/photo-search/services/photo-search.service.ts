@@ -2,10 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { PhotoSearchResponseClientModel } from '@core/clients/models/photo/photo-search-response.client-model';
 import { PhotoSearchResultItemClientModel } from '@core/clients/models/photo/photo-search-result-item.client-model';
 import { PhotoClient } from '@core/clients/photo.client';
-import { map, Observable } from 'rxjs';
-import { PhotoSearchResultItemViewModel } from '../models/photo-search-result-item.view-model';
-import { RGBVectorViewModel } from '../models/rgb-vector.view-model';
 import { environment } from '@environments/environment';
+import { map, Observable } from 'rxjs';
+import { PhotoGridItemViewModel } from '../models/photo-grid-item.view-model';
+import { PhotoGridViewModel } from '../models/photo-grid.view-model';
+import { PhotoSearchViewModel } from '../models/photo-search.view-model';
 
 @Injectable({
     providedIn: 'root'
@@ -13,16 +14,18 @@ import { environment } from '@environments/environment';
 export class PhotoSearchService {
     private photoClient = inject(PhotoClient);
 
-    searchPhotos(rgbVector: RGBVectorViewModel, limit?: number): Observable<PhotoSearchResultItemViewModel[]> {
-        const rgbVectorClientModel = rgbVector.toClientModel();
+    searchPhotos(viewModel: PhotoSearchViewModel): Observable<PhotoGridViewModel> {
+        let clientModel = viewModel.toClientModel();
 
-        return this.photoClient.searchByColor(rgbVectorClientModel, limit).pipe(
+        return this.photoClient.searchByColor(clientModel).pipe(
             map((response: PhotoSearchResponseClientModel) => {
-                return response.results.map((item: PhotoSearchResultItemClientModel) => {
-                    const viewModel = new PhotoSearchResultItemViewModel(item);
-                    viewModel.imageUrl = environment.apiUrl + item.image_url;
+                let items = response.results.map((item: PhotoSearchResultItemClientModel) => {
+                    let viewModel = new PhotoGridItemViewModel(item);
+                    viewModel.preview_url = environment.apiUrl + item.preview_url;
                     return viewModel;
                 })
+
+                return new PhotoGridViewModel(items);
             })
         );
     }

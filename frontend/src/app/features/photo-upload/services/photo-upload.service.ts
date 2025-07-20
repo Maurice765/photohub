@@ -11,7 +11,7 @@ export class PhotoUploadService {
     private photoClient = inject(PhotoClient);
 
     uploadPhoto(viewModel: PhotoUploadViewModel): Observable<PhotoUploadResponseViewModel> {
-        const clientModel = viewModel.toClientModel();
+        let clientModel = viewModel.toClientModel();
 
         return this.photoClient.uploadPhoto(clientModel).pipe(
             map((response) => new PhotoUploadResponseViewModel(response))

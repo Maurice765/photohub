@@ -3,7 +3,7 @@ import { Component, Input, signal } from "@angular/core";
 import { ImageModule } from 'primeng/image';
 import { DataViewModule } from 'primeng/dataview';
 import { SelectButton } from 'primeng/selectbutton';
-import { PhotoSearchResultItemViewModel } from "@features/photo-search/models/photo-search-result-item.view-model";
+import { PhotoGridItemViewModel } from "@features/photo-search/models/photo-grid-item.view-model";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -20,7 +20,7 @@ import { FormsModule } from "@angular/forms";
 })
 export class PhotoGridComponent {
 	@Input() 
-	public photos: PhotoSearchResultItemViewModel[] = [];
+	public photos: PhotoGridItemViewModel[] = [];
 
 	public layout: 'list' | 'grid' = 'grid';
 	public options: string[] = ['list', 'grid'];
