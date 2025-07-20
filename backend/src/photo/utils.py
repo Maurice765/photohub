@@ -1,8 +1,8 @@
 import hashlib
 import numpy as np
 import cv2
-from .schemas import ColorHistogram
-from .constants import Orientation
+from src.photo import schemas
+from src.photo import constants
 
 def generate_file_hash(content: bytes) -> str:
     """Generates a SHA-256 hash for the given file content."""
@@ -10,15 +10,15 @@ def generate_file_hash(content: bytes) -> str:
     hasher.update(content)
     return hasher.hexdigest()
 
-def calculate_orientation(width: int, height: int) -> Orientation:
+def calculate_orientation(width: int, height: int) -> constants.OrientationEnum:
     if width > height:
-        return Orientation.HORIZONTAL
+        return constants.OrientationEnum.HORIZONTAL
     elif height > width:
-        return Orientation.VERTICAL
+        return constants.OrientationEnum.VERTICAL
     else:
-        return Orientation.SQUARE
+        return constants.OrientationEnum.SQUARE
 
-def calculate_color_histograms(image_rgb: np.ndarray) -> ColorHistogram:
+def calculate_color_histograms(image_rgb: np.ndarray) -> schemas.ColorHistogram:
     """
     Calculates the normalized R, G, and B color histograms for an image.
     Expects an image in RGB format.
@@ -34,13 +34,13 @@ def calculate_color_histograms(image_rgb: np.ndarray) -> ColorHistogram:
     g_hist_norm = g_hist / total_pixels
     b_hist_norm = b_hist / total_pixels
 
-    return ColorHistogram(
+    return schemas.ColorHistogram(
         r_bins=r_hist_norm.tolist(),
         g_bins=g_hist_norm.tolist(),
         b_bins=b_hist_norm.tolist()
     )
 
-def create_single_color_histogram(r: int, g: int, b: int) -> ColorHistogram:
+def create_single_color_histogram(r: int, g: int, b: int) -> schemas.ColorHistogram:
     """
     Creates a normalized histogram for a single solid color.
     """
@@ -49,7 +49,7 @@ def create_single_color_histogram(r: int, g: int, b: int) -> ColorHistogram:
         hist[c] = 1.0
         return hist.tolist()
         
-    return ColorHistogram(
+    return schemas.ColorHistogram(
         r_bins=color_to_hist(r),
         g_bins=color_to_hist(g),
         b_bins=color_to_hist(b)

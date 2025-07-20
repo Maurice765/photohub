@@ -1,15 +1,15 @@
 from fastapi import UploadFile
 import filetype
 from src.photo.config import photo_settings
-from src.photo.constants import AllowedPhotoContentType
+from src.photo.constants import AllowedPhotoContentEnum
 from src.photo import exceptions
 
 async def validate_photo_upload(file: UploadFile) -> UploadFile:
     """
     A dependency to validate an uploaded photo.
     """
-    
-    allowed_mime_types = [item.value for item in AllowedPhotoContentType]
+
+    allowed_mime_types = [item.value for item in AllowedPhotoContentEnum]
 
     # 1. Validate declared Content-Type from client header
     if file.content_type not in allowed_mime_types:

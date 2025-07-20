@@ -1,3 +1,4 @@
+from urllib import request
 from fastapi import UploadFile
 from typing import List, Optional
 
@@ -118,48 +119,129 @@ async def process_and_store_photo(file: UploadFile,
         conn.close()
 
 
-def search_by_rgb_histogram(r: int, g: int, b: int, limit: int = 10) -> List[schemas.PhotoSearchResultItem]:
-    """
-    Searches the database for photos with similar color profiles.
-    Returns a list of results including photo metadata and a URL to the image.
-    """
-
-    # 1. Create a histogram for the target color
-    target_histogram = utils.create_single_color_histogram(r, g, b)
-
-    # 2. Database Operations
+def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchResponse:
     conn = get_connection()
     cur = conn.cursor()
 
     try:
-        array_type = conn.gettype("INT_ARRAY_256_T")
-        cur.execute("""
-            SELECT photo_id, 
-                   euclidean_distance_rgb_hist(
-                       r_bins_norm, g_bins_norm, b_bins_norm,
-                       :r_bins, :g_bins, :b_bins
-                   ) AS distance
-            FROM color_histogram
-            ORDER BY distance ASC
-            FETCH FIRST :limit ROWS ONLY
-        """, {
-            "r_bins": array_type.newobject(target_histogram.r_bins),
-            "g_bins": array_type.newobject(target_histogram.g_bins),
-            "b_bins": array_type.newobject(target_histogram.b_bins),
-            "limit": limit
-        })
-        
-        results = []
+        params = {}
+        filters = []
+        joins = ["JOIN content c ON p.content_id = c.id"]
+        score_components = []
+        array_type = conn.gettype("INT_ARRAY_256_T") if request.RgbColor else None
+
+        # Text search score
+        if request.searchInput:
+            filters.append("(CONTAINS(c.title, :search, 1) > 0 OR CONTAINS(c.description, :search, 2) > 0)")
+            score_components.append("SCORE(1) * 0.6 + SCORE(2) * 0.4")  # You can tune these weights
+            params["search"] = request.searchInput
+
+        # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
+        if request.RgbColor and array_type:
+            joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
+            target = utils.create_single_color_histogram(
+                request.RgbColor.r,
+                request.RgbColor.g,
+                request.RgbColor.b
+            )
+            params.update({
+                "r_bins": array_type.newobject(target.r_bins),
+                "g_bins": array_type.newobject(target.g_bins),
+                "b_bins": array_type.newobject(target.b_bins),
+            })
+
+            score_components.append("""
+                (1 - LEAST(
+                    euclidean_distance_rgb_hist(
+                        ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
+                        :r_bins, :g_bins, :b_bins
+                    ) / 441.67, 1.0)
+                ) * 0.4
+            """)
+
+        # Optional field boosts (binary score)
+        if request.Orientation:
+            filters.append("p.orientation = :orientation")
+            params["orientation"] = request.Orientation.value
+            score_components.append("0.05")
+
+        if request.FileFormat:
+            filters.append("LOWER(p.file_type) = :file_format")
+            params["file_format"] = request.FileFormat.value.lower()
+            score_components.append("0.05")
+
+        if request.minHeight:
+            filters.append("p.height >= :min_height")
+            params["min_height"] = request.minHeight
+            score_components.append("0.05")
+
+        if request.minWidth:
+            filters.append("p.width >= :min_width")
+            params["min_width"] = request.minWidth
+            score_components.append("0.05")
+
+        if request.Location:
+            filters.append("LOWER(p.location) LIKE :location")
+            params["location"] = f"%{request.Location.lower()}%"
+            score_components.append("0.05")
+
+        if request.CameraModell:
+            filters.append("LOWER(p.camera_model) LIKE :camera_model")
+            params["camera_model"] = f"%{request.CameraModell.lower()}%"
+            score_components.append("0.05")
+
+        if request.UploadDate:
+            if request.UploadDate.start:
+                filters.append("c.create_date >= :upload_start")
+                params["upload_start"] = request.UploadDate.start
+            if request.UploadDate.end:
+                filters.append("c.create_date <= :upload_end")
+                params["upload_end"] = request.UploadDate.end
+
+        if request.CaptureDate:
+            if request.CaptureDate.start:
+                filters.append("p.capture_date >= :capture_start")
+                params["capture_start"] = request.CaptureDate.start
+            if request.CaptureDate.end:
+                filters.append("p.capture_date <= :capture_end")
+                params["capture_end"] = request.CaptureDate.end
+
+        # Final score formula
+        score_expr = " + ".join(score_components) if score_components else "0"
+
+        sql = f"""
+            SELECT p.id AS photo_id,
+                   ({score_expr}) AS score
+            FROM photo p
+            {' '.join(joins)}
+        """
+
+        if filters:
+            sql += " WHERE " + " AND ".join(filters)
+
+        sql += f"""
+            ORDER BY score DESC
+            OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+        """
+
+        params["limit"] = request.limit
+        params["offset"] = request.offset
+
+        cur.execute(sql, params)
+
+        results = schemas.PhotoSearchResponse(results=[])
         for row in cur:
-            photo_id, distance = row
-            results.append(schemas.PhotoSearchResultItem(
+            photo_id, score = row
+            results.results.append(schemas.PhotoSearchResultItem(
                 photo_id=photo_id,
-                distance=float(distance),
-                image_url=f"/photo/image/{photo_id}" 
+                score=round(score, 4),
+                preview_url=f"/photo/preview/{photo_id}"
             ))
+
         return results
+
     except Exception as e:
-        raise exceptions.PhotoSearchError(str(e))
+        raise exceptions.PhotoSearchError(f"Search failed: {str(e)}")
     finally:
         cur.close()
         conn.close()
