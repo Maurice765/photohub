@@ -19,11 +19,11 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { HTTPValidationError } from '../model/hTTPValidationError';
 // @ts-ignore
-import { PhotoResponse } from '../model/photoResponse';
-// @ts-ignore
 import { PhotoSearchRequest } from '../model/photoSearchRequest';
 // @ts-ignore
 import { PhotoSearchResponse } from '../model/photoSearchResponse';
+// @ts-ignore
+import { PhotoUploadResponse } from '../model/photoUploadResponse';
 // @ts-ignore
 import { VisibilityEnum } from '../model/visibilityEnum';
 
@@ -176,9 +176,9 @@ export class PhotoApiService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoResponse>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoResponse>>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoResponse>>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoUploadResponse>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoUploadResponse>>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoUploadResponse>>;
     public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (title === null || title === undefined) {
             throw new Error('Required parameter title was null or undefined when calling uploadPhoto.');
@@ -257,7 +257,7 @@ export class PhotoApiService extends BaseService {
 
         let localVarPath = `/photo/upload`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<PhotoResponse>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<PhotoUploadResponse>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: localVarConvertFormParamsToString ? localVarFormParams.toString() : localVarFormParams,
