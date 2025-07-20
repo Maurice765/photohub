@@ -1,5 +1,5 @@
-export interface RGBVectorClientModel {
-    r_target: number;
-    g_target: number;
-    b_target: number;
+export interface RGBColorClientModel {
+    r: number;
+    g: number;
+    b: number;
 }

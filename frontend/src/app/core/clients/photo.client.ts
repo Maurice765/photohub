@@ -1,37 +1,37 @@
 import { inject, Injectable } from "@angular/core";
-import { PhotoApiService, PhotoResponse, PhotoSearchResponse } from "@core/api";
+import { PhotoApiService, PhotoUploadResponse, PhotoSearchRequest, PhotoSearchResponse } from "@core/api";
 import { map, Observable } from "rxjs";
 import { PhotoSearchResponseClientModel } from "./models/photo/photo-search-response.client-model";
-import { RGBVectorClientModel } from "./models/photo/rgb-vector.client-model";
-import { PhotoUploadClientModel } from "./models/photo/photo-upload.client-model";
-import { PhotoResponseClientModel } from "./models/photo/photo-upload-response.client-model";
+import { PhotoUploadRequestClientModel } from "./models/photo/photo-upload-request.client-model";
+import { PhotoUploadResponseClientModel } from "./models/photo/photo-upload-response.client-model";
+import { PhotoSearchRequestClientModel } from "./models/photo/photo-search-request.client-model";
 
 @Injectable({
     providedIn: 'root'
 })
 export class PhotoClient {
     private apiService = inject(PhotoApiService);
-    
-    public searchByColor(rgbVector: RGBVectorClientModel, limit?: number): Observable<PhotoSearchResponseClientModel> {
-        return this.apiService.searchByColor(rgbVector, limit).pipe(
+
+    public searchByColor(requestModel: PhotoSearchRequestClientModel): Observable<PhotoSearchResponseClientModel> {
+        return this.apiService.searchByColor(requestModel as PhotoSearchRequest).pipe(
             map((response: PhotoSearchResponse) => {
                 return response as PhotoSearchResponseClientModel;
             })
         );
     }
 
-    public uploadPhoto(photoUpload: PhotoUploadClientModel) {
+    public uploadPhoto(requestModel: PhotoUploadRequestClientModel): Observable<PhotoUploadResponseClientModel> {
         return this.apiService.uploadPhoto(
-            photoUpload.title,
-            photoUpload.visibility,
-            photoUpload.file,
-            photoUpload.description,
-            photoUpload.location,
-            photoUpload.captureDate,
-            photoUpload.cameraModel
+            requestModel.title,
+            requestModel.visibility,
+            requestModel.file,
+            requestModel.description,
+            requestModel.location,
+            requestModel.captureDate,
+            requestModel.cameraModel
         ).pipe(
-            map((response: PhotoResponse) => {
-                return response as PhotoResponseClientModel;
+            map((response: PhotoUploadResponse) => {
+                return response as PhotoUploadResponseClientModel;
             })
         );  
     }
