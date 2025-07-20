@@ -9,9 +9,9 @@
  */
 
 
-export interface PhotoSearchResultItem { 
-    photo_id: number;
-    score: number;
-    preview_url: string;
-}
+export const FileFormatEnum = {
+    Png: 'png',
+    Jpeg: 'jpeg'
+} as const;
+export type FileFormatEnum = typeof FileFormatEnum[keyof typeof FileFormatEnum];
 

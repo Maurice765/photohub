@@ -9,9 +9,9 @@
  */
 
 
-export interface PhotoSearchResultItem { 
-    photo_id: number;
-    score: number;
-    preview_url: string;
+export interface RGBColor { 
+    r: number;
+    g: number;
+    b: number;
 }
 

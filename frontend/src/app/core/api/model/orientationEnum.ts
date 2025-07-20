@@ -9,9 +9,10 @@
  */
 
 
-export interface PhotoSearchResultItem { 
-    photo_id: number;
-    score: number;
-    preview_url: string;
-}
+export const OrientationEnum = {
+    Horizontal: 'horizontal',
+    Vertical: 'vertical',
+    Square: 'square'
+} as const;
+export type OrientationEnum = typeof OrientationEnum[keyof typeof OrientationEnum];
 

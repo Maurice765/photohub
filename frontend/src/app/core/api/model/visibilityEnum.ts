@@ -9,9 +9,9 @@
  */
 
 
-export interface PhotoSearchResultItem { 
-    photo_id: number;
-    score: number;
-    preview_url: string;
-}
+export const VisibilityEnum = {
+    Public: 'public',
+    Private: 'private'
+} as const;
+export type VisibilityEnum = typeof VisibilityEnum[keyof typeof VisibilityEnum];
 

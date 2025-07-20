@@ -21,11 +21,11 @@ import { HTTPValidationError } from '../model/hTTPValidationError';
 // @ts-ignore
 import { PhotoResponse } from '../model/photoResponse';
 // @ts-ignore
+import { PhotoSearchRequest } from '../model/photoSearchRequest';
+// @ts-ignore
 import { PhotoSearchResponse } from '../model/photoSearchResponse';
 // @ts-ignore
-import { RGBVector } from '../model/rGBVector';
-// @ts-ignore
-import { Visibility } from '../model/visibility';
+import { VisibilityEnum } from '../model/visibilityEnum';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -101,22 +101,17 @@ export class PhotoApiService extends BaseService {
     /**
      * Search By Color
      * Searches for photos that are most similar to a given RGB color by comparing color histograms.
-     * @param rGBVector 
-     * @param limit 
+     * @param photoSearchRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchByColor(rGBVector: RGBVector, limit?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoSearchResponse>;
-    public searchByColor(rGBVector: RGBVector, limit?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoSearchResponse>>;
-    public searchByColor(rGBVector: RGBVector, limit?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoSearchResponse>>;
-    public searchByColor(rGBVector: RGBVector, limit?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (rGBVector === null || rGBVector === undefined) {
-            throw new Error('Required parameter rGBVector was null or undefined when calling searchByColor.');
+    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoSearchResponse>;
+    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoSearchResponse>>;
+    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoSearchResponse>>;
+    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (photoSearchRequest === null || photoSearchRequest === undefined) {
+            throw new Error('Required parameter photoSearchRequest was null or undefined when calling searchByColor.');
         }
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>limit, 'limit');
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -152,13 +147,12 @@ export class PhotoApiService extends BaseService {
             }
         }
 
-        let localVarPath = `/photo/search-by-color`;
+        let localVarPath = `/photo/search`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<PhotoSearchResponse>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: rGBVector,
-                params: localVarQueryParameters,
+                body: photoSearchRequest,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -182,10 +176,10 @@ export class PhotoApiService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoResponse>;
-    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoResponse>>;
-    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoResponse>>;
-    public uploadPhoto(title: string, visibility: Visibility, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoResponse>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoResponse>>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoResponse>>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (title === null || title === undefined) {
             throw new Error('Required parameter title was null or undefined when calling uploadPhoto.');
         }
