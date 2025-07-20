@@ -39,11 +39,6 @@ export class PhotoUploadFormComponent {
         captureDate: new FormControl<Date | null>(null),
     });
 
-    public isInvalid(controlName: string): boolean | undefined {
-        const control = this.uploadForm.get(controlName);
-        return control?.invalid && (control.touched || this.formSubmitted());
-    }
-
     public markAsSubmitted(): void {
         this.formSubmitted.set(true);
         this.uploadForm.markAllAsTouched();

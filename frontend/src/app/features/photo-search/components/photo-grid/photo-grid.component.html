@@ -1,5 +1,5 @@
 <div class="card">
-    <p-dataview #dv [value]="photos" [layout]="layout" sortField="distance" sortOrder="1">
+    <p-dataview #dv [value]="viewModel().items" [layout]="layout" sortField="distance" sortOrder="1">
         <ng-template #header>
             <div class="flex justify-end">
                 <p-selectbutton [(ngModel)]="layout" [options]="options" [allowEmpty]="false">

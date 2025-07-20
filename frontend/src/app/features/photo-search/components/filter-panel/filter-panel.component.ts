@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FilterPanelFormViewModel } from "@features/photo-search/models/filter-panel-form.view-model";
 import { CameraModelSelectorComponent } from "@shared/components/camera-model-selector/camera-model-selector.component";
@@ -16,6 +16,7 @@ import { ORIENTATIONS } from "@shared/constants/orientations.const";
 import { FILE_FORMATS } from "@shared/constants/file-formats.const";
 import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
 import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
+import { FilterPanelViewModel } from "@features/photo-search/models/filter-panel.view-model";
 
 @Component({
     selector: "filter-panel",
@@ -37,6 +38,8 @@ import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enu
     styleUrls: ["./filter-panel.component.css"],
 })
 export class FilterPanelComponent {
+    private formSubmitted = signal(false);
+    
     public orientations = ORIENTATIONS;
     public fileFormats = FILE_FORMATS;
 
@@ -51,4 +54,20 @@ export class FilterPanelComponent {
         uploadDateRange: new FormControl<Date[] | null>(null),
         captureDateRange: new FormControl<Date[] | null>(null),
     });
+
+    public getFilterFormValue(): FilterPanelViewModel | null {
+        this.markAsSubmitted();
+
+        if (this.filterForm.invalid) {
+            return null;
+        }
+
+        const formValue = this.filterForm.getRawValue();
+        return new FilterPanelViewModel(formValue);
+    }
+
+    private markAsSubmitted(): void {
+        this.formSubmitted.set(true);
+        this.filterForm.markAllAsTouched();
+    }
 }
