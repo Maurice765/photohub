@@ -39,6 +39,26 @@ export class HeaderComponent {
         { name: 'Architecture', key: 'architecture' },
     ];
 
+    public navigateToFeed(): void {
+        this._router.navigate(['/feed']);
+    }
+
+    public navigateToExplore(): void {
+        this._router.navigate(['/explore']);
+    }
+
+    public onSearch(): void {
+        const queryParams: Record<string, string> = {
+            q: this.value,
+            category: this.selectedCategory,
+        };
+
+        this._router.navigate(['/photo-search'], {
+            queryParams,
+            queryParamsHandling: 'merge',
+        });
+    }
+
     public onUploadClick(): void {
         this._router.navigate([{ outlets: { dialog: ['photo-upload'] } }]);
     }
