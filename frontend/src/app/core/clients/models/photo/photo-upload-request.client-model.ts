@@ -1,6 +1,6 @@
 import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
 
-export interface PhotoUploadClientModel {
+export interface PhotoUploadRequestClientModel {
     title: string;
     visibility: VisibilityClientEnum;
     file: Blob;

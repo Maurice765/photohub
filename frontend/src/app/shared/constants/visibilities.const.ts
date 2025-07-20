@@ -1,6 +1,6 @@
-import { Visibility } from "@shared/enums/visibility.enum";
+import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
 
 export const VISIBILITIES = [
-    { name: 'Public', key:  Visibility.Public },
-    { name: 'Private', key: Visibility.Private }
+    { name: 'Public', key:  VisibilityClientEnum.Public },
+    { name: 'Private', key: VisibilityClientEnum.Private }
 ];

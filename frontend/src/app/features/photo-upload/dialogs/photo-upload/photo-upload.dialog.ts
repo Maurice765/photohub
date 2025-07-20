@@ -43,7 +43,7 @@ export class PhotoUploadDialog {
 
         this.isUploading.set(true);
 
-        const formValue = formComponent.uploadForm.value;
+        const formValue = formComponent.uploadForm.getRawValue();
         const photoUploadViewModel = new PhotoUploadViewModel(formValue);
 
         this.photoUploadService.uploadPhoto(photoUploadViewModel).pipe(
