@@ -83,7 +83,7 @@ export class PhotoApiService extends BaseService {
             }
         }
 
-        let localVarPath = `/photo/image/${this.configuration.encodeParam({name: "photoId", value: photoId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/photo/preview/${this.configuration.encodeParam({name: "photoId", value: photoId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {

@@ -14,16 +14,16 @@ import { RGBColor } from './rGBColor';
 
 
 export interface PhotoSearchRequest { 
-    searchInput?: string | null;
-    RgbColor?: RGBColor | null;
+    query?: string | null;
+    rgbColor?: RGBColor | null;
     minHeight?: number | null;
     minWidth?: number | null;
-    Orientation?: OrientationEnum | null;
-    FileFormat?: FileFormatEnum | null;
-    Location?: string | null;
-    CameraModell?: string | null;
-    UploadDate?: DateRange | null;
-    CaptureDate?: DateRange | null;
+    orientation?: OrientationEnum | null;
+    fileFormat?: FileFormatEnum | null;
+    location?: string | null;
+    cameraModel?: string | null;
+    uploadDate?: DateRange | null;
+    captureDate?: DateRange | null;
     limit?: number | null;
     offset?: number | null;
 }
