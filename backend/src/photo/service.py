@@ -165,7 +165,7 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
 
         if request.fileFormat:
             filters.append("LOWER(p.file_type) = :file_format")
-            params["file_format"] = request.fileFormat.value.lower()
+            params["file_format"] = f"image/{request.fileFormat.value.lower()}"
             score_components.append("0.05")
 
         if request.minHeight:
