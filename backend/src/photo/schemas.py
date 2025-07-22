@@ -50,7 +50,7 @@ class PhotoSearchRequest(CustomModel):
             for field in values
             if field != "limit"
         ):
-            raise ValidationError("At least one search parameter must be provided")
+            raise ValueError("At least one search parameter must be provided")
         return values
 
 
