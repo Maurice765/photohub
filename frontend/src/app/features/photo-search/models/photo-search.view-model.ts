@@ -39,30 +39,4 @@ export class PhotoSearchViewModel {
             this.captureDateEnd = filter.captureDateEnd;
         }
     }
-
-    public toClientModel(): PhotoSearchRequestClientModel {
-        return {
-            searchInput: this.query,
-            rgbColor: this.rgbColor?.toClientModel() ?? undefined,
-            minHeight: this.minHeight,
-            minWidth: this.minWidth,
-            orientation: this.orientation,
-            fileFormat: this.fileFormat,
-            location: this.location,
-            cameraModel: this.cameraModel,
-            uploadDateRange: this.dateRangeToClientModel(this.uploadDateStart, this.uploadDateEnd),
-            captureDateRange: this.dateRangeToClientModel(this.captureDateStart, this.captureDateEnd),
-            limit: this.limit,
-            offset: this.offset
-        };
-    }
-
-    private dateRangeToClientModel(startDate?: Date, endDate?: Date): DateRangeClientModel | undefined {
-        if (!startDate || !endDate) return undefined;
-
-        return {
-            start: startDate,
-            end: endDate
-        };
-    }
 }

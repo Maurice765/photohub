@@ -13,7 +13,9 @@ export class PhotoClient {
     private apiService = inject(PhotoApiService);
 
     public searchByColor(requestModel: PhotoSearchRequestClientModel): Observable<PhotoSearchResponseClientModel> {
-        return this.apiService.searchByColor(requestModel as PhotoSearchRequest).pipe(
+        let apiModel = requestModel.toApiModel();
+        
+        return this.apiService.searchByColor(apiModel).pipe(
             map((response: PhotoSearchResponse) => {
                 return response as PhotoSearchResponseClientModel;
             })
