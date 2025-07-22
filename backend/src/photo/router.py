@@ -53,7 +53,7 @@ async def search_by_color(
 
 
 @router.get(
-    "/image/{photo_id}"
+    "/preview/{photo_id}"
 )
 async def get_photo_image(photo_id: int):
     """
