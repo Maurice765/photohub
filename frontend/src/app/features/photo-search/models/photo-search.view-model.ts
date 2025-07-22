@@ -1,9 +1,7 @@
 import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
 import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
-import { DateRangeClientModel } from "@core/clients/models/photo/date-range.client-model";
-import { PhotoSearchRequestClientModel } from "@core/clients/models/photo/photo-search-request.client-model";
-import { RGBColorViewModel } from "./rgb-color.view-model";
 import { FilterPanelViewModel } from "./filter-panel.view-model";
+import { RGBColorViewModel } from "./rgb-color.view-model";
 
 export class PhotoSearchViewModel {
     public query?: string;

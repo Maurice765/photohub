@@ -27,16 +27,4 @@ export class PhotoUploadViewModel {
         this.cameraModel = form?.cameraModel ?? undefined;
         this.captureDate = form?.captureDate ?? undefined;
     }
-
-    public toClientModel(): PhotoUploadRequestClientModel {
-        return {
-            file: this.file,
-            title: this.title,
-            visibility: this.visibility,
-            description: this.description,
-            location: this.location,
-            cameraModel: this.cameraModel,
-            captureDate: this.captureDate?.toISOString()
-        };
-    }
 }

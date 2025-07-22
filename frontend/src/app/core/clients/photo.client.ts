@@ -17,7 +17,8 @@ export class PhotoClient {
         
         return this.apiService.searchByColor(apiModel).pipe(
             map((response: PhotoSearchResponse) => {
-                return response as PhotoSearchResponseClientModel;
+                let clientModel = new PhotoSearchResponseClientModel(response);
+                return clientModel;
             })
         );
     }
@@ -33,7 +34,8 @@ export class PhotoClient {
             requestModel.cameraModel
         ).pipe(
             map((response: PhotoUploadResponse) => {
-                return response as PhotoUploadResponseClientModel;
+                let clientModel = new PhotoUploadResponseClientModel(response);
+                return clientModel;
             })
         );  
     }

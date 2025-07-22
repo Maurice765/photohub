@@ -6,8 +6,8 @@ export class PhotoUploadResponseViewModel {
     public filename: string;
 
     constructor(clientModel: PhotoUploadResponseClientModel) {
-        this.contentId = clientModel.content_id;
-        this.photoId = clientModel.photo_id;
-        this.filename = clientModel.filename;
+        this.contentId = clientModel.contentId;
+        this.photoId = clientModel.photoId;
+        this.filename = clientModel.filename || '';
     }
 }

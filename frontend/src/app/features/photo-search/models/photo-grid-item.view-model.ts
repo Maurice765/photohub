@@ -6,8 +6,8 @@ export class PhotoGridItemViewModel {
     public preview_url: string;
 
     constructor(clientModel: PhotoSearchResultItemClientModel) {
-        this.id = clientModel.photo_id;
+        this.id = clientModel.photoId;
         this.score = clientModel.score;
-        this.preview_url = clientModel.preview_url;
+        this.preview_url = clientModel.previewUrl;
     }
 }

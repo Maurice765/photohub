@@ -22,7 +22,7 @@ export class PhotoSearchService {
             map((response: PhotoSearchResponseClientModel) => {
                 let items = response.results.map((item: PhotoSearchResultItemClientModel) => {
                     let viewModel = new PhotoGridItemViewModel(item);
-                    viewModel.preview_url = environment.apiUrl + item.preview_url;
+                    viewModel.preview_url = environment.apiUrl + item.previewUrl;
                     return viewModel;
                 })
 
