@@ -10,6 +10,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SelectModule } from 'primeng/select';
 import { Router } from "@angular/router";
+import { SearchBarService } from "./services/search-bar.service";
 
 @Component({
     selector: "header",
@@ -29,9 +30,11 @@ import { Router } from "@angular/router";
     styleUrls: ["./header.component.css"],
 })
 export class HeaderComponent {
-    private _router: Router = inject(Router);
+    private router: Router = inject(Router);
+    private searchBarService = inject(SearchBarService);
 
-    public value: string = '';
+
+    public query: string = '';
     public selectedCategory: string = 'all';
     public categories = [
         { name: 'All Categories', key: 'all' },
@@ -40,26 +43,22 @@ export class HeaderComponent {
     ];
 
     public navigateToFeed(): void {
-        this._router.navigate(['/feed']);
+        this.router.navigate(['/feed']);
     }
 
     public navigateToExplore(): void {
-        this._router.navigate(['/explore']);
+        this.router.navigate(['/explore']);
     }
 
     public onSearch(): void {
-        const queryParams: Record<string, string> = {
-            q: this.value,
-            category: this.selectedCategory,
-        };
+        this.searchBarService.triggerSearch(this.query, this.selectedCategory);
 
-        this._router.navigate(['/photo-search'], {
-            queryParams,
-            queryParamsHandling: 'merge',
+        this.router.navigate(['/photo-search'], {
+            skipLocationChange: false,
         });
     }
 
     public onUploadClick(): void {
-        this._router.navigate([{ outlets: { dialog: ['photo-upload'] } }]);
+        this.router.navigate([{ outlets: { dialog: ['photo-upload'] } }]);
     }
 }
