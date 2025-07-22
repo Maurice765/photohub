@@ -11,12 +11,12 @@ router = APIRouter()
 
 @router.post(
     "/upload", 
-    response_model=schemas.PhotoResponse 
+    response_model=schemas.PhotoUploadResponse 
 )
 async def upload_photo(
     title: str = Form(..., max_length=255),
     description: Optional[str] = Form(None, max_length=1000),
-    visibility: constants.Visibility = Form(...),
+    visibility: constants.VisibilityEnum = Form(...),
     location: Optional[str] = Form(None, max_length=255),
     capture_date: Optional[datetime] = Form(None),
     camera_model: Optional[str] = Form(None, max_length=255),
@@ -37,28 +37,23 @@ async def upload_photo(
         camera_model=camera_model
     )
 
+
 @router.post(
-    "/search-by-color",
+    "/search",
     response_model=schemas.PhotoSearchResponse
 )
 async def search_by_color(
-    color: schemas.RGBVector, 
-    limit: int = 10
+    request: schemas.PhotoSearchRequest
 ):
     """
     Searches for photos that are most similar to a given RGB color
     by comparing color histograms.
     """
-    search_results = service.search_by_rgb_histogram(
-        r=color.r_target, 
-        g=color.g_target, 
-        b=color.b_target, 
-        limit=limit
-    )
-    return schemas.PhotoSearchResponse(results=search_results)
+    return service.search_photos(request)
+
 
 @router.get(
-    "/image/{photo_id}"
+    "/preview/{photo_id}"
 )
 async def get_photo_image(photo_id: int):
     """

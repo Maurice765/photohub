@@ -1,12 +1,12 @@
-import { Component, forwardRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { VISIBILITIES } from "@shared/constants/visibilities.const";
-import { Visibility } from "@shared/enums/visibility.enum";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
 import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
+import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
 
 @Component({
     selector: "visibility-selector",
@@ -25,15 +25,16 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
     }],
     templateUrl: "./visibility-selector.component.html",
     styleUrls: ["./visibility-selector.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisibilitySelectorComponent implements ControlValueAccessor {
     public visibilities = VISIBILITIES;
-    public selectedVisibility: Visibility | null = null;
+    public selectedVisibility: VisibilityClientEnum | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
     public isInvalid: boolean = false;
 
-    public onChange = (visibility: Visibility | null) => { };
+    public onChange = (visibility: VisibilityClientEnum | null) => { };
     public onTouched = () => { };
 
     public onVisibilityChange(event: SelectChangeEvent): void {
@@ -43,7 +44,7 @@ export class VisibilitySelectorComponent implements ControlValueAccessor {
         }
     }
 
-    public writeValue(visibility: Visibility | null): void {
+    public writeValue(visibility: VisibilityClientEnum | null): void {
         this.selectedVisibility = visibility;
     }
 

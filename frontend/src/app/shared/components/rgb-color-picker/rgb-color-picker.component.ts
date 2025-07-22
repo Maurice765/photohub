@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
 import { ColorPickerChangeEvent, ColorPickerModule } from "primeng/colorpicker";
 import { InputGroupModule } from "primeng/inputgroup";
@@ -27,6 +27,7 @@ import { FloatLabelModule } from "primeng/floatlabel";
     }],
     templateUrl: "./rgb-color-picker.component.html",
     styleUrls: ["./rgb-color-picker.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RgbColorPickerComponent implements ControlValueAccessor {
 

@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
+        path: 'feed',
+        loadChildren: () =>
+        import('./features/feed/feed.routes').then(m => m.FEED_ROUTES),
+    },
+    {
         path: 'photo-search',
         loadChildren: () =>
         import('./features/photo-search/photo-search.routes').then(m => m.PHOTO_SEARCH_ROUTES),
@@ -14,6 +19,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'photo-search',
+        redirectTo: 'feed',
     }
 ];

@@ -1,5 +1,5 @@
-import { Component, forwardRef, input } from "@angular/core";
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, forwardRef, input, output } from "@angular/core";
+import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from "@angular/forms";
 import { DatePickerModule } from "primeng/datepicker";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
@@ -17,14 +17,20 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
         FormErrorMessageComponent
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        multi: true,
-        useExisting: forwardRef(() => DatePickerComponent),
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: forwardRef(() => DatePickerComponent),
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: forwardRef(() => DatePickerComponent),
+        }],
     templateUrl: "./date-picker.component.html",
     styleUrls: ["./date-picker.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatePickerComponent implements ControlValueAccessor {
+export class DatePickerComponent implements ControlValueAccessor, Validator {
     public label = input<string>('');
     public selectionMode = input<'single' | 'multiple' | 'range'>('single');
     
@@ -32,6 +38,7 @@ export class DatePickerComponent implements ControlValueAccessor {
     public disabled: boolean = false;
     public touched: boolean = false;
     public isInvalid: boolean = false;
+    public maxDate = input<Date>(new Date());
 
     public onChange = (date: Date[] | Date | null) => { };
     public onTouched = () => { };
@@ -64,5 +71,24 @@ export class DatePickerComponent implements ControlValueAccessor {
 
     public setDisabledState(disabled: boolean): void {
         this.disabled = disabled;
+    }
+
+    public validate(control: AbstractControl<Date[] | Date>): ValidationErrors | null {
+        const value = control.value;
+
+        if (!value) {
+            return null;
+        }
+
+        if (this.selectionMode() === 'range') {
+            if (!Array.isArray(value) || value.length !== 2 || !value[0] || !value[1]) {
+                return { dateRange: { valid: false } };
+            }
+            const [start, end] = value;
+            if (start > end) {
+                return { dateRange: { valid: false } };
+            }
+        }
+        return null;
     }
 }

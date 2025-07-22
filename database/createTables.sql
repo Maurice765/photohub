@@ -54,7 +54,7 @@ CREATE TABLE PHOTO (
     location VARCHAR2(255),
     capture_date TIMESTAMP,
     file_hash VARCHAR2(64) UNIQUE,
-    camera_model VARCHAR2(100),
+    camera_model VARCHAR2(255),
     width NUMBER,
     height NUMBER,
     orientation VARCHAR2(15) CHECK (orientation IN ('horizontal', 'vertical', 'square')),
@@ -63,6 +63,12 @@ CREATE TABLE PHOTO (
 );
 
 CREATE OR REPLACE TYPE int_array_256_t AS VARRAY(256) OF NUMBER;
+
+CREATE INDEX content_title_idx ON content(title)
+    INDEXTYPE IS CTXSYS.CONTEXT;
+
+CREATE INDEX content_description_idx ON content(description)
+    INDEXTYPE IS CTXSYS.CONTEXT;
 
 CREATE TABLE COLOR_HISTOGRAM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

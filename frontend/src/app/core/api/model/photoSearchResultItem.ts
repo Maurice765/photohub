@@ -11,7 +11,7 @@
 
 export interface PhotoSearchResultItem { 
     photo_id: number;
-    distance: number;
-    image_url: string;
+    score: number;
+    preview_url: string;
 }
 

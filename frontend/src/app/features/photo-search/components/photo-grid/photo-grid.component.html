@@ -1,5 +1,5 @@
 <div class="card">
-    <p-dataview #dv [value]="photos" [layout]="layout" sortField="distance" sortOrder="1">
+    <p-dataview #dv [value]="viewModel().items" [layout]="layout" sortField="distance" sortOrder="1">
         <ng-template #header>
             <div class="flex justify-end">
                 <p-selectbutton [(ngModel)]="layout" [options]="options" [allowEmpty]="false">
@@ -13,8 +13,8 @@
             <div class="flex flex-col">
                 <div *ngFor="let item of items; let first = first">
                     <div class="flex flex-col">
-                        <p-image [src]="item.imageUrl" alt="Image" width="500" [preview]="true" />
-                        {{ item.distance }}
+                        <p-image [src]="item.preview_url" alt="Image" width="500" [preview]="true" />
+                        {{ item.score }}
                     </div>
                 </div>
             </div>
@@ -23,8 +23,8 @@
             <div class="grid grid-cols-4 gap-4">
                 <div *ngFor="let item of items">
                     <div class="flex flex-col">
-                        <p-image [src]="item.imageUrl" alt="Image" width="500" [preview]="true" />
-                        {{ item.distance }}
+                        <p-image [src]="item.preview_url" alt="Image" width="500" [preview]="true" />
+                        {{ item.score }}
                     </div>
                 </div>
             </div>

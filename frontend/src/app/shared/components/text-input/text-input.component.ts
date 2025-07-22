@@ -1,4 +1,4 @@
-import { Component, forwardRef, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef, input } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputTextModule } from "primeng/inputtext";
@@ -19,6 +19,7 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
     }],
     templateUrl: "./text-input.component.html",
     styleUrls: ["./text-input.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextInputComponent implements ControlValueAccessor {
     public label = input<string>('');

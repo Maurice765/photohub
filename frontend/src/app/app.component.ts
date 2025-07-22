@@ -11,8 +11,11 @@ import { Toast } from 'primeng/toast';
         HeaderComponent,
         Toast
     ],
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.css"],
+    template: `
+        <header></header>
+        <router-outlet></router-outlet>
+        <p-toast></p-toast>
+    `,
     providers: [ MessageService ]
 })
 export class AppComponent {

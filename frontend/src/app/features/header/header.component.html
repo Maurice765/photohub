@@ -3,13 +3,19 @@
     <ng-template #start>
         <div class="flex items-center gap-x-6">
             <span class="text-2xl font-bold">PhotoHub</span>
-            <p-button icon="pi pi-home" label="Feed" variant="text" severity="secondary" />
-            <p-button icon="pi pi-star" label="Explore" variant="text" severity="secondary" />
+            <p-button icon="pi pi-home" label="Feed" variant="text" severity="secondary" (onClick)="navigateToFeed()"/>
+            <p-button icon="pi pi-star" label="Explore" variant="text" severity="secondary" (onClick)="navigateToExplore()"/>
             <p-inputgroup>
                 <p-select [(ngModel)]="selectedCategory" variant="filled" [options]="categories" optionLabel="name" optionValue="key" />
-                <input pInputText input type="text" [(ngModel)]="value" placeholder="Search..."/>
+                <input 
+                    pInputText 
+                    type="text" 
+                    [(ngModel)]="query" 
+                    placeholder="Search..." 
+                    (keydown.enter)="onSearch()"
+                />
                 <p-inputgroup-addon>
-                    <p-button icon="pi pi-search" severity="secondary" />
+                    <p-button icon="pi pi-search" severity="secondary" (onClick)="onSearch()" />
                 </p-inputgroup-addon>
             </p-inputgroup>
         </div>

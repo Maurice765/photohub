@@ -1,34 +1,39 @@
-import { FilterFormValue } from "./filter-form.model";
-import { RGBVectorViewModel } from "./rgb-vector.view-model";
+import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
+import { FilterPanelFormViewModel } from "./filter-panel-form.view-model";
+import { RGBColorViewModel } from "./rgb-color.view-model";
+import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
+import { FormGroupValue } from "@shared/types/form-group-value.type";
+
+type FilterPanelFormValue = FormGroupValue<FilterPanelFormViewModel>;
 
 export class FilterPanelViewModel {
-    color?: RGBVectorViewModel;
-    orientation?: string;
-    minWidth?: number;
-    minHeight?: number;
-    location?: string;
-    cameraModel?: string;
-    fileFormat?: string;
-    uploadDateStart?: Date;
-    uploadDateEnd?: Date;
-    captureDateStart?: Date;
-    captureDateEnd?: Date;
+    public rgbColor?: RGBColorViewModel;
+    public minWidth?: number;
+    public minHeight?: number;
+    public orientation?: OrientationClientEnum;
+    public fileFormat?: FileFormatClientEnum;
+    public location?: string;
+    public cameraModel?: string;
+    public uploadDateStart?: Date;
+    public uploadDateEnd?: Date;
+    public captureDateStart?: Date;
+    public captureDateEnd?: Date;
 
-    constructor(filterForm: FilterFormValue) {
+    constructor(form: FilterPanelFormValue) {
 
-        if (filterForm?.rgbColor?.r != null && filterForm?.rgbColor?.g != null && filterForm?.rgbColor?.b != null) {
-            this.color = new RGBVectorViewModel(filterForm.rgbColor.r, filterForm.rgbColor.g, filterForm.rgbColor.b);
+        if (form?.rgbColor?.r != null && form?.rgbColor?.g != null && form?.rgbColor?.b != null) {
+            this.rgbColor = new RGBColorViewModel(form.rgbColor.r, form.rgbColor.g, form.rgbColor.b);
         }
 
-        this.orientation = filterForm?.orientation ?? undefined;
-        this.minWidth = filterForm?.minWidth ?? undefined;
-        this.minHeight = filterForm?.minHeight ?? undefined;
-        this.location = filterForm?.location ?? undefined;
-        this.cameraModel = filterForm?.cameraModel ?? undefined;
-        this.fileFormat = filterForm?.fileFormat ?? undefined;
-        this.uploadDateStart = filterForm.uploadDateRange?.[0] ?? undefined;
-        this.uploadDateEnd = filterForm.uploadDateRange?.[1] ?? undefined;
-        this.captureDateStart = filterForm.captureDateRange?.[0] ?? undefined
-        this.captureDateEnd = filterForm.captureDateRange?.[1] ?? undefined;
+        this.minWidth = form?.minWidth ?? undefined;
+        this.minHeight = form?.minHeight ?? undefined;
+        this.orientation = form?.orientation ?? undefined;
+        this.fileFormat = form?.fileFormat ?? undefined;
+        this.location = form?.location ?? undefined;
+        this.cameraModel = form?.cameraModel ?? undefined;
+        this.uploadDateStart = form.uploadDateRange?.[0] ?? undefined;
+        this.uploadDateEnd = form.uploadDateRange?.[1] ?? undefined;
+        this.captureDateStart = form.captureDateRange?.[0] ?? undefined;
+        this.captureDateEnd = form.captureDateRange?.[1] ?? undefined;
     }
 }

@@ -1,9 +1,8 @@
 <div class="filter-container">
     <filter-panel />
-    <p-button label="Submit" (onClick)="searchPhotos()"/>
 
 </div>
 <div class="grid-container">
-    <photo-grid [photos]="photos()"/>
+    <photo-grid [viewModel]="photoGridViewModel()"/>
 </div>
 
