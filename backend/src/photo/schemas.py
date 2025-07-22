@@ -30,16 +30,16 @@ class DateRange(CustomModel):
         return self
 
 class PhotoSearchRequest(CustomModel):
-    searchInput: Optional[str] = None
-    RgbColor: Optional[RGBColor] = None
+    query: Optional[str] = None
+    rgbColor: Optional[RGBColor] = None
     minHeight: Optional[int] = None
     minWidth: Optional[int] = None
-    Orientation: Optional[OrientationEnum] = None
-    FileFormat: Optional[FileFormatEnum] = None
-    Location: Optional[str] = Field(default=None, max_length=255)
-    CameraModell: Optional[str] = Field(default=None, max_length=255)
-    UploadDate: Optional[DateRange] = None
-    CaptureDate: Optional[DateRange] = None
+    orientation: Optional[OrientationEnum] = None
+    fileFormat: Optional[FileFormatEnum] = None
+    location: Optional[str] = Field(default=None, max_length=255)
+    cameraModel: Optional[str] = Field(default=None, max_length=255)
+    uploadDate: Optional[DateRange] = None
+    captureDate: Optional[DateRange] = None
     limit: Optional[int] = 20
     offset: Optional[int] = 0
 
