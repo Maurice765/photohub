@@ -5,7 +5,7 @@ import { RGBColorViewModel } from "./rgb-color.view-model";
 
 export class PhotoSearchViewModel {
     public query?: string;
-    public categorie?: string;
+    public category?: string;
     public rgbColor?: RGBColorViewModel;
     public minHeight?: number;
     public minWidth?: number;
@@ -22,7 +22,7 @@ export class PhotoSearchViewModel {
 
     constructor(filter?: FilterPanelViewModel, category?: string, query?: string) {
         this.query = query?.trim() ? query : undefined;
-        this.categorie = category?.trim() ? category : undefined;;
+        this.category = category?.trim() ? category : undefined;
         if (filter) {
             this.rgbColor = filter.rgbColor;
             this.minHeight = filter.minHeight;

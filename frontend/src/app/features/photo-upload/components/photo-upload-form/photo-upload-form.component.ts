@@ -31,7 +31,7 @@ export class PhotoUploadFormComponent {
 
     public uploadForm = new FormGroup<PhotoUploadFormViewModel>({
         file: new FormControl<File | null>(null, Validators.required),
-        title: new FormControl<string | null>(null , { validators: [Validators.required, Validators.maxLength(255)] }),
+        title: new FormControl<string | null>(null, { validators: [Validators.required, Validators.maxLength(255)] }),
         visibility: new FormControl<VisibilityClientEnum | null>(null, Validators.required),
         description: new FormControl<string | null>(null, Validators.maxLength(255)),
         location: new FormControl<string | null>(null, Validators.maxLength(255)),
