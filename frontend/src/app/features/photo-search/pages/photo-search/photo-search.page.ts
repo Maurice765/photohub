@@ -53,7 +53,19 @@ export class PhotoSearchPage {
                 this.photoGridViewModel.set(result);
             },
             error: (err) => {
-                this.messageService.add({severity: 'error', summary: 'Search Failed', detail: 'An unexpected error occurred while searching for photos.'});
+                if (err.status === 422) {
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Missing Filters',
+                        detail: 'Please provide at least one search filter to perform a photo search.'
+                    });
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Search Failed',
+                        detail: 'An unexpected error occurred while searching for photos.'
+                    });
+                }
             }
         });
     }
