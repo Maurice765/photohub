@@ -30,7 +30,7 @@ export class PhotoSearchPage {
     private searchBarService = inject(SearchBarService);
     private messageService = inject(MessageService);
     private photoSearchService = inject(PhotoSearchService);
-    private filterPanelComponent = viewChild(FilterPanelComponent);
+    private filterPanelComponent = viewChild.required(FilterPanelComponent);
 
     public photoGridViewModel = signal<PhotoGridViewModel>(new PhotoGridViewModel([]));
 

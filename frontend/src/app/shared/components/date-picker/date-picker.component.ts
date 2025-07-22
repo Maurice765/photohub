@@ -38,7 +38,7 @@ export class DatePickerComponent implements ControlValueAccessor, Validator {
     public disabled: boolean = false;
     public touched: boolean = false;
     public isInvalid: boolean = false;
-    public maxDate = new Date();
+    public maxDate = input<Date>(new Date());
 
     public onChange = (date: Date[] | Date | null) => { };
     public onTouched = () => { };

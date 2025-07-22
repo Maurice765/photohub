@@ -13,11 +13,11 @@ export class PhotoClient {
     private apiService = inject(PhotoApiService);
 
     public searchByColor(requestModel: PhotoSearchRequestClientModel): Observable<PhotoSearchResponseClientModel> {
-        let apiModel = requestModel.toApiModel();
+        const apiModel = requestModel.toApiModel();
         
         return this.apiService.searchByColor(apiModel).pipe(
             map((response: PhotoSearchResponse) => {
-                let clientModel = new PhotoSearchResponseClientModel(response);
+                const clientModel = new PhotoSearchResponseClientModel(response);
                 return clientModel;
             })
         );
@@ -34,7 +34,7 @@ export class PhotoClient {
             requestModel.cameraModel
         ).pipe(
             map((response: PhotoUploadResponse) => {
-                let clientModel = new PhotoUploadResponseClientModel(response);
+                const clientModel = new PhotoUploadResponseClientModel(response);
                 return clientModel;
             })
         );  

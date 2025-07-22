@@ -16,12 +16,12 @@ export class PhotoSearchService {
     private photoClient = inject(PhotoClient);
 
     searchPhotos(viewModel: PhotoSearchViewModel): Observable<PhotoGridViewModel> {
-        let clientModel = new PhotoSearchRequestClientModel(viewModel);
+        const clientModel = new PhotoSearchRequestClientModel(viewModel);
 
         return this.photoClient.searchByColor(clientModel).pipe(
             map((response: PhotoSearchResponseClientModel) => {
-                let items = response.results.map((item: PhotoSearchResultItemClientModel) => {
-                    let viewModel = new PhotoGridItemViewModel(item);
+                const items = response.results.map((item: PhotoSearchResultItemClientModel) => {
+                    const viewModel = new PhotoGridItemViewModel(item);
                     viewModel.preview_url = environment.apiUrl + item.previewUrl;
                     return viewModel;
                 })
