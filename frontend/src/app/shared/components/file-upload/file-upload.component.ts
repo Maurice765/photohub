@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from "@angular/common";
-import { Component, forwardRef, inject, input, model, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef, inject, input, model, output } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, NgControl, ValidationErrors, Validator } from "@angular/forms";
 import { PrimeNG } from 'primeng/config';
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
@@ -24,6 +24,7 @@ import { MessageModule } from "primeng/message";
         }],
     templateUrl: "./file-upload.component.html",
     styleUrls: ["./file-upload.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileUploadComponent implements ControlValueAccessor, Validator {
     private primengConfig: PrimeNG = inject(PrimeNG);

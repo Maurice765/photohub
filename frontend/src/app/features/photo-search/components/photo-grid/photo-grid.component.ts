@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, input, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, signal } from "@angular/core";
 import { ImageModule } from 'primeng/image';
 import { DataViewModule } from 'primeng/dataview';
 import { SelectButton } from 'primeng/selectbutton';
@@ -18,6 +18,7 @@ import { PhotoGridViewModel } from "@features/photo-search/models/photo-grid.vie
 	],
 	templateUrl: "./photo-grid.component.html",
 	styleUrls: ["./photo-grid.component.css"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PhotoGridComponent {
 	public viewModel = input.required<PhotoGridViewModel>();

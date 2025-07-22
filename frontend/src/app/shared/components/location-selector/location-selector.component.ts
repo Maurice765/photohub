@@ -1,4 +1,4 @@
-import { Component, forwardRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from "@angular/forms";
 import { LOCATIONS } from "@shared/constants/locations.const";
 
@@ -25,6 +25,7 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
     }],
     templateUrl: "./location-selector.component.html",
     styleUrls: ["./location-selector.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationSelectorComponent implements ControlValueAccessor {
     public locations = LOCATIONS;

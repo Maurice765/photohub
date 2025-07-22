@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
 import { PhotoUploadFormViewModel } from "@features/photo-upload/models/photo-upload-form.view-model";
@@ -25,6 +25,7 @@ import { VisibilitySelectorComponent } from "@shared/components/visibility-selec
     ],
     templateUrl: "./photo-upload-form.component.html",
     styleUrls: ["./photo-upload-form.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PhotoUploadFormComponent {
     private formSubmitted = signal(false);

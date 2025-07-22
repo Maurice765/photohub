@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MenubarModule } from 'primeng/menubar';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
@@ -28,6 +28,7 @@ import { SearchBarService } from "./services/search-bar.service";
     ],
     templateUrl: "./header.component.html",
     styleUrls: ["./header.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
     private router: Router = inject(Router);

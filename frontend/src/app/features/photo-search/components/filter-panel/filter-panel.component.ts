@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
 import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
@@ -36,6 +36,7 @@ import { SelectModule } from 'primeng/select';
     ],
     templateUrl: "./filter-panel.component.html",
     styleUrls: ["./filter-panel.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterPanelComponent {
     private formSubmitted = signal(false);

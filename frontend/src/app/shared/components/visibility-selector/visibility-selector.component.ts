@@ -1,4 +1,4 @@
-import { Component, forwardRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { VISIBILITIES } from "@shared/constants/visibilities.const";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -25,6 +25,7 @@ import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum
     }],
     templateUrl: "./visibility-selector.component.html",
     styleUrls: ["./visibility-selector.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisibilitySelectorComponent implements ControlValueAccessor {
     public visibilities = VISIBILITIES;

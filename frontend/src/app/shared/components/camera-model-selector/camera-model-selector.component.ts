@@ -1,4 +1,4 @@
-import { Component, forwardRef, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl } from "@angular/forms";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
@@ -25,6 +25,7 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
     }],
     templateUrl: "./camera-model-selector.component.html",
     styleUrls: ["./camera-model-selector.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CameraModelSelectorComponent implements ControlValueAccessor {
     public cameraModels = CAMERA_MODELS;

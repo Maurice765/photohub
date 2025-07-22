@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnDestroy, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, OnInit, output } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { MessageModule } from 'primeng/message';
 import { merge, startWith, Subject, takeUntil } from 'rxjs';
@@ -12,6 +12,7 @@ import { merge, startWith, Subject, takeUntil } from 'rxjs';
     ],
     templateUrl: './form-error-message.component.html',
     styleUrls: ['./form-error-message.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormErrorMessageComponent implements OnInit, OnDestroy {
     private ngControl: NgControl = inject(NgControl);

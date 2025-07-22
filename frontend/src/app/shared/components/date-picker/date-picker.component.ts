@@ -1,4 +1,4 @@
-import { Component, forwardRef, input, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef, input, output } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from "@angular/forms";
 import { DatePickerModule } from "primeng/datepicker";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -28,6 +28,7 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
         }],
     templateUrl: "./date-picker.component.html",
     styleUrls: ["./date-picker.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DatePickerComponent implements ControlValueAccessor, Validator {
     public label = input<string>('');
