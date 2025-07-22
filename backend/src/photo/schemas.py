@@ -48,7 +48,7 @@ class PhotoSearchRequest(CustomModel):
         if not any(
             values.get(field) is not None
             for field in values
-            if field != "limit"
+            if field != "limit" and field != "offset"
         ):
             raise ValueError("At least one search parameter must be provided")
         return values
