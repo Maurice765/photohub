@@ -126,21 +126,21 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
         filters = []
         joins = ["JOIN content c ON p.content_id = c.id"]
         score_components = []
-        array_type = conn.gettype("INT_ARRAY_256_T") if request.RgbColor else None
+        array_type = conn.gettype("INT_ARRAY_256_T") if request.rgbColor else None
 
         # Text search score
-        if request.searchInput:
+        if request.query:
             filters.append("(CONTAINS(c.title, :search, 1) > 0 OR CONTAINS(c.description, :search, 2) > 0)")
             score_components.append("SCORE(1) * 0.6 + SCORE(2) * 0.4")  # You can tune these weights
-            params["search"] = request.searchInput
+            params["search"] = request.query
 
         # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
-        if request.RgbColor and array_type:
+        if request.rgbColor and array_type:
             joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
             target = utils.create_single_color_histogram(
-                request.RgbColor.r,
-                request.RgbColor.g,
-                request.RgbColor.b
+                request.rgbColor.r,
+                request.rgbColor.g,
+                request.rgbColor.b
             )
             params.update({
                 "r_bins": array_type.newobject(target.r_bins),
@@ -158,14 +158,14 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
             """)
 
         # Optional field boosts (binary score)
-        if request.Orientation:
+        if request.orientation:
             filters.append("p.orientation = :orientation")
-            params["orientation"] = request.Orientation.value
+            params["orientation"] = request.orientation.value
             score_components.append("0.05")
 
-        if request.FileFormat:
+        if request.fileFormat:
             filters.append("LOWER(p.file_type) = :file_format")
-            params["file_format"] = request.FileFormat.value.lower()
+            params["file_format"] = request.fileFormat.value.lower()
             score_components.append("0.05")
 
         if request.minHeight:
@@ -178,31 +178,31 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
             params["min_width"] = request.minWidth
             score_components.append("0.05")
 
-        if request.Location:
+        if request.location:
             filters.append("LOWER(p.location) LIKE :location")
-            params["location"] = f"%{request.Location.lower()}%"
+            params["location"] = f"%{request.location.lower()}%"
             score_components.append("0.05")
 
-        if request.CameraModell:
+        if request.cameraModel:
             filters.append("LOWER(p.camera_model) LIKE :camera_model")
-            params["camera_model"] = f"%{request.CameraModell.lower()}%"
+            params["camera_model"] = f"%{request.cameraModel.lower()}%"
             score_components.append("0.05")
 
-        if request.UploadDate:
-            if request.UploadDate.start:
+        if request.uploadDate:
+            if request.uploadDate.start:
                 filters.append("c.create_date >= :upload_start")
-                params["upload_start"] = request.UploadDate.start
-            if request.UploadDate.end:
+                params["upload_start"] = request.uploadDate.start
+            if request.uploadDate.end:
                 filters.append("c.create_date <= :upload_end")
-                params["upload_end"] = request.UploadDate.end
+                params["upload_end"] = request.uploadDate.end
 
-        if request.CaptureDate:
-            if request.CaptureDate.start:
+        if request.captureDate:
+            if request.captureDate.start:
                 filters.append("p.capture_date >= :capture_start")
-                params["capture_start"] = request.CaptureDate.start
-            if request.CaptureDate.end:
+                params["capture_start"] = request.captureDate.start
+            if request.captureDate.end:
                 filters.append("p.capture_date <= :capture_end")
-                params["capture_end"] = request.CaptureDate.end
+                params["capture_end"] = request.captureDate.end
 
         # Final score formula
         score_expr = " + ".join(score_components) if score_components else "0"
