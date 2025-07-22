@@ -14,6 +14,7 @@ import { Toast } from 'primeng/toast';
     template: `
         <header></header>
         <router-outlet></router-outlet>
+        <router-outlet name="dialog"></router-outlet>
         <p-toast></p-toast>
     `,
     providers: [ MessageService ]
