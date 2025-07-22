@@ -1,6 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from "@angular/core";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { SearchBarViewModel } from "@features/header/models/search-bar.view-model";
+import { SearchBarService, } from "@features/header/services/search-bar.service";
 import { FilterPanelComponent } from "@features/photo-search/components/filter-panel/filter-panel.component";
 import { PhotoGridComponent } from "@features/photo-search/components/photo-grid/photo-grid.component";
 import { PhotoGridViewModel } from "@features/photo-search/models/photo-grid.view-model";
@@ -24,21 +27,26 @@ import { ButtonModule } from 'primeng/button';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhotoSearchPage {
+    private searchBarService = inject(SearchBarService);
     private messageService = inject(MessageService);
     private photoSearchService = inject(PhotoSearchService);
-    private filterPanel = viewChild.required(FilterPanelComponent);
+    private filterPanelComponent = viewChild(FilterPanelComponent);
 
     public photoGridViewModel = signal<PhotoGridViewModel>(new PhotoGridViewModel([]));
 
-    public searchPhotos(): void {
-        const filterPanel = this.filterPanel();
+    constructor() {
+        this.searchBarService.searchTrigger$
+        .pipe(takeUntilDestroyed())
+        .subscribe((search: SearchBarViewModel | null) => {
+            if (search) {
+                this.searchPhotos(search.query, search.category);
+            }
+        });
+    }
 
-        const filterFormValue = filterPanel.getFilterFormValue();
-        if (!filterFormValue) {
-            return;
-        }
-
-        const photoSearchViewModel = new PhotoSearchViewModel();
+    public searchPhotos(query?: string, category?: string): void {
+        const filterViewModel = this.filterPanelComponent()?.getFilterPanelViewModel();
+        const photoSearchViewModel = new PhotoSearchViewModel(filterViewModel, category, query);
 
         this.photoSearchService.searchPhotos(photoSearchViewModel).subscribe({
             next: (result: PhotoGridViewModel) => {

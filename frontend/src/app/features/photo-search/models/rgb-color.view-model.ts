@@ -12,7 +12,7 @@ export class RGBColorViewModel implements RGBColor {
         this.b = b;
     }
     
-    toClientModel(): RGBColorClientModel {
+    public toClientModel(): RGBColorClientModel {
         return {
             r: this.r,
             g: this.g,

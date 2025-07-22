@@ -1,22 +1,22 @@
 import { Component, signal } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
+import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
 import { FilterPanelFormViewModel } from "@features/photo-search/models/filter-panel-form.view-model";
+import { FilterPanelViewModel } from "@features/photo-search/models/filter-panel.view-model";
 import { CameraModelSelectorComponent } from "@shared/components/camera-model-selector/camera-model-selector.component";
 import { DatePickerComponent } from "@shared/components/date-picker/date-picker.component";
 import { LocationSelectorComponent } from "@shared/components/location-selector/location-selector.component";
-import { RGBColor } from "@shared/models/rgbColor.interface";
 import { RgbColorPickerComponent } from "@shared/components/rgb-color-picker/rgb-color-picker.component";
+import { FILE_FORMATS } from "@shared/constants/file-formats.const";
+import { ORIENTATIONS } from "@shared/constants/orientations.const";
+import { RGBColor } from "@shared/models/rgbColor.interface";
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { SelectModule } from 'primeng/select';
-import { ORIENTATIONS } from "@shared/constants/orientations.const";
-import { FILE_FORMATS } from "@shared/constants/file-formats.const";
-import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
-import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
-import { FilterPanelViewModel } from "@features/photo-search/models/filter-panel.view-model";
 
 @Component({
     selector: "filter-panel",
@@ -55,13 +55,13 @@ export class FilterPanelComponent {
         captureDateRange: new FormControl<Date[] | null>(null),
     });
 
-    public getFilterFormValue(): FilterPanelViewModel | null {
+    public getFilterPanelViewModel(): FilterPanelViewModel | undefined {
         this.markAsSubmitted();
 
         if (this.filterForm.invalid) {
-            return null;
+            return;
         }
-
+        
         const formValue = this.filterForm.getRawValue();
         return new FilterPanelViewModel(formValue);
     }
