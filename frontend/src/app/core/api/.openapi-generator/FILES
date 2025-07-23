@@ -3,12 +3,14 @@ README.md
 api.base.service.ts
 api.module.ts
 api/api.ts
+api/category.service.ts
 api/default.service.ts
 api/photo.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/categoryGetResponse.ts
 model/dateRange.ts
 model/fileFormatEnum.ts
 model/hTTPValidationError.ts
