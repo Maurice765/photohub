@@ -1,6 +1,7 @@
 import hashlib
 import numpy as np
 import cv2
+from sklearn.cluster import KMeans
 from src.photo import schemas
 from src.photo import constants
 
@@ -54,3 +55,37 @@ def create_single_color_histogram(r: int, g: int, b: int) -> schemas.ColorHistog
         g_bins=color_to_hist(g),
         b_bins=color_to_hist(b)
     )
+
+def extract_dominant_colors(image_rgb: np.ndarray, k: int = 5):
+    # Umformen zu (N, 3) für Clustering
+    pixels = image_rgb.reshape((-1, 3))
+    pixels = np.float32(pixels)
+
+    # Anzahl einzigartiger Farben prüfen
+    unique_colors = np.unique(pixels, axis=0)
+    k = min(k, len(unique_colors))  # Clusteranzahl anpassen
+
+    if k == 0:
+        return []  # Bild ist leer oder fehlerhaft
+    elif k == 1:
+        color = unique_colors[0].astype(int)
+        return [{
+            "r": int(color[0]),
+            "g": int(color[1]),
+            "b": int(color[2]),
+            "percent": 100.0
+        }]
+
+    # KMeans Clustering
+    kmeans = KMeans(n_clusters=k, n_init=10)
+    labels = kmeans.fit_predict(pixels)
+    centers = np.round(kmeans.cluster_centers_).astype(int)
+
+    # Anteil berechnen
+    _, counts = np.unique(labels, return_counts=True)
+    percentages = counts / counts.sum()
+
+    return [
+        {"r": int(c[0]), "g": int(c[1]), "b": int(c[2]), "percent": round(float(p) * 100, 2)}
+        for c, p in zip(centers, percentages)
+    ]

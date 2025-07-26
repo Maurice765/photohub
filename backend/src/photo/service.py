@@ -1,3 +1,5 @@
+import syslog
+
 from fastapi import UploadFile
 from typing import Optional
 import oracledb
@@ -41,6 +43,15 @@ async def process_and_store_photo(file: UploadFile,
     # 4. Convert image to RGB and calculate color histograms
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     histogram = utils.calculate_color_histograms(image_rgb)
+
+    # 5. Create extract dominant Colors
+    try:
+       dominant_colors = utils.extract_dominant_colors(image_rgb, k=5)
+    except:
+       syslog.syslog("!!??!?!?")
+       print("An exception occurred")
+    finally:
+       syslog.syslog("......")
 
     # 5. Database Operations
     conn = get_connection()
@@ -99,6 +110,22 @@ async def process_and_store_photo(file: UploadFile,
             "g_bins": array_type.newobject(histogram.g_bins),
             "b_bins": array_type.newobject(histogram.b_bins),
         })
+
+        # # 5e. Insert into DOMINANT_COLOR table
+        # for color in dominant_colors:
+        #     cur.execute("""
+        #         INSERT INTO DOMINANT_COLOR (
+        #             photo_id, r, g, b, percentage
+        #         ) VALUES (
+        #             :photo_id, :r, :g, :b, :percentage
+        #         )
+        #     """, {
+        #         "photo_id": photo_id,
+        #         "r": color["r"],
+        #         "g": color["g"],
+        #         "b": color["b"],
+        #         "percent": color["percent"]
+        #     })
 
         conn.commit()
 
