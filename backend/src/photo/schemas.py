@@ -31,6 +31,7 @@ class DateRange(CustomModel):
 
 class PhotoSearchRequest(CustomModel):
     query: Optional[str] = None
+    category_id: Optional[int] = None
     rgbColor: Optional[RGBColor] = None
     minHeight: Optional[int] = None
     minWidth: Optional[int] = None
