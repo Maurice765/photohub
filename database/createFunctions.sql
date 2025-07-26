@@ -30,4 +30,22 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE FUNCTION euclidean_distance_dominant(
+    r1 IN NUMBER,
+    g1 IN NUMBER,
+    b1 IN NUMBER,
+    r2 IN NUMBER,
+    g2 IN NUMBER,
+    b2 IN NUMBER
+) RETURN NUMBER IS
+BEGIN
+    RETURN SQRT(
+        POWER(r1 - r2, 2) +
+        POWER(g1 - g2, 2) +
+        POWER(b1 - b2, 2)
+    );
+END;
+/
+
+
 

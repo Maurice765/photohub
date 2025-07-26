@@ -156,27 +156,66 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
             params["search"] = request.query
 
         # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
+        # if request.rgbColor and array_type:
+        #     joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
+        #     target = utils.create_single_color_histogram(
+        #         request.rgbColor.r,
+        #         request.rgbColor.g,
+        #         request.rgbColor.b
+        #     )
+        #     params.update({
+        #         "r_bins": array_type.newobject(target.r_bins),
+        #         "g_bins": array_type.newobject(target.g_bins),
+        #         "b_bins": array_type.newobject(target.b_bins),
+        #     })
+        #
+        #     score_components.append("""
+        #         (1 - LEAST(
+        #             euclidean_distance_rgb_hist(
+        #                 ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
+        #                 :r_bins, :g_bins, :b_bins
+        #             ) / 441.67, 1.0)
+        #         ) * 0.4
+        #     """)
+
         if request.rgbColor and array_type:
-            joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
-            target = utils.create_single_color_histogram(
-                request.rgbColor.r,
-                request.rgbColor.g,
-                request.rgbColor.b
-            )
+            # rmax = min(request.rgbColor.r + 20, 255)
+            # rmin = max(request.rgbColor.r - 20, 0)
+            #
+            # gmax = min(request.rgbColor.g + 20, 255)
+            # gmin = max(request.rgbColor.g - 20, 0)
+            #
+            # bmax = min(request.rgbColor.b + 20, 255)
+            # bmin = max(request.rgbColor.b - 20, 0)
+
+            joins.append("JOIN dominant_color dc ON dc.photo_id = p.id")
+
             params.update({
-                "r_bins": array_type.newobject(target.r_bins),
-                "g_bins": array_type.newobject(target.g_bins),
-                "b_bins": array_type.newobject(target.b_bins),
+                "r": request.rgbColor.r,
+                "g": request.rgbColor.g,
+                "b": request.rgbColor.b,
             })
 
             score_components.append("""
                 (1 - LEAST(
-                    euclidean_distance_rgb_hist(
-                        ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
-                        :r_bins, :g_bins, :b_bins
+                    euclidean_distance_dominant(
+                        dc.r, dc.g, dc.b,
+                        :r, :g, :b
                     ) / 441.67, 1.0)
                 ) * 0.4
             """)
+
+            # # ✅ richtige SQL-Syntax mit AND
+            # filters.append("dc.r BETWEEN :rmin AND :rmax")
+            # filters.append("dc.g BETWEEN :gmin AND :gmax")
+            # filters.append("dc.b BETWEEN :bmin AND :bmax")
+            #
+            # params["rmax"] = rmax
+            # params["rmin"] = rmin
+            # params["gmax"] = gmax
+            # params["gmin"] = gmin
+            # params["bmax"] = bmax
+            # params["bmin"] = bmin
 
         # Optional field boosts (binary score)
         if request.orientation:
