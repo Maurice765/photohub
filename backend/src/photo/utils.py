@@ -1,7 +1,6 @@
 import hashlib
 import numpy as np
 import cv2
-from sklearn.cluster import KMeans
 from src.photo import schemas
 from src.photo import constants
 
@@ -57,35 +56,51 @@ def create_single_color_histogram(r: int, g: int, b: int) -> schemas.ColorHistog
     )
 
 def extract_dominant_colors(image_rgb: np.ndarray, k: int = 5):
-    # Umformen zu (N, 3) für Clustering
-    pixels = image_rgb.reshape((-1, 3))
+    # Bild grob verkleinern für Speed (z.B. 100x100)
+    small_image = cv2.resize(image_rgb, (100, 100), interpolation=cv2.INTER_AREA)
+
+    # Bilddaten in 2D-Array umformen: (N, 3)
+    pixels = small_image.reshape((-1, 3))
     pixels = np.float32(pixels)
 
-    # Anzahl einzigartiger Farben prüfen
+    # Einzigartige Farben zählen
     unique_colors = np.unique(pixels, axis=0)
-    k = min(k, len(unique_colors))  # Clusteranzahl anpassen
+    k = min(k, len(unique_colors))  # Sicherheitscheck
 
     if k == 0:
-        return []  # Bild ist leer oder fehlerhaft
+        return []
     elif k == 1:
-        color = unique_colors[0].astype(int)
+        color = unique_colors[0]
         return [{
             "r": int(color[0]),
             "g": int(color[1]),
             "b": int(color[2]),
-            "percent": 100.0
+            "percentage": 100.0
         }]
 
-    # KMeans Clustering
-    kmeans = KMeans(n_clusters=k, n_init=10)
-    labels = kmeans.fit_predict(pixels)
-    centers = np.round(kmeans.cluster_centers_).astype(int)
+    # KMeans Parameter
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 50, 1.0)
+    flags = cv2.KMEANS_PP_CENTERS
 
-    # Anteil berechnen
-    _, counts = np.unique(labels, return_counts=True)
-    percentages = counts / counts.sum()
+    compactness, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, flags)
 
-    return [
-        {"r": int(c[0]), "g": int(c[1]), "b": int(c[2]), "percent": round(float(p) * 100, 2)}
-        for c, p in zip(centers, percentages)
-    ]
+    # Rundung + Umwandlung
+    centers = np.round(centers).astype(int)
+    labels = labels.flatten()
+
+    # Prozentualer Anteil
+    counts = np.bincount(labels)
+    total = counts.sum()
+    percentages = (counts / total) * 100
+
+    dominant_colors = []
+    for i in range(k):
+        color = centers[i]
+        dominant_colors.append({
+            "r": int(color[0]),
+            "g": int(color[1]),
+            "b": int(color[2]),
+            "percentage": round(float(percentages[i]), 2)
+        })
+
+    return dominant_colors
