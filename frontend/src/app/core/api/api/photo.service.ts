@@ -169,6 +169,7 @@ export class PhotoApiService extends BaseService {
      * @param title 
      * @param visibility 
      * @param file 
+     * @param categoryId 
      * @param description 
      * @param location 
      * @param captureDate 
@@ -176,10 +177,10 @@ export class PhotoApiService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoUploadResponse>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoUploadResponse>>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoUploadResponse>>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoUploadResponse>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoUploadResponse>>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoUploadResponse>>;
+    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (title === null || title === undefined) {
             throw new Error('Required parameter title was null or undefined when calling uploadPhoto.');
         }
@@ -224,6 +225,9 @@ export class PhotoApiService extends BaseService {
 
         if (title !== undefined) {
             localVarFormParams = localVarFormParams.append('title', <any>title) as any || localVarFormParams;
+        }
+        if (categoryId !== undefined) {
+            localVarFormParams = localVarFormParams.append('category_id', <any>categoryId) as any || localVarFormParams;
         }
         if (description !== undefined) {
             localVarFormParams = localVarFormParams.append('description', <any>description) as any || localVarFormParams;

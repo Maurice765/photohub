@@ -15,6 +15,7 @@ import { RGBColor } from './rGBColor';
 
 export interface PhotoSearchRequest { 
     query?: string | null;
+    category_id?: number | null;
     rgbColor?: RGBColor | null;
     minHeight?: number | null;
     minWidth?: number | null;
