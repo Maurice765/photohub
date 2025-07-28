@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
-import { FileFormatClientEnum } from '@core/clients/enums/file-format.client-enum';
-import { OrientationClientEnum } from '@core/clients/enums/orientation.client-enum';
-import { RGBColor } from '@shared/models/rgbColor.interface';
+import { FileFormatClientEnum } from '@core/clientEnums/file-format.client-enum';
+import { OrientationClientEnum } from '@core/clientEnums/orientation.client-enum';
+import { RGBColor } from '@shared/models/rgb-color.interface';
 
 export interface FilterPanelFormViewModel {
     rgbColor: FormControl<RGBColor | null>;

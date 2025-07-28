@@ -1,7 +1,7 @@
-import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
+import { OrientationClientEnum } from "@core/clientEnums/orientation.client-enum";
 import { FilterPanelFormViewModel } from "./filter-panel-form.view-model";
 import { RGBColorViewModel } from "./rgb-color.view-model";
-import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
+import { FileFormatClientEnum } from "@core/clientEnums/file-format.client-enum";
 import { FormGroupValue } from "@shared/types/form-group-value.type";
 
 type FilterPanelFormValue = FormGroupValue<FilterPanelFormViewModel>;

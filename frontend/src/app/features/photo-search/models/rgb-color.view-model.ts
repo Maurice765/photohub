@@ -1,4 +1,4 @@
-import { RGBColor } from "@shared/models/rgbColor.interface";
+import { RGBColor } from "@shared/models/rgb-color.interface";
 
 export class RGBColorViewModel implements RGBColor {
     public r: number;

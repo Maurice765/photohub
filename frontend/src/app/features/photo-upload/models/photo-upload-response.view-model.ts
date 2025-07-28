@@ -1,4 +1,4 @@
-import { PhotoUploadResponseClientModel } from "@core/clients/models/photo/photo-upload-response.client-model";
+import { PhotoUploadResponseClientModel } from "@core/clientModels/photo/photo-upload-response.client-model";
 
 export class PhotoUploadResponseViewModel {
     public contentId: number;
