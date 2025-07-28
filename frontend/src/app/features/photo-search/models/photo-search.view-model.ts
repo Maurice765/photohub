@@ -22,7 +22,7 @@ export class PhotoSearchViewModel {
 
     constructor(categoryId: number, query: string, filter?: FilterPanelViewModel) {
         this.query = query?.trim() ? query : undefined;
-        this.categoryId = categoryId === -1 ? categoryId : undefined;
+        this.categoryId = categoryId === -1 ? undefined : categoryId;
         if (filter) {
             this.rgbColor = filter.rgbColor;
             this.minHeight = filter.minHeight;

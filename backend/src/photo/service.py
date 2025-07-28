@@ -161,7 +161,7 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
         # Optional field boosts (binary score)
 
         if request.category_id:
-            filters.append("p.category_id = :category_id")
+            filters.append("c.category_id = :category_id")
             params["category_id"] = request.category_id
             score_components.append("0.1")
 
