@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { MenubarModule } from 'primeng/menubar';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
@@ -11,6 +11,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SelectModule } from 'primeng/select';
 import { Router } from "@angular/router";
 import { SearchBarService } from "./services/search-bar.service";
+import { CategoryService } from "@shared/services/category.service";
+import { SelectorItem } from "@shared/models/selector-item.interface";
 
 @Component({
     selector: "header",
@@ -30,17 +32,21 @@ import { SearchBarService } from "./services/search-bar.service";
     styleUrls: ["./header.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
     private router: Router = inject(Router);
+    private categoryService = inject(CategoryService);
     private searchBarService = inject(SearchBarService);
 
+    ngOnInit(): void {
+        this.categoryService.getCategorySelectorItems().subscribe(categories => {
+            this.categories.push(...categories);
+        });
+    }
 
     public query: string = '';
-    public selectedCategory: string = 'all';
-    public categories = [
-        { name: 'All Categories', key: 'all' },
-        { name: 'Nature', key: 'nature' },
-        { name: 'Architecture', key: 'architecture' },
+    public selectedCategoryId: number = -1;
+    public categories: SelectorItem[] = [
+        { name: 'All Categories', key: -1 }
     ];
 
     public navigateToFeed(): void {
@@ -52,7 +58,7 @@ export class HeaderComponent {
     }
 
     public onSearch(): void {
-        this.searchBarService.triggerSearch(this.query, this.selectedCategory);
+        this.searchBarService.triggerSearch(this.query, this.selectedCategoryId);
 
         this.router.navigate(['/photo-search'], {
             skipLocationChange: false,

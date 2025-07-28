@@ -39,14 +39,14 @@ export class PhotoSearchPage {
         .pipe(takeUntilDestroyed())
         .subscribe((search: SearchBarViewModel | null) => {
             if (search) {
-                this.searchPhotos(search.query, search.category);
+                this.searchPhotos(search.categoryId, search.query);
             }
         });
     }
 
-    public searchPhotos(query?: string, category?: string): void {
+    public searchPhotos(categoryId: number, query: string): void {
         const filterViewModel = this.filterPanelComponent()?.getFilterPanelViewModel();
-        const photoSearchViewModel = new PhotoSearchViewModel(filterViewModel, category, query);
+        const photoSearchViewModel = new PhotoSearchViewModel(categoryId, query, filterViewModel);
 
         this.photoSearchService.searchPhotos(photoSearchViewModel).subscribe({
             next: (result: PhotoGridViewModel) => {
