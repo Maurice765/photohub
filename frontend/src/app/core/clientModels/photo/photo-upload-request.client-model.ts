@@ -1,10 +1,11 @@
-import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
+import { VisibilityClientEnum } from "@core/clientEnums/visibility.client-enum";
 import { PhotoUploadViewModel } from "@features/photo-upload/models/photo-upload.view-model";
 
 export class PhotoUploadRequestClientModel {
     public title: string;
     public visibility: VisibilityClientEnum;
     public file: Blob;
+    public categoryId?: number;
     public description?: string;
     public location?: string;
     public captureDate?: string;
@@ -14,6 +15,7 @@ export class PhotoUploadRequestClientModel {
         this.file = viewModel.file;
         this.title = viewModel.title;
         this.visibility = viewModel.visibility;
+        this.categoryId = viewModel.categoryId;
         this.description = viewModel.description;
         this.location = viewModel.location;
         this.cameraModel = viewModel.cameraModel;

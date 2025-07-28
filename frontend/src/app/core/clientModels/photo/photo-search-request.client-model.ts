@@ -1,5 +1,5 @@
-import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
-import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
+import { FileFormatClientEnum } from "@core/clientEnums/file-format.client-enum";
+import { OrientationClientEnum } from "@core/clientEnums/orientation.client-enum";
 import { DateRangeClientModel } from "./date-range.client-model";
 import { RGBColorClientModel } from "./rgb-color.client-model";
 import { PhotoSearchViewModel } from "@features/photo-search/models/photo-search.view-model";
@@ -7,6 +7,7 @@ import { PhotoSearchRequest } from "@core/api";
 
 export class PhotoSearchRequestClientModel { 
     public query?: string;
+    public categoryId?: number;
     public rgbColor?: RGBColorClientModel;
     public minHeight?: number;
     public minWidth?: number;
@@ -21,6 +22,7 @@ export class PhotoSearchRequestClientModel {
 
     constructor(viewModel: PhotoSearchViewModel) {
         this.query = viewModel.query;
+        this.categoryId = viewModel.categoryId;
         if (viewModel.rgbColor) {
             this.rgbColor = new RGBColorClientModel(viewModel.rgbColor);
         }
@@ -43,6 +45,7 @@ export class PhotoSearchRequestClientModel {
     public toApiModel(): PhotoSearchRequest {
         return {
             query: this.query,
+            category_id: this.categoryId,
             rgbColor: this.rgbColor?.toApiModel(),
             minHeight: this.minHeight,
             minWidth: this.minWidth,

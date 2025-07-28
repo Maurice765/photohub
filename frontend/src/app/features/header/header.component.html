@@ -6,7 +6,13 @@
             <p-button icon="pi pi-home" label="Feed" variant="text" severity="secondary" (onClick)="navigateToFeed()"/>
             <p-button icon="pi pi-star" label="Explore" variant="text" severity="secondary" (onClick)="navigateToExplore()"/>
             <p-inputgroup>
-                <p-select [(ngModel)]="selectedCategory" variant="filled" [options]="categories" optionLabel="name" optionValue="key" />
+                <p-select 
+                    [(ngModel)]="selectedCategoryId" 
+                    variant="filled" 
+                    [options]="categories" 
+                    optionLabel="name" 
+                    optionValue="key" 
+                />
                 <input 
                     pInputText 
                     type="text" 

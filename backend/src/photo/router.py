@@ -15,6 +15,7 @@ router = APIRouter()
 )
 async def upload_photo(
     title: str = Form(..., max_length=255),
+    category_id: Optional[int] = Form(None),
     description: Optional[str] = Form(None, max_length=1000),
     visibility: constants.VisibilityEnum = Form(...),
     location: Optional[str] = Form(None, max_length=255),
@@ -29,6 +30,7 @@ async def upload_photo(
 
     return await service.process_and_store_photo(
         file=file,
+        category_id=category_id,
         title=title,
         description=description,
         visibility=visibility,

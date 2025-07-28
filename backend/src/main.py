@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from src.photo.router import router as photo_router
+from src.category.router import router as category_router
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import settings
 
@@ -23,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(photo_router, prefix="/photo", tags=["photo"])
+app.include_router(category_router, prefix="/category", tags=["category"])
 
 @app.get("/")
 async def read_root():

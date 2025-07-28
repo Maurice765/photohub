@@ -11,5 +11,5 @@ INSERT INTO "USER" (
     'password',
     'Test',
     'User',
-    'Dies ist ein Testnutzer für das System.'
+    'This is a test user for the Photohub application.'
 );

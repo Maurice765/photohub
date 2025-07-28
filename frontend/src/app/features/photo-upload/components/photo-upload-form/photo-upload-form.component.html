@@ -1,31 +1,35 @@
 <form [formGroup]="uploadForm">
-    <div class="grid grid-cols-2 gap-8">
+    <div class="grid grid-cols-2 gap-x-8 gap-y-6">
 
-        <div class="col-span-2 row-span-3 row-start-1">
-            <file-upload  formControlName="file" />
+        <div class="col-span-2">
+            <file-upload formControlName="file" />
         </div>
 
-        <div class="col-span-2 row-span-1 row-start-4">
+        <div class="col-span-2">
             <text-input formControlName="title" label="Title" />
         </div>
 
-        <div class="col-span-2 row-span-3 row-start-5">
+        <div class="col-span-2">
             <text-area formControlName="description" label="Description" [rows]="4" />
         </div>
 
-        <div class="col-start-1 row-start-8">
+        <div class="col-span-2">
+            <category-selector formControlName="categoryId" />
+        </div>
+
+        <div>
             <date-picker formControlName="captureDate" selectionMode="single" label="Capture Date" />
         </div>
 
-        <div class="col-start-2 row-start-8">
+        <div>
             <visibility-selector formControlName="visibility" />
         </div>
 
-        <div class="col-start-1 row-start-9">
+        <div>
             <location-selector formControlName="location" />
         </div>
 
-        <div class="col-start-2 row-start-9">
+        <div>
             <camera-model-selector formControlName="cameraModel" />
         </div>
 

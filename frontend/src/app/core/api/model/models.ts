@@ -1,3 +1,4 @@
+export * from './categoryGetResponse';
 export * from './dateRange';
 export * from './fileFormatEnum';
 export * from './hTTPValidationError';

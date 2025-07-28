@@ -29,5 +29,3 @@ BEGIN
            euclidean_distance(b1, b2);
 END;
 /
-
-

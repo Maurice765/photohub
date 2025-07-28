@@ -11,6 +11,7 @@ import cv2
 
 async def process_and_store_photo(file: UploadFile,
     title: str,
+    category_id: Optional[int],
     description: Optional[str],
     visibility: str,
     location: Optional[str],
@@ -56,11 +57,11 @@ async def process_and_store_photo(file: UploadFile,
         # 5b. Insert into CONTENT table
         content_id_var = cur.var(int)
         cur.execute("""
-            INSERT INTO CONTENT (user_id, title, description, visibility, content_type) 
-            VALUES (:user_id, :title, :description, :visibility, 'PHOTO') 
+            INSERT INTO CONTENT (user_id, title, category_id, description, visibility, content_type) 
+            VALUES (:user_id, :title, :category_id, :description, :visibility, 'PHOTO') 
             RETURNING id INTO :content_id
         """, {
-            "user_id": 1, "title": title, "description": description, "visibility": visibility,
+            "user_id": 1, "title": title, "category_id": category_id, "description": description, "visibility": visibility,
             "content_id": content_id_var
         })
         content_id = content_id_var.getvalue()[0]
@@ -158,6 +159,12 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
             """)
 
         # Optional field boosts (binary score)
+
+        if request.category_id:
+            filters.append("c.category_id = :category_id")
+            params["category_id"] = request.category_id
+            score_components.append("0.1")
+
         if request.orientation:
             filters.append("p.orientation = :orientation")
             params["orientation"] = request.orientation.value

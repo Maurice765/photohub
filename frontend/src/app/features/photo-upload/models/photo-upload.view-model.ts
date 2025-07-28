@@ -1,5 +1,5 @@
-import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
-import { PhotoUploadRequestClientModel } from "@core/clients/models/photo/photo-upload-request.client-model";
+import { VisibilityClientEnum } from "@core/clientEnums/visibility.client-enum";
+import { PhotoUploadRequestClientModel } from "@core/clientModels/photo/photo-upload-request.client-model";
 import { PhotoUploadFormViewModel } from "./photo-upload-form.view-model";
 import { FormGroupValue } from "@shared/types/form-group-value.type";
 
@@ -9,6 +9,7 @@ export class PhotoUploadViewModel {
     public file: File;
     public title: string;
     public visibility: VisibilityClientEnum;
+    public categoryId?: number;
     public description?: string;
     public location?: string;
     public cameraModel?: string;
@@ -22,6 +23,7 @@ export class PhotoUploadViewModel {
         this.file = form.file;
         this.title = form.title;
         this.visibility = form.visibility;
+        this.categoryId = form.categoryId ?? undefined;
         this.description = form?.description ?? undefined;
         this.location = form?.location ?? undefined;
         this.cameraModel = form?.cameraModel ?? undefined;

@@ -1,16 +1,15 @@
-import { ChangeDetectionStrategy, Component, forwardRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, forwardRef, inject, input, OnInit } from "@angular/core";
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { VISIBILITIES } from "@shared/constants/visibilities.const";
+import { SelectorItem } from "@shared/models/selector-item.interface";
+import { CategoryService } from "@shared/services/category.service";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
 import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
-import { VisibilityClientEnum } from "@core/clientEnums/visibility.client-enum";
-import { SelectorItem } from "@shared/models/selector-item.interface";
 
 @Component({
-    selector: "visibility-selector",
+    selector: "category-selector",
     imports: [
         FormsModule,
         InputGroupModule,
@@ -22,31 +21,41 @@ import { SelectorItem } from "@shared/models/selector-item.interface";
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         multi: true,
-        useExisting: forwardRef(() => VisibilitySelectorComponent),
+        useExisting: forwardRef(() => CategorySelectorComponent),
     }],
-    templateUrl: "./visibility-selector.component.html",
-    styleUrls: ["./visibility-selector.component.css"],
+    templateUrl: "./category-selector.component.html",
+    styleUrls: ["./category-selector.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VisibilitySelectorComponent implements ControlValueAccessor {
-    public visibilities: SelectorItem[] = VISIBILITIES;
-    public selectedVisibility: VisibilityClientEnum | null = null;
+export class CategorySelectorComponent implements ControlValueAccessor, OnInit {
+    private categoryService = inject(CategoryService);
+
+    public categories: SelectorItem[] = [];
+    public selectedCategory: number | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
     public isInvalid: boolean = false;
 
-    public onChange = (visibility: VisibilityClientEnum | null) => { };
+    public onChange = (category: number | null) => { };
     public onTouched = () => { };
 
-    public onVisibilityChange(event: SelectChangeEvent): void {
+    public ngOnInit(): void { 
+        this.categoryService.getCategorySelectorItems().subscribe(
+            (categories: SelectorItem[]) => {
+                this.categories = categories;
+            }
+        );
+    }
+
+    public onCategoryChange(event: SelectChangeEvent): void {
         this.markAsTouched();
         if (!this.disabled) {
-            this.onChange(this.selectedVisibility);
+            this.onChange(this.selectedCategory);
         }
     }
 
-    public writeValue(visibility: VisibilityClientEnum | null): void {
-        this.selectedVisibility = visibility;
+    public writeValue(category: number | null): void {
+        this.selectedCategory = category;
     }
 
     public registerOnChange(onChange: any): void {

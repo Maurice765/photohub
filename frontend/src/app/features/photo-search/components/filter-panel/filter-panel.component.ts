@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
-import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
+import { FileFormatClientEnum } from "@core/clientEnums/file-format.client-enum";
+import { OrientationClientEnum } from "@core/clientEnums/orientation.client-enum";
 import { FilterPanelFormViewModel } from "@features/photo-search/models/filter-panel-form.view-model";
 import { FilterPanelViewModel } from "@features/photo-search/models/filter-panel.view-model";
 import { CameraModelSelectorComponent } from "@shared/components/camera-model-selector/camera-model-selector.component";
@@ -10,7 +10,7 @@ import { LocationSelectorComponent } from "@shared/components/location-selector/
 import { RgbColorPickerComponent } from "@shared/components/rgb-color-picker/rgb-color-picker.component";
 import { FILE_FORMATS } from "@shared/constants/file-formats.const";
 import { ORIENTATIONS } from "@shared/constants/orientations.const";
-import { RGBColor } from "@shared/models/rgbColor.interface";
+import { RGBColor } from "@shared/models/rgb-color.interface";
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';

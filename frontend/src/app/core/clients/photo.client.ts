@@ -1,10 +1,10 @@
 import { inject, Injectable } from "@angular/core";
-import { PhotoApiService, PhotoUploadResponse, PhotoSearchRequest, PhotoSearchResponse } from "@core/api";
+import { PhotoApiService, PhotoSearchResponse, PhotoUploadResponse } from "@core/api";
 import { map, Observable } from "rxjs";
-import { PhotoSearchResponseClientModel } from "./models/photo/photo-search-response.client-model";
-import { PhotoUploadRequestClientModel } from "./models/photo/photo-upload-request.client-model";
-import { PhotoUploadResponseClientModel } from "./models/photo/photo-upload-response.client-model";
-import { PhotoSearchRequestClientModel } from "./models/photo/photo-search-request.client-model";
+import { PhotoSearchRequestClientModel } from "../clientModels/photo/photo-search-request.client-model";
+import { PhotoSearchResponseClientModel } from "../clientModels/photo/photo-search-response.client-model";
+import { PhotoUploadRequestClientModel } from "../clientModels/photo/photo-upload-request.client-model";
+import { PhotoUploadResponseClientModel } from "../clientModels/photo/photo-upload-response.client-model";
 
 @Injectable({
     providedIn: 'root'
@@ -17,8 +17,7 @@ export class PhotoClient {
         
         return this.apiService.searchByColor(apiModel).pipe(
             map((response: PhotoSearchResponse) => {
-                const clientModel = new PhotoSearchResponseClientModel(response);
-                return clientModel;
+                return new PhotoSearchResponseClientModel(response);
             })
         );
     }
@@ -28,14 +27,14 @@ export class PhotoClient {
             requestModel.title,
             requestModel.visibility,
             requestModel.file,
+            requestModel.categoryId,
             requestModel.description,
             requestModel.location,
             requestModel.captureDate,
             requestModel.cameraModel
         ).pipe(
             map((response: PhotoUploadResponse) => {
-                const clientModel = new PhotoUploadResponseClientModel(response);
-                return clientModel;
+                return new PhotoUploadResponseClientModel(response);
             })
         );  
     }
