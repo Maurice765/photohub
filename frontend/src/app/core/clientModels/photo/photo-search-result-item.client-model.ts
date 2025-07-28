@@ -1,9 +1,9 @@
 import { PhotoSearchResultItem } from "@core/api";
 
 export class PhotoSearchResultItemClientModel {
-    photoId: number;
-    score: number;
-    previewUrl: string;
+    public photoId: number;
+    public score: number;
+    public previewUrl: string;
 
     constructor(apiModel: PhotoSearchResultItem) {
         this.photoId = apiModel.photo_id;
