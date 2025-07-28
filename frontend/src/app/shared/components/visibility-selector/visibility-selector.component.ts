@@ -6,7 +6,8 @@ import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
 import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
-import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum";
+import { VisibilityClientEnum } from "@core/clientEnums/visibility.client-enum";
+import { SelectorItem } from "@shared/models/selector-item.interface";
 
 @Component({
     selector: "visibility-selector",
@@ -28,7 +29,7 @@ import { VisibilityClientEnum } from "@core/clients/enums/visibility.client-enum
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisibilitySelectorComponent implements ControlValueAccessor {
-    public visibilities = VISIBILITIES;
+    public visibilities: SelectorItem[] = VISIBILITIES;
     public selectedVisibility: VisibilityClientEnum | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;

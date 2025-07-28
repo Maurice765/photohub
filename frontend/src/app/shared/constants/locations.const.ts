@@ -1,4 +1,6 @@
-export const LOCATIONS = [
+import { SelectorItem } from "@shared/models/selector-item.interface";
+
+export const LOCATIONS: SelectorItem[] = [
     { name: 'Australia', key: 'AU' },
     { name: 'Brazil', key: 'BR' },
     { name: 'China', key: 'CN' },

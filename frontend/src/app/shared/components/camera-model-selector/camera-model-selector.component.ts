@@ -5,8 +5,8 @@ import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
 import { CAMERA_MODELS } from '@shared/constants/camera-models.const';
-import { MessageModule } from "primeng/message";
 import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
+import { SelectorItem } from "@shared/models/selector-item.interface";
 
 @Component({
     selector: "camera-model-selector",
@@ -28,7 +28,7 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CameraModelSelectorComponent implements ControlValueAccessor {
-    public cameraModels = CAMERA_MODELS;
+    public cameraModels: SelectorItem[] = CAMERA_MODELS;
     public selectedCameraModel: string | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
