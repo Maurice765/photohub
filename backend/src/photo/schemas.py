@@ -2,10 +2,10 @@ from datetime import datetime as Datetime
 import io
 from fastapi.responses import StreamingResponse
 from typing_extensions import Annotated
-from pydantic import Field, ValidationError, model_validator
+from pydantic import Field, model_validator
 from src.models import CustomModel
 from typing import List, Optional
-from src.photo.constants import OrientationEnum, FileFormatEnum
+from src.photo.constants import OrientationEnum, FileFormatEnum, VisibilityEnum
 
 class RGBColor(CustomModel):
     r: Annotated[int, Field(ge=0, le=255)]
@@ -67,6 +67,24 @@ class PhotoSearchResultItem(CustomModel):
 
 class PhotoSearchResponse(CustomModel):
     results: List[PhotoSearchResultItem]
+
+class PhotoGetResponse(CustomModel):
+    photo_id: int
+    user_id: int
+    title: str
+    description: Optional[str] = None
+    category_id: Optional[int] = None
+    location: Optional[str] = None
+    camera_model: Optional[str] = None
+    capture_date: Optional[Datetime] = None
+    upload_date: Datetime
+    visibility: VisibilityEnum
+    orientation: OrientationEnum
+    file_format: FileFormatEnum
+    file_size: int
+    views: int
+    width: int
+    height: int
 
 class ImageStreamResponse(StreamingResponse):
     def __init__(self, content: bytes, media_type: str):

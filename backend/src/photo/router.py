@@ -67,10 +67,18 @@ async def search_by_photo(
     """
     return await service.search_by_photo(file)
 
+@router.get(
+    "/{photo_id}",
+    response_model=schemas.PhotoGetResponse
+)
+async def get_photo(photo_id: int):
+    """
+    Returns detailed information about a specific photo.
+    """
+    return await service.get_photo(photo_id)
 
 @router.get(
-    "/preview/{photo_id}",
-    response_model=schemas.ImageStreamResponse
+    "/preview/{photo_id}"
 )
 async def get_image_preview(photo_id: int):
     """
@@ -79,8 +87,7 @@ async def get_image_preview(photo_id: int):
     return await service.get_photo_preview(photo_id)
 
 @router.get(
-    "/image/{photo_id}",
-    response_model=schemas.ImageStreamResponse
+    "/image/{photo_id}"
 )
 async def get_image(photo_id: int):
     """

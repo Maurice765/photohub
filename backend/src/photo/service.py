@@ -307,6 +307,49 @@ async def search_by_photo(file: UploadFile) -> schemas.PhotoSearchResponse:
         cur.close()
         conn.close()
 
+async def get_photo(photo_id: int) -> schemas.PhotoGetResponse:
+    """
+    Retrieves detailed information about a specific photo.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT p.id, c.title, c.description, c.visibility, 
+                   p.file_type, p.file_size, p.location, 
+                   p.capture_date, p.camera_model, 
+                   p.width, p.height, p.orientation,
+                   c.create_date, c.user_id, c.views
+            FROM photo p
+            JOIN content c ON p.content_id = c.id
+            WHERE p.id = :id
+        """, {"id": photo_id})
+
+        result = cur.fetchone()
+        if result is None:
+            raise exceptions.PhotoNotFound()
+
+        return schemas.PhotoGetResponse(
+            photo_id=result[0],
+            title=result[1],
+            description=result[2],
+            visibility=result[3],
+            file_format=result[4].replace("image/", ""),
+            file_size=result[5],
+            location=result[6],
+            capture_date=result[7],
+            camera_model=result[8],
+            width=result[9],
+            height=result[10],
+            orientation=result[11],
+            upload_date=result[12],
+            user_id=result[13],
+            views=result[14]
+        )
+    finally:
+        cur.close()
+        conn.close()
+
 async def get_photo_preview(photo_id: int) -> schemas.ImageStreamResponse:
     """
     Retrieves photo preview data and prepares a streaming response.
