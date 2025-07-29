@@ -307,10 +307,30 @@ async def search_by_photo(file: UploadFile) -> schemas.PhotoSearchResponse:
         cur.close()
         conn.close()
 
+async def get_photo_preview(photo_id: int) -> schemas.ImageStreamResponse:
+    """
+    Retrieves photo preview data and prepares a streaming response.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT image, file_type FROM PHOTO WHERE id = :id", {"id": photo_id})
+        result = cur.fetchone()
+        if result is None:
+            raise exceptions.PhotoNotFound()
+        
+        image_blob, file_type = result
+        data = image_blob.read()
+        media_type = file_type if file_type else "application/octet-stream"
+        
+        return schemas.ImageStreamResponse(content=data, media_type=media_type)
+    finally:
+        cur.close()
+        conn.close()
     
 async def get_photo_image(photo_id: int) -> schemas.ImageStreamResponse:
     """
-    Retrieves photo data and prepares a streaming response.
+    Retrieves photo image data and prepares a streaming response.
     """
     conn = get_connection()
     cur = conn.cursor()
