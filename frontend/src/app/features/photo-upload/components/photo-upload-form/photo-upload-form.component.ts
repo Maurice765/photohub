@@ -10,7 +10,7 @@ import { LocationSelectorComponent } from "@shared/components/location-selector/
 import { TextAreaComponent } from "@shared/components/text-area/text-area.component";
 import { TextInputComponent } from "@shared/components/text-input/text-input.component";
 import { VisibilitySelectorComponent } from "@shared/components/visibility-selector/visibility-selector.component";
-import * as exifr from 'exifr';
+import { parse } from 'exifr';
 
 @Component({
     selector: "photo-upload-form",
@@ -58,7 +58,7 @@ export class PhotoUploadFormComponent {
 
     private async extractMetadata(file: File): Promise<void> {
         try {
-            const exif = await exifr.parse(file);
+            const exif = await parse(file);
             const cameraModel = exif?.Model;
             const captureDate = exif?.DateTimeOriginal;
             if (cameraModel) {
