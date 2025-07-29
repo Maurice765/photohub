@@ -10,6 +10,7 @@ import { LocationSelectorComponent } from "@shared/components/location-selector/
 import { TextAreaComponent } from "@shared/components/text-area/text-area.component";
 import { TextInputComponent } from "@shared/components/text-input/text-input.component";
 import { VisibilitySelectorComponent } from "@shared/components/visibility-selector/visibility-selector.component";
+import { parse } from 'exifr';
 
 @Component({
     selector: "photo-upload-form",
@@ -35,7 +36,7 @@ export class PhotoUploadFormComponent {
     public uploadForm = new FormGroup<PhotoUploadFormViewModel>({
         file: new FormControl<File | null>(null, Validators.required),
         title: new FormControl<string | null>(null, { validators: [Validators.required, Validators.maxLength(255)] }),
-        visibility: new FormControl<VisibilityClientEnum | null>(null, Validators.required),
+        visibility: new FormControl<VisibilityClientEnum | null>(VisibilityClientEnum.Public, Validators.required),
         categoryId: new FormControl<number | null>(null),
         description: new FormControl<string | null>(null, Validators.maxLength(255)),
         location: new FormControl<string | null>(null, Validators.maxLength(255)),
@@ -47,4 +48,27 @@ export class PhotoUploadFormComponent {
         this.formSubmitted.set(true);
         this.uploadForm.markAllAsTouched();
     }
-}   
+
+    public onFileSelected(): void {
+        const file = this.uploadForm.get('file')?.value;
+        if (file) {
+            this.extractMetadata(file);
+        }
+    }
+
+    private async extractMetadata(file: File): Promise<void> {
+        try {
+            const exif = await parse(file);
+            const cameraModel = exif?.Model;
+            const captureDate = exif?.DateTimeOriginal;
+            if (cameraModel) {
+                this.uploadForm.get('cameraModel')?.setValue(cameraModel);
+            }
+            if (captureDate) {
+                this.uploadForm.get('captureDate')?.setValue(new Date(captureDate));
+            }
+        } catch (error) { 
+            console.warn('Failed to extract EXIF metadata:', error);
+        }
+    }
+}
