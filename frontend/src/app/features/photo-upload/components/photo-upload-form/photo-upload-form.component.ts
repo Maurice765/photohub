@@ -52,18 +52,15 @@ export class PhotoUploadFormComponent {
     public onFileSelected(): void {
         const file = this.uploadForm.get('file')?.value;
         if (file) {
-            this.extractMetadata();
+            this.extractMetadata(file);
         }
     }
 
-    private async extractMetadata(): Promise<void> {
-        const file = this.uploadForm.get('file')?.value;
-        if (!file) return;
-
+    private async extractMetadata(file: File): Promise<void> {
         try {
             const exif = await exifr.parse(file);
-            let cameraModel = exif?.Model;
-            let captureDate = exif?.DateTimeOriginal;
+            const cameraModel = exif?.Model;
+            const captureDate = exif?.DateTimeOriginal;
             if (cameraModel) {
                 this.uploadForm.get('cameraModel')?.setValue(cameraModel);
             }
