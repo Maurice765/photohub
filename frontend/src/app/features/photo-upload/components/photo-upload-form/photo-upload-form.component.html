@@ -2,7 +2,7 @@
     <div class="grid grid-cols-2 gap-x-8 gap-y-6">
 
         <div class="col-span-2">
-            <file-upload formControlName="file" />
+            <file-upload formControlName="file" (onFileSelected)="onFileSelected()" />
         </div>
 
         <div class="col-span-2">
