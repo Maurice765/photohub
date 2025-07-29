@@ -7,7 +7,7 @@ export const routes: Routes = [
         import('./features/feed/feed.routes').then(m => m.FEED_ROUTES),
     },
     {
-        path: 'photo-search',
+        path: 'search',
         loadChildren: () =>
         import('./features/photo-search/photo-search.routes').then(m => m.PHOTO_SEARCH_ROUTES),
     },
