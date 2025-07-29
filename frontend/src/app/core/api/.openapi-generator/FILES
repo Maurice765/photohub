@@ -16,6 +16,7 @@ model/fileFormatEnum.ts
 model/hTTPValidationError.ts
 model/models.ts
 model/orientationEnum.ts
+model/photoGetResponse.ts
 model/photoSearchRequest.ts
 model/photoSearchResponse.ts
 model/photoSearchResultItem.ts
