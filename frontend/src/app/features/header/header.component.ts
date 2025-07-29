@@ -54,13 +54,13 @@ export class HeaderComponent implements OnInit {
     }
 
     public navigateToExplore(): void {
-        this.router.navigate(['/explore']);
+        this.router.navigate(['/search/by-photo']);
     }
 
     public onSearch(): void {
         this.searchBarService.triggerSearch(this.query, this.selectedCategoryId);
 
-        this.router.navigate(['/photo-search'], {
+        this.router.navigate(['/search/photo'], {
             skipLocationChange: false,
         });
     }

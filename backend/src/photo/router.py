@@ -13,7 +13,7 @@ router = APIRouter()
     "/upload", 
     response_model=schemas.PhotoUploadResponse 
 )
-async def upload_photo(
+async def upload(
     title: str = Form(..., max_length=255),
     category_id: Optional[int] = Form(None),
     description: Optional[str] = Form(None, max_length=1000),
@@ -21,7 +21,7 @@ async def upload_photo(
     location: Optional[str] = Form(None, max_length=255),
     capture_date: Optional[datetime] = Form(None),
     camera_model: Optional[str] = Form(None, max_length=255),
-    file: UploadFile = Depends(dependencies.validate_photo_upload)
+    file: UploadFile = Depends(dependencies.validate_photo)
 ):
     """
     Uploads a photo, processes it to generate a color histogram,
@@ -44,21 +44,35 @@ async def upload_photo(
     "/search",
     response_model=schemas.PhotoSearchResponse
 )
-async def search_by_color(
+async def search(
     request: schemas.PhotoSearchRequest
 ):
     """
     Searches for photos that are most similar to a given RGB color
     by comparing color histograms.
     """
-    return service.search_photos(request)
+    return await service.search_photos(request)
+
+
+@router.post(
+    "/searchByPhoto",
+    response_model=schemas.PhotoSearchResponse
+)
+async def search_by_photo(
+    file: UploadFile = Depends(dependencies.validate_photo)
+):
+    """
+    Searches for photos that are most similar to a given photo
+    by comparing color histograms.
+    """
+    return await service.search_by_photo(file)
 
 
 @router.get(
     "/preview/{photo_id}"
 )
-async def get_photo_image(photo_id: int):
+async def get_image_preview(photo_id: int):
     """
     Returns the raw image data for a specific photo.
     """
-    return service.get_photo_image(photo_id)
+    return await service.get_photo_image(photo_id)

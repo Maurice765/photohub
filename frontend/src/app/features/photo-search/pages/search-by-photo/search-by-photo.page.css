@@ -1,0 +1,9 @@
+.upload-container {
+    padding: 20px;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}

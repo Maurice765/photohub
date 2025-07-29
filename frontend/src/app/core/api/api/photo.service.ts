@@ -44,18 +44,18 @@ export class PhotoApiService extends BaseService {
     }
 
     /**
-     * Get Photo Image
+     * Get Image Preview
      * Returns the raw image data for a specific photo.
      * @param photoId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPhotoImage(photoId: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public getPhotoImage(photoId: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public getPhotoImage(photoId: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public getPhotoImage(photoId: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getImagePreview(photoId: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public getImagePreview(photoId: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public getImagePreview(photoId: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public getImagePreview(photoId: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (photoId === null || photoId === undefined) {
-            throw new Error('Required parameter photoId was null or undefined when calling getPhotoImage.');
+            throw new Error('Required parameter photoId was null or undefined when calling getImagePreview.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -99,18 +99,18 @@ export class PhotoApiService extends BaseService {
     }
 
     /**
-     * Search By Color
+     * Search
      * Searches for photos that are most similar to a given RGB color by comparing color histograms.
      * @param photoSearchRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoSearchResponse>;
-    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoSearchResponse>>;
-    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoSearchResponse>>;
-    public searchByColor(photoSearchRequest: PhotoSearchRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public search(photoSearchRequest: PhotoSearchRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoSearchResponse>;
+    public search(photoSearchRequest: PhotoSearchRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoSearchResponse>>;
+    public search(photoSearchRequest: PhotoSearchRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoSearchResponse>>;
+    public search(photoSearchRequest: PhotoSearchRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (photoSearchRequest === null || photoSearchRequest === undefined) {
-            throw new Error('Required parameter photoSearchRequest was null or undefined when calling searchByColor.');
+            throw new Error('Required parameter photoSearchRequest was null or undefined when calling search.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -164,7 +164,85 @@ export class PhotoApiService extends BaseService {
     }
 
     /**
-     * Upload Photo
+     * Search By Photo
+     * Searches for photos that are most similar to a given photo by comparing color histograms.
+     * @param file 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public searchByPhoto(file: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoSearchResponse>;
+    public searchByPhoto(file: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoSearchResponse>>;
+    public searchByPhoto(file: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoSearchResponse>>;
+    public searchByPhoto(file: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (file === null || file === undefined) {
+            throw new Error('Required parameter file was null or undefined when calling searchByPhoto.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'multipart/form-data'
+        ];
+
+        const canConsumeForm = this.canConsumeForm(consumes);
+
+        let localVarFormParams: { append(param: string, value: any): any; };
+        let localVarUseForm = false;
+        let localVarConvertFormParamsToString = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
+        localVarUseForm = canConsumeForm;
+        if (localVarUseForm) {
+            localVarFormParams = new FormData();
+        } else {
+            localVarFormParams = new HttpParams({encoder: this.encoder});
+        }
+
+        if (file !== undefined) {
+            localVarFormParams = localVarFormParams.append('file', <any>file) as any || localVarFormParams;
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/photo/searchByPhoto`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PhotoSearchResponse>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: localVarConvertFormParamsToString ? localVarFormParams.toString() : localVarFormParams,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Upload
      * Uploads a photo, processes it to generate a color histogram, and stores both the image and histogram in the database.
      * @param title 
      * @param visibility 
@@ -177,18 +255,18 @@ export class PhotoApiService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoUploadResponse>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoUploadResponse>>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoUploadResponse>>;
-    public uploadPhoto(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public upload(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoUploadResponse>;
+    public upload(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoUploadResponse>>;
+    public upload(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoUploadResponse>>;
+    public upload(title: string, visibility: VisibilityEnum, file: Blob, categoryId?: number, description?: string, location?: string, captureDate?: string, cameraModel?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (title === null || title === undefined) {
-            throw new Error('Required parameter title was null or undefined when calling uploadPhoto.');
+            throw new Error('Required parameter title was null or undefined when calling upload.');
         }
         if (visibility === null || visibility === undefined) {
-            throw new Error('Required parameter visibility was null or undefined when calling uploadPhoto.');
+            throw new Error('Required parameter visibility was null or undefined when calling upload.');
         }
         if (file === null || file === undefined) {
-            throw new Error('Required parameter file was null or undefined when calling uploadPhoto.');
+            throw new Error('Required parameter file was null or undefined when calling upload.');
         }
 
         let localVarHeaders = this.defaultHeaders;

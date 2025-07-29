@@ -1,0 +1,7 @@
+<div class="upload-container">
+    <file-upload [(ngModel)]="uploadedFile" (onFileSelected)="searchByPhoto()"/>
+
+</div>
+<div class="grid-container">
+    <photo-grid [viewModel]="photoGridViewModel()"/>
+</div>

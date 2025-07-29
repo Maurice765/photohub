@@ -12,18 +12,26 @@ import { PhotoUploadResponseClientModel } from "../clientModels/photo/photo-uplo
 export class PhotoClient {
     private apiService = inject(PhotoApiService);
 
-    public searchByColor(requestModel: PhotoSearchRequestClientModel): Observable<PhotoSearchResponseClientModel> {
+    public search(requestModel: PhotoSearchRequestClientModel): Observable<PhotoSearchResponseClientModel> {
         const apiModel = requestModel.toApiModel();
         
-        return this.apiService.searchByColor(apiModel).pipe(
+        return this.apiService.search(apiModel).pipe(
             map((response: PhotoSearchResponse) => {
                 return new PhotoSearchResponseClientModel(response);
             })
         );
     }
 
-    public uploadPhoto(requestModel: PhotoUploadRequestClientModel): Observable<PhotoUploadResponseClientModel> {
-        return this.apiService.uploadPhoto(
+    public searchByPhoto(file: File): Observable<PhotoSearchResponseClientModel> {
+        return this.apiService.searchByPhoto(file).pipe(
+            map((response: PhotoSearchResponse) => {
+                return new PhotoSearchResponseClientModel(response);
+            })
+        );
+    }
+
+    public upload(requestModel: PhotoUploadRequestClientModel): Observable<PhotoUploadResponseClientModel> {
+        return this.apiService.upload(
             requestModel.title,
             requestModel.visibility,
             requestModel.file,
