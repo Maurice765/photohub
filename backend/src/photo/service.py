@@ -118,7 +118,7 @@ async def process_and_store_photo(file: UploadFile,
         conn.close()
 
 
-def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchResponse:
+async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchResponse:
     conn = get_connection()
     cur = conn.cursor()
 
@@ -250,8 +250,65 @@ def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSearchRes
     finally:
         cur.close()
         conn.close()
+
+async def search_by_photo(file: UploadFile) -> schemas.PhotoSearchResponse:
+    """
+    Searches the database for photos with similar color profiles.
+    Returns a list of results including photo metadata and a URL to the image.
+    """
+
+    # 1. Read file content and Process image
+    file_content = await file.read()
+    nparr = np.frombuffer(file_content, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    if image is None:
+        raise exceptions.InvalidImageFormat()
+
+    # 2. Convert image to RGB and calculate color histograms
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    target_histogram = utils.calculate_color_histograms(image_rgb)
+
+    # 3. Database Operations
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        array_type = conn.gettype("INT_ARRAY_256_T")
+        cur.execute("""
+            SELECT photo_id, 
+                   euclidean_distance_rgb_hist(
+                       r_bins_norm, g_bins_norm, b_bins_norm,
+                       :r_bins, :g_bins, :b_bins
+                   ) AS distance
+            FROM color_histogram
+            ORDER BY distance ASC
+            FETCH FIRST :limit ROWS ONLY
+        """, {
+            "r_bins": array_type.newobject(target_histogram.r_bins),
+            "g_bins": array_type.newobject(target_histogram.g_bins),
+            "b_bins": array_type.newobject(target_histogram.b_bins),
+            "limit": 10
+        })
+
+        results = schemas.PhotoSearchResponse(results=[])
+        for row in cur:
+            photo_id, score = row
+            results.results.append(schemas.PhotoSearchResultItem(
+                photo_id=photo_id,
+                score=round(score, 4),
+                preview_url=f"/photo/preview/{photo_id}"
+            ))
+
+        return results
+
+    except Exception as e:
+        raise exceptions.PhotoSearchError(f"Search failed: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+
     
-def get_photo_image(photo_id: int) -> schemas.ImageStreamResponse:
+async def get_photo_image(photo_id: int) -> schemas.ImageStreamResponse:
     """
     Retrieves photo data and prepares a streaming response.
     """
