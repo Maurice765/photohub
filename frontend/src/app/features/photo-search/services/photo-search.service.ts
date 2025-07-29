@@ -30,4 +30,18 @@ export class PhotoSearchService {
             })
         );
     }
+
+    searchByPhoto(file: File): Observable<PhotoGridViewModel> {
+        return this.photoClient.searchByPhoto(file).pipe(
+            map((response: PhotoSearchResponseClientModel) => {
+                const items = response.results.map((item: PhotoSearchResultItemClientModel) => {
+                    const viewModel = new PhotoGridItemViewModel(item);
+                    viewModel.preview_url = environment.apiUrl + item.previewUrl;
+                    return viewModel;
+                })
+
+                return new PhotoGridViewModel(items);
+            })
+        );
+    }
 }

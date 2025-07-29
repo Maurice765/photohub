@@ -22,6 +22,14 @@ export class PhotoClient {
         );
     }
 
+    public searchByPhoto(file: File): Observable<PhotoSearchResponseClientModel> {
+        return this.apiService.searchByPhoto(file).pipe(
+            map((response: PhotoSearchResponse) => {
+                return new PhotoSearchResponseClientModel(response);
+            })
+        );
+    }
+
     public upload(requestModel: PhotoUploadRequestClientModel): Observable<PhotoUploadResponseClientModel> {
         return this.apiService.upload(
             requestModel.title,
