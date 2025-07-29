@@ -33,6 +33,8 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
     public maxFileSize = input<number>(10 * 1024 * 1024); // 10 MB
     public acceptedFileTypes = input<string>("image/jpeg, image/png");
 
+    public onFileSelected = output<void>();
+
     public selectedFile: File | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;
@@ -46,6 +48,7 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
         if (!this.disabled) {
             this.selectedFile = file;
             this.onChange(this.selectedFile);
+            this.onFileSelected.emit();
         }
     }
 
