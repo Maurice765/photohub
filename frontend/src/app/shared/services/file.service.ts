@@ -1,8 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { CategoryClient } from '@core/clients/category.client';
-import { SelectorItem } from '@shared/models/selector-item.interface';
 import { PrimeNG } from 'primeng/config';
-import { map, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'

@@ -5,11 +5,13 @@
             <!-- Photo Display -->
             <div class="flex-1">
                 <div class="relative">
-                    <img
-                        [ngSrc]="photoDetailModel.imageUrl || ''"
-                        width="1000"
-                        height="1000"
-                    />
+                    @if (photoDetailModel.imageUrl) {
+                        <img
+                            [ngSrc]="photoDetailModel.imageUrl"
+                            width="1000"
+                            height="1000"
+                        />
+                    }
                 </div>
             </div>
 

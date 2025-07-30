@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { PhotoDetailViewModel } from "@features/photo-search/models/photo-detail.view-model";
 import { PhotoDetailService } from "@features/photo-search/services/photo-detail.service";
 import { CAMERA_MODELS } from "@shared/constants/camera-models.const";
@@ -21,7 +21,7 @@ import { DialogModule } from "primeng/dialog";
     styleUrls: ["./photo-detail.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PhotoDetailComponent{
+export class PhotoDetailComponent {
     private messageService = inject(MessageService);
     private fileService = inject(FileService);
     private photoDetailService = inject(PhotoDetailService);
