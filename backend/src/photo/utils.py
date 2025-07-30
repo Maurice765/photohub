@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 from src.photo import schemas
 from src.photo import constants
+from src.photo import exceptions
 
 def generate_file_hash(content: bytes) -> str:
     """Generates a SHA-256 hash for the given file content."""
@@ -54,3 +55,15 @@ def create_single_color_histogram(r: int, g: int, b: int) -> schemas.ColorHistog
         g_bins=color_to_hist(g),
         b_bins=color_to_hist(b)
     )
+
+def generate_preview(image: np.ndarray, max_dim: int = 300) -> bytes:
+    height, width = image.shape[:2]
+    scale = max_dim / max(height, width)
+    new_size = (int(width * scale), int(height * scale))
+    resized = cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
+
+    success, encoded = cv2.imencode('.jpg', resized)
+    if not success:
+        raise exceptions.PreviewGenerationError()
+    return encoded.tobytes()
+

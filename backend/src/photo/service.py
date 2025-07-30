@@ -39,6 +39,8 @@ async def process_and_store_photo(file: UploadFile,
     height, width, _ = image.shape
     orientation = utils.calculate_orientation(width, height)
 
+    preview = utils.generate_preview(image)
+
     # 4. Convert image to RGB and calculate color histograms
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     histogram = utils.calculate_color_histograms(image_rgb)
@@ -72,18 +74,28 @@ async def process_and_store_photo(file: UploadFile,
             INSERT INTO PHOTO (
                 content_id, image, file_type, file_size, file_hash, 
                 location, capture_date, camera_model,
-                width, height, orientation
+                width, height, orientation, preview_image
             ) VALUES (
                 :cid, :blob, :ftype, :fsize, :fhash,
-                :location, :cdate, :cmodel, :width, :height, :orientation
+                :location, :cdate, :cmodel, :width, :height, :orientation, :preview
             ) 
             RETURNING id INTO :photo_id
         """, {
-            "cid": content_id, "blob": file_content, "ftype": file_type, 
-            "fsize": file_size, "fhash": file_hash, "location": location, 
-            "cdate": capture_date, "cmodel": camera_model, "width": width, 
-            "height": height, "orientation": orientation.value, "photo_id": photo_id_var
+            "cid": content_id,
+            "blob": file_content,
+            "ftype": file_type,
+            "fsize": file_size,
+            "fhash": file_hash,
+            "location": location,
+            "cdate": capture_date,
+            "cmodel": camera_model,
+            "width": width,
+            "height": height,
+            "orientation": orientation.value,
+            "preview": preview,
+            "photo_id": photo_id_var
         })
+        
         photo_id = photo_id_var.getvalue()[0]
 
         # 5d. Insert into COLOR_HISTOGRAM table
@@ -364,13 +376,13 @@ async def get_photo_preview(photo_id: int) -> schemas.ImageStreamResponse:
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT image, file_type FROM PHOTO WHERE id = :id", {"id": photo_id})
+        cur.execute("SELECT preview, file_type FROM PHOTO WHERE id = :id", {"id": photo_id})
         result = cur.fetchone()
         if result is None:
             raise exceptions.PhotoNotFound()
-        
-        image_blob, file_type = result
-        data = image_blob.read()
+
+        preview_blob, file_type = result
+        data = preview_blob.read()
         media_type = file_type if file_type else "application/octet-stream"
         
         return schemas.ImageStreamResponse(content=data, media_type=media_type)
