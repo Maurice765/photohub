@@ -6,9 +6,11 @@ import { PhotoGetResponseClientModel } from "@core/clientModels/photo/photo-get-
 export class PhotoDetailViewModel {
     public photoId?: number;
     public userId?: number;
+    public username?: string;
     public title?: string;
     public description?: string;
     public categoryId?: number;
+    public categoryName?: string;
     public location?: string;
     public cameraModel?: string;
     public captureDate?: string;
@@ -26,9 +28,11 @@ export class PhotoDetailViewModel {
         if (clientModel) {
             this.photoId = clientModel.photoId;
             this.userId = clientModel.userId;
+            this.username = clientModel.username;
             this.title = clientModel.title;
             this.description = clientModel.description;
             this.categoryId = clientModel.categoryId;
+            this.categoryName = clientModel.categoryName;
             this.location = clientModel.location;
             this.cameraModel = clientModel.cameraModel;
             this.captureDate = clientModel.captureDate;
