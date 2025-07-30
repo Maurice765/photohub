@@ -71,9 +71,11 @@ class PhotoSearchResponse(CustomModel):
 class PhotoGetResponse(CustomModel):
     photo_id: int
     user_id: int
+    username: str
     title: str
     description: Optional[str] = None
     category_id: Optional[int] = None
+    category_name: Optional[str]= None
     location: Optional[str] = None
     camera_model: Optional[str] = None
     capture_date: Optional[Datetime] = None

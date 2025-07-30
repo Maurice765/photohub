@@ -319,9 +319,12 @@ async def get_photo(photo_id: int) -> schemas.PhotoGetResponse:
                    p.file_type, p.file_size, p.location, 
                    p.capture_date, p.camera_model, 
                    p.width, p.height, p.orientation,
-                   c.create_date, c.user_id, c.views
+                   c.create_date, c.views, c.user_id, c.category_id,
+                   u.username, cat.name
             FROM photo p
             JOIN content c ON p.content_id = c.id
+            JOIN "USER" u ON c.user_id = u.id
+            LEFT JOIN category cat ON c.category_id = cat.id
             WHERE p.id = :id
         """, {"id": photo_id})
 
@@ -343,8 +346,11 @@ async def get_photo(photo_id: int) -> schemas.PhotoGetResponse:
             height=result[10],
             orientation=result[11],
             upload_date=result[12],
-            user_id=result[13],
-            views=result[14],
+            views=result[13],
+            user_id=result[14],
+            category_id=result[15],
+            username=result[16],
+            category_name=result[17],
             image_url=f"/photo/image/{photo_id}"
         )
     finally:
