@@ -8,6 +8,7 @@ from src.photo import schemas
 import numpy as np
 from datetime import datetime
 import cv2
+import re
 
 async def process_and_store_photo(file: UploadFile,
     title: str,
@@ -38,6 +39,8 @@ async def process_and_store_photo(file: UploadFile,
 
     height, width, _ = image.shape
     orientation = utils.calculate_orientation(width, height)
+
+    preview = utils.generate_preview(image)
 
     # 4. Convert image to RGB and calculate color histograms
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -72,18 +75,28 @@ async def process_and_store_photo(file: UploadFile,
             INSERT INTO PHOTO (
                 content_id, image, file_type, file_size, file_hash, 
                 location, capture_date, camera_model,
-                width, height, orientation
+                width, height, orientation, preview
             ) VALUES (
                 :cid, :blob, :ftype, :fsize, :fhash,
-                :location, :cdate, :cmodel, :width, :height, :orientation
+                :location, :cdate, :cmodel, :width, :height, :orientation, :preview
             ) 
             RETURNING id INTO :photo_id
         """, {
-            "cid": content_id, "blob": file_content, "ftype": file_type, 
-            "fsize": file_size, "fhash": file_hash, "location": location, 
-            "cdate": capture_date, "cmodel": camera_model, "width": width, 
-            "height": height, "orientation": orientation.value, "photo_id": photo_id_var
+            "cid": content_id,
+            "blob": file_content,
+            "ftype": file_type,
+            "fsize": file_size,
+            "fhash": file_hash,
+            "location": location,
+            "cdate": capture_date,
+            "cmodel": camera_model,
+            "width": width,
+            "height": height,
+            "orientation": orientation.value,
+            "preview": preview,
+            "photo_id": photo_id_var
         })
+        
         photo_id = photo_id_var.getvalue()[0]
 
         # 5d. Insert into COLOR_HISTOGRAM table
@@ -129,13 +142,23 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
         score_components = []
         array_type = conn.gettype("INT_ARRAY_256_T") if request.rgbColor else None
 
-        # Text search score
-        if request.query:
-            filters.append("(CONTAINS(c.title, :search, 1) > 0 OR CONTAINS(c.description, :search, 2) > 0)")
-            score_components.append("SCORE(1) * 0.6 + SCORE(2) * 0.4")  # You can tune these weights
-            params["search"] = request.query
+        use_score_1 = use_score_2 = False
 
-        # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
+        if request.query:
+            q = re.sub(r'[^\wäöüßÄÖÜ0-9]', '', request.query.strip().lower())
+            text_expr = f'STEM("{q}") OR FUZZY("{q}")'
+
+            filters.append(
+                "(CONTAINS(c.title, :search_expr1, 1) > 0 OR CONTAINS(c.description, :search_expr2, 2) > 0)"
+            )
+            params["search_expr1"] = text_expr
+            params["search_expr2"] = text_expr
+
+            score_components.append("NVL(SCORE(1), 0) * 0.6 + NVL(SCORE(2), 0) * 0.4")
+            use_score_1 = True
+            use_score_2 = True
+            
+        # RGB similarity score
         if request.rgbColor and array_type:
             joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
             target = utils.create_single_color_histogram(
@@ -158,8 +181,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
                 ) * 0.4
             """)
 
-        # Optional field boosts (binary score)
-
+        # Optional field boosts
         if request.category_id:
             filters.append("c.category_id = :category_id")
             params["category_id"] = request.category_id
@@ -211,12 +233,19 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
                 filters.append("p.capture_date <= :capture_end")
                 params["capture_end"] = request.captureDate.end
 
-        # Final score formula
+        # Final score expression
         score_expr = " + ".join(score_components) if score_components else "0"
 
+        # SELECT clause with SCORE(n) if needed
+        select_fields = ["p.id AS photo_id"]
+        if use_score_1:
+            select_fields.append("SCORE(1) AS score1")
+        if use_score_2:
+            select_fields.append("SCORE(2) AS score2")
+        select_fields.append(f"({score_expr}) AS score")
+
         sql = f"""
-            SELECT p.id AS photo_id,
-                   ({score_expr}) AS score
+            SELECT {', '.join(select_fields)}
             FROM photo p
             {' '.join(joins)}
         """
@@ -224,7 +253,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
         if filters:
             sql += " WHERE " + " AND ".join(filters)
 
-        sql += f"""
+        sql += """
             ORDER BY score DESC
             OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
         """
@@ -236,7 +265,8 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
 
         results = schemas.PhotoSearchResponse(results=[])
         for row in cur:
-            photo_id, score = row
+            photo_id = row[0]
+            score = row[-1]  # last column is the final score
             results.results.append(schemas.PhotoSearchResultItem(
                 photo_id=photo_id,
                 score=round(score, 4),
@@ -250,6 +280,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
     finally:
         cur.close()
         conn.close()
+
 
 async def search_by_photo(file: UploadFile) -> schemas.PhotoSearchResponse:
     """
@@ -319,9 +350,12 @@ async def get_photo(photo_id: int) -> schemas.PhotoGetResponse:
                    p.file_type, p.file_size, p.location, 
                    p.capture_date, p.camera_model, 
                    p.width, p.height, p.orientation,
-                   c.create_date, c.user_id, c.views
+                   c.create_date, c.views, c.user_id, c.category_id,
+                   u.username, cat.name
             FROM photo p
             JOIN content c ON p.content_id = c.id
+            JOIN "USER" u ON c.user_id = u.id
+            LEFT JOIN category cat ON c.category_id = cat.id
             WHERE p.id = :id
         """, {"id": photo_id})
 
@@ -343,8 +377,11 @@ async def get_photo(photo_id: int) -> schemas.PhotoGetResponse:
             height=result[10],
             orientation=result[11],
             upload_date=result[12],
-            user_id=result[13],
-            views=result[14],
+            views=result[13],
+            user_id=result[14],
+            category_id=result[15],
+            username=result[16],
+            category_name=result[17],
             image_url=f"/photo/image/{photo_id}"
         )
     finally:
@@ -358,13 +395,13 @@ async def get_photo_preview(photo_id: int) -> schemas.ImageStreamResponse:
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT image, file_type FROM PHOTO WHERE id = :id", {"id": photo_id})
+        cur.execute("SELECT preview, file_type FROM PHOTO WHERE id = :id", {"id": photo_id})
         result = cur.fetchone()
         if result is None:
             raise exceptions.PhotoNotFound()
-        
-        image_blob, file_type = result
-        data = image_blob.read()
+
+        preview_blob, file_type = result
+        data = preview_blob.read()
         media_type = file_type if file_type else "application/octet-stream"
         
         return schemas.ImageStreamResponse(content=data, media_type=media_type)

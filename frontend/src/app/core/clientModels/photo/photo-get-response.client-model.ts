@@ -6,9 +6,11 @@ import { VisibilityClientEnum } from "@core/clientEnums/visibility.client-enum";
 export class PhotoGetResponseClientModel {
     public photoId: number;
     public userId: number;
+    public username: string;
     public title: string;
     public description?: string;
     public categoryId?: number;
+    public categoryName?: string;
     public location?: string;
     public cameraModel?: string;
     public captureDate?: string;
@@ -25,9 +27,11 @@ export class PhotoGetResponseClientModel {
     constructor(apiModel: PhotoGetResponse) {
         this.photoId = apiModel.photo_id;
         this.userId = apiModel.user_id;
+        this.username = apiModel.username;
         this.title = apiModel.title;
         this.description = apiModel.description ?? undefined;
         this.categoryId = apiModel.category_id ?? undefined;
+        this.categoryName = apiModel.category_name ?? undefined;
         this.location = apiModel.location ?? undefined;
         this.cameraModel = apiModel.camera_model ?? undefined;
         this.captureDate = apiModel.capture_date ?? undefined;

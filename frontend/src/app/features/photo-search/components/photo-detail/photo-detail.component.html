@@ -30,6 +30,11 @@
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-1">Category</label>
+                        <p>{{ photoDetailModel.categoryName }}</p>
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-900 mb-1">Location</label>
                         <p>{{ formatLocation(photoDetailModel.location) }}</p>
                     </div>
@@ -86,6 +91,11 @@
                         <div>
                             <label class="block font-medium text-gray-900">Uploaded</label>
                             <span>{{ formatDate(photoDetailModel.uploadDate) }}</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">Username</label>
+                            <span>{{ photoDetailModel.username }}</span>
                         </div>
                     </div>
                 </div>

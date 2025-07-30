@@ -41,7 +41,7 @@ class PhotoSearchRequest(CustomModel):
     cameraModel: Optional[str] = Field(default=None, max_length=255)
     uploadDate: Optional[DateRange] = None
     captureDate: Optional[DateRange] = None
-    limit: Optional[int] = 20
+    limit: Optional[int] = 200
     offset: Optional[int] = 0
 
     @model_validator(mode="before")
@@ -71,9 +71,11 @@ class PhotoSearchResponse(CustomModel):
 class PhotoGetResponse(CustomModel):
     photo_id: int
     user_id: int
+    username: str
     title: str
     description: Optional[str] = None
     category_id: Optional[int] = None
+    category_name: Optional[str]= None
     location: Optional[str] = None
     camera_model: Optional[str] = None
     capture_date: Optional[Datetime] = None

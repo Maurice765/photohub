@@ -15,9 +15,11 @@ import { OrientationEnum } from './orientationEnum';
 export interface PhotoGetResponse { 
     photo_id: number;
     user_id: number;
+    username: string;
     title: string;
     description?: string | null;
     category_id?: number | null;
+    category_name?: string | null;
     location?: string | null;
     camera_model?: string | null;
     capture_date?: string | null;
