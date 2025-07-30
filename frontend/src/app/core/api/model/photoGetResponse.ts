@@ -29,6 +29,7 @@ export interface PhotoGetResponse {
     views: number;
     width: number;
     height: number;
+    image_url: string;
 }
 export namespace PhotoGetResponse {
 }
