@@ -1,0 +1,95 @@
+<p-dialog [(visible)]="visible" [modal]="true" (onHide)="closeDialog()">
+
+    <ng-template #content>
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Photo Display -->
+            <div class="flex-1">
+                <div class="relative">
+                    @if (photoDetailModel.imageUrl) {
+                        <img
+                            [ngSrc]="photoDetailModel.imageUrl"
+                            width="1000"
+                            height="1000"
+                        />
+                    }
+                </div>
+            </div>
+
+            <!-- Photo Details -->
+            <div class="flex-1 space-y-4">
+
+                <!-- Basic Information -->
+                <div class="space-y-3">
+                    <div>
+                        <span class="font-bold whitespace-nowrap">{{ photoDetailModel.title }}</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-1">Description</label>
+                        <p>{{ photoDetailModel.description }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-1">Location</label>
+                        <p>{{ formatLocation(photoDetailModel.location) }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-1">Camera Model</label>
+                        <p>{{ formatCameraModel(photoDetailModel.cameraModel) }}</p>
+                    </div>
+                </div>
+
+                <!-- Technical Details -->
+                <div class="border-t pt-4">
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <label class="block font-medium text-gray-900">Dimensions</label>
+                            <span>{{ photoDetailModel.width }} x {{ photoDetailModel.height }}px</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">File Size</label>
+                            <span>{{ formatFileSize(photoDetailModel.fileSize) }}</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">Format</label>
+                            <span>{{ photoDetailModel.fileFormat }}</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">Orientation</label>
+                            <span>{{ photoDetailModel.orientation }}</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">Visibility</label>
+                            <span>{{ photoDetailModel.visibility }}</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">Views</label>
+                            <span>{{ photoDetailModel.views }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="border-t pt-4">
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <label class="block font-medium text-gray-900">Captured</label>
+                            <span>{{ formatDate(photoDetailModel.captureDate) }}</span>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-900">Uploaded</label>
+                            <span>{{ formatDate(photoDetailModel.uploadDate) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>

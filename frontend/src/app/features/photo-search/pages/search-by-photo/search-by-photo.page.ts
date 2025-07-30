@@ -10,7 +10,7 @@ import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 
 @Component({
-    selector: "photo-search-page",
+    selector: "search-by-photo-page",
     imports: [
         CommonModule,
         FormsModule,

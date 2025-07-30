@@ -3,6 +3,7 @@ export * from './dateRange';
 export * from './fileFormatEnum';
 export * from './hTTPValidationError';
 export * from './orientationEnum';
+export * from './photoGetResponse';
 export * from './photoSearchRequest';
 export * from './photoSearchResponse';
 export * from './photoSearchResultItem';
