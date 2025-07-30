@@ -344,7 +344,8 @@ async def get_photo(photo_id: int) -> schemas.PhotoGetResponse:
             orientation=result[11],
             upload_date=result[12],
             user_id=result[13],
-            views=result[14]
+            views=result[14],
+            image_url=f"/photo/image/{photo_id}"
         )
     finally:
         cur.close()

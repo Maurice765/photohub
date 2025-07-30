@@ -85,6 +85,7 @@ class PhotoGetResponse(CustomModel):
     views: int
     width: int
     height: int
+    image_url: str
 
 class ImageStreamResponse(StreamingResponse):
     def __init__(self, content: bytes, media_type: str):
