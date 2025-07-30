@@ -37,6 +37,7 @@ CREATE TABLE PHOTO (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content_id NUMBER NOT NULL,
     image BLOB NOT NULL,
+    preview BLOB NOT NULL,
     file_type VARCHAR2(20),
     file_size NUMBER,
     location VARCHAR2(255),
