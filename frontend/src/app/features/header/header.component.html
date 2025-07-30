@@ -9,6 +9,7 @@
                 <p-select 
                     [(ngModel)]="selectedCategoryId" 
                     variant="filled" 
+                    [filter]="true"
                     [options]="categories" 
                     optionLabel="name" 
                     optionValue="key" 
