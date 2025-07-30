@@ -22,6 +22,36 @@ COUNTRIES = [
     "HU", "HR", "SI", "GR", "TR"
 ]
 
+CATEGORIES = {
+    "Nature": 1,
+    "Music": 2,
+    "Food and Drink": 3,
+    "Vehicles": 4,
+    "Art": 5,
+    "Sports": 6,
+    "Architecture": 7,
+    "Plants": 8,
+    "Landscape": 9,
+    "Animals": 10,
+    "Pets": 11,
+    "Wild Animals": 12,
+    "Birds": 13,
+    "Insects": 14,
+    "Concert": 15,
+    "Theater": 16,
+    "Cars": 17,
+    "Trains": 18,
+    "Aircraft": 19,
+    "Bicycles": 20,
+    "Boats": 21,
+    "Interior": 22,
+    "Buildings": 23,
+    "Religious Buildings": 24,
+    "House": 25,
+    "Bridges": 26,
+    "Towers": 27,
+}
+
 def extract_exif_data(image_path: Path) -> Dict[str, Any]:
     """Extract EXIF data from image file."""
     
@@ -86,9 +116,28 @@ def find_all_photos(photos_dir: Path) -> list[Path]:
     
     return sorted(photos)
 
-def upload_photo(photo_path: Path, title: str, description: str, 
-                location: str, capture_date: Optional[datetime], 
-                camera_model: Optional[str]) -> bool:
+def get_category_id_from_folder(photo_path: Path) -> Optional[int]:
+    """Get category ID based on the folder name containing the photo."""
+    # Get the parent folder name
+    folder_name = photo_path.parent.name
+    
+    # Look up the category ID in the CATEGORIES dictionary
+    # Try exact match first
+    if folder_name in CATEGORIES:
+        return CATEGORIES[folder_name]
+    
+    # Try case-insensitive match
+    for category_name, category_id in CATEGORIES.items():
+        if category_name.lower() == folder_name.lower():
+            return category_id
+    
+    # If no match found, return None
+    print(f"⚠️  No category found for folder '{folder_name}', uploading without category")
+    return None
+
+def upload_photo(photo_path: Path, title: str, description: str,
+                location: str, capture_date: Optional[datetime],
+                camera_model: Optional[str], category_id: Optional[int] = None) -> bool:
     """Upload a single photo to the API."""
     try:
         # Prepare form data
@@ -104,6 +153,8 @@ def upload_photo(photo_path: Path, title: str, description: str,
             form_data['capture_date'] = capture_date.isoformat()
         if camera_model:
             form_data['camera_model'] = camera_model
+        if category_id:
+            form_data['category_id'] = str(category_id)
         
         # Prepare file
         mime_type = get_mime_type(photo_path)
@@ -175,15 +226,22 @@ def main():
         camera_model = get_camera_model(exif_data)
         capture_date = get_capture_date(exif_data)
         
+        # Get category ID from folder name
+        category_id = get_category_id_from_folder(photo_path)
+        
         print(f"   Title: {title}")
         print(f"   Location: {location}")
+        if category_id:
+            # Find category name for display
+            category_name = next((name for name, id in CATEGORIES.items() if id == category_id), "Unknown")
+            print(f"   Category: {category_name} (ID: {category_id})")
         if camera_model:
             print(f"   Camera: {camera_model}")
         if capture_date:
             print(f"   Captured: {capture_date}")
         
         # Upload the photo
-        if upload_photo(photo_path, title, description, location, capture_date, camera_model):
+        if upload_photo(photo_path, title, description, location, capture_date, camera_model, category_id):
             successful_uploads += 1
         else:
             failed_uploads += 1
