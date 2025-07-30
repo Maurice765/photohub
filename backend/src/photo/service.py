@@ -8,6 +8,7 @@ from src.photo import schemas
 import numpy as np
 from datetime import datetime
 import cv2
+import re
 
 async def process_and_store_photo(file: UploadFile,
     title: str,
@@ -141,13 +142,23 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
         score_components = []
         array_type = conn.gettype("INT_ARRAY_256_T") if request.rgbColor else None
 
-        # Text search score
-        if request.query:
-            filters.append("(CONTAINS(c.title, :search, 1) > 0 OR CONTAINS(c.description, :search, 2) > 0)")
-            score_components.append("SCORE(1) * 0.6 + SCORE(2) * 0.4")  # You can tune these weights
-            params["search"] = request.query
+        use_score_1 = use_score_2 = False
 
-        # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
+        if request.query:
+            q = re.sub(r'[^\wäöüßÄÖÜ0-9]', '', request.query.strip().lower())
+            text_expr = f'STEM("{q}") OR FUZZY("{q}")'
+
+            filters.append(
+                "(CONTAINS(c.title, :search_expr1, 1) > 0 OR CONTAINS(c.description, :search_expr2, 2) > 0)"
+            )
+            params["search_expr1"] = text_expr
+            params["search_expr2"] = text_expr
+
+            score_components.append("NVL(SCORE(1), 0) * 0.6 + NVL(SCORE(2), 0) * 0.4")
+            use_score_1 = True
+            use_score_2 = True
+            
+        # RGB similarity score
         if request.rgbColor and array_type:
             joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
             target = utils.create_single_color_histogram(
@@ -170,8 +181,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
                 ) * 0.4
             """)
 
-        # Optional field boosts (binary score)
-
+        # Optional field boosts
         if request.category_id:
             filters.append("c.category_id = :category_id")
             params["category_id"] = request.category_id
@@ -223,12 +233,19 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
                 filters.append("p.capture_date <= :capture_end")
                 params["capture_end"] = request.captureDate.end
 
-        # Final score formula
+        # Final score expression
         score_expr = " + ".join(score_components) if score_components else "0"
 
+        # SELECT clause with SCORE(n) if needed
+        select_fields = ["p.id AS photo_id"]
+        if use_score_1:
+            select_fields.append("SCORE(1) AS score1")
+        if use_score_2:
+            select_fields.append("SCORE(2) AS score2")
+        select_fields.append(f"({score_expr}) AS score")
+
         sql = f"""
-            SELECT p.id AS photo_id,
-                   ({score_expr}) AS score
+            SELECT {', '.join(select_fields)}
             FROM photo p
             {' '.join(joins)}
         """
@@ -236,7 +253,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
         if filters:
             sql += " WHERE " + " AND ".join(filters)
 
-        sql += f"""
+        sql += """
             ORDER BY score DESC
             OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
         """
@@ -248,7 +265,8 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
 
         results = schemas.PhotoSearchResponse(results=[])
         for row in cur:
-            photo_id, score = row
+            photo_id = row[0]
+            score = row[-1]  # last column is the final score
             results.results.append(schemas.PhotoSearchResultItem(
                 photo_id=photo_id,
                 score=round(score, 4),
@@ -262,6 +280,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
     finally:
         cur.close()
         conn.close()
+
 
 async def search_by_photo(file: UploadFile) -> schemas.PhotoSearchResponse:
     """
