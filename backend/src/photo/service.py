@@ -75,7 +75,7 @@ async def process_and_store_photo(file: UploadFile,
             INSERT INTO PHOTO (
                 content_id, image, file_type, file_size, file_hash, 
                 location, capture_date, camera_model,
-                width, height, orientation, preview_image
+                width, height, orientation, preview
             ) VALUES (
                 :cid, :blob, :ftype, :fsize, :fhash,
                 :location, :cdate, :cmodel, :width, :height, :orientation, :preview
