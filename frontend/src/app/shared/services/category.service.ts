@@ -9,7 +9,7 @@ import { map, Observable } from 'rxjs';
 export class CategoryService {
     private categoryClient = inject(CategoryClient);
 
-    getCategorySelectorItems(): Observable<SelectorItem[]> {
+    public getCategorySelectorItems(): Observable<SelectorItem[]> {
         return this.categoryClient.getCategories().pipe(
             map(categories => categories.map(category => ({
                 key: category.id,

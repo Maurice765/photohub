@@ -1,6 +1,7 @@
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { ChangeDetectionStrategy, Component, forwardRef, inject, input, model, output } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, NgControl, ValidationErrors, Validator } from "@angular/forms";
+import { FileService } from "@shared/services/file.service";
 import { PrimeNG } from 'primeng/config';
 import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
 import { MessageModule } from "primeng/message";
@@ -27,7 +28,7 @@ import { MessageModule } from "primeng/message";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileUploadComponent implements ControlValueAccessor, Validator {
-    private primengConfig: PrimeNG = inject(PrimeNG);
+    private fileService: FileService = inject(FileService);
     private control: AbstractControl<File> | null = null;
 
     public maxFileSize = input<number>(10 * 1024 * 1024); // 10 MB
@@ -106,16 +107,6 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
     }
 
     public formatSize(bytes: number): string {
-        const k = 1024;
-        const dm = 3;
-        const sizes = this.primengConfig.translation.fileSizeTypes;
-        if (bytes === 0) {
-            return `0 ${sizes?.[0] ?? "B"}`;
-        }
-
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-        return `${formattedSize} ${sizes?.[i]}`;
+        return this.fileService.formatSize(bytes);
     }
 }
