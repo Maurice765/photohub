@@ -56,11 +56,11 @@ CREATE OR REPLACE TYPE int_array_256_t AS VARRAY(256) OF NUMBER;
 
 CREATE INDEX content_title_idx ON content(title)
     INDEXTYPE IS CTXSYS.CONTEXT
-    PARAMETERS('LEXER german_lexer');
+    PARAMETERS('LEXER german_lexer SYNC (ON COMMIT)');
 
 CREATE INDEX content_description_idx ON content(description)
     INDEXTYPE IS CTXSYS.CONTEXT
-    PARAMETERS('LEXER german_lexer');
+    PARAMETERS('LEXER german_lexer SYNC (ON COMMIT)');
 
 CREATE TABLE COLOR_HISTOGRAM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
