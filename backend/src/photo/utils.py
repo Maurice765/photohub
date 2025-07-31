@@ -56,7 +56,10 @@ def create_single_color_histogram(r: int, g: int, b: int) -> schemas.ColorHistog
         b_bins=color_to_hist(b)
     )
 
-def generate_preview(image: np.ndarray, max_dim: int = 300) -> bytes:
+def generate_preview(image: np.ndarray, max_dim: int = 300) -> tuple[bytes, np.ndarray]:
+    """
+    Generate a preview image and return both bytes (for storage) and numpy array (for processing).
+    """
     height, width = image.shape[:2]
     scale = max_dim / max(height, width)
     new_size = (int(width * scale), int(height * scale))
@@ -65,5 +68,56 @@ def generate_preview(image: np.ndarray, max_dim: int = 300) -> bytes:
     success, encoded = cv2.imencode('.jpg', resized)
     if not success:
         raise exceptions.PreviewGenerationError()
-    return encoded.tobytes()
+    
+    return encoded.tobytes(), resized
 
+
+def extract_dominant_colors(image_rgb: np.ndarray, k: int = 5):
+    """
+    Extract dominant colors from an RGB image array.
+    """
+    # Reshape the image to a 2D array of pixels
+    pixels = image_rgb.reshape((-1, 3))
+    pixels = np.float32(pixels)
+
+    # Count unique colors
+    unique_colors = np.unique(pixels, axis=0)
+    k = min(k, len(unique_colors))
+
+    if k == 0:
+        return []
+    elif k == 1:
+        color = unique_colors[0]
+        return [{
+            "r": int(color[0]),
+            "g": int(color[1]),
+            "b": int(color[2]),
+            "percentage": 100.0
+        }]
+
+    # K-means clustering to find dominant colors
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 50, 1.0)
+    flags = cv2.KMEANS_PP_CENTERS
+
+    compactness, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, flags) # type: ignore
+
+    # Round and convert
+    centers = np.round(centers).astype(int)
+    labels = labels.flatten()
+
+    # Percentage
+    counts = np.bincount(labels)
+    total = counts.sum()
+    percentages = (counts / total) * 100
+
+    dominant_colors = []
+    for i in range(k):
+        color = centers[i]
+        dominant_colors.append({
+            "r": int(color[0]),
+            "g": int(color[1]),
+            "b": int(color[2]),
+            "percentage": round(float(percentages[i]), 2)
+        })
+
+    return dominant_colors

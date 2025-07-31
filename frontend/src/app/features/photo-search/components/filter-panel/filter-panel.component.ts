@@ -43,6 +43,10 @@ export class FilterPanelComponent {
     
     public orientations = ORIENTATIONS;
     public fileFormats = FILE_FORMATS;
+    public colorSearchMethods = [
+        { name: "Dominant Color", key: false },
+        { name: "Histogram", key: true }
+    ];
 
     public filterForm = new FormGroup<FilterPanelFormViewModel>({
         rgbColor: new FormControl<RGBColor | null>(null),
@@ -54,6 +58,7 @@ export class FilterPanelComponent {
         cameraModel: new FormControl<string | null>(null),
         uploadDateRange: new FormControl<Date[] | null>(null),
         captureDateRange: new FormControl<Date[] | null>(null),
+        useHistogram: new FormControl<boolean>(false, { nonNullable: true })
     });
 
     public getFilterPanelViewModel(): FilterPanelViewModel | undefined {

@@ -13,4 +13,5 @@ export interface FilterPanelFormViewModel {
     cameraModel: FormControl<string | null>;
     uploadDateRange: FormControl<Date[] | null>;
     captureDateRange: FormControl<Date[] | null>;
+    useHistogram: FormControl<boolean>;
 }

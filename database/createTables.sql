@@ -56,11 +56,11 @@ CREATE OR REPLACE TYPE int_array_256_t AS VARRAY(256) OF NUMBER;
 
 CREATE INDEX content_title_idx ON content(title)
     INDEXTYPE IS CTXSYS.CONTEXT
-    PARAMETERS('LEXER german_lexer');
+    PARAMETERS('LEXER german_lexer SYNC (ON COMMIT)');
 
 CREATE INDEX content_description_idx ON content(description)
     INDEXTYPE IS CTXSYS.CONTEXT
-    PARAMETERS('LEXER german_lexer');
+    PARAMETERS('LEXER german_lexer SYNC (ON COMMIT)');
 
 CREATE TABLE COLOR_HISTOGRAM (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -69,6 +69,16 @@ CREATE TABLE COLOR_HISTOGRAM (
     g_bins_norm int_array_256_t NOT NULL,
     b_bins_norm int_array_256_t NOT NULL,
     CONSTRAINT fk_color_histogram_Photo FOREIGN KEY (photo_id) REFERENCES PHOTO(id)
+);
+
+CREATE TABLE DOMINANT_COLOR (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    photo_id NUMBER NOT NULL,
+    r NUMBER(3) NOT NULL,
+    g NUMBER(3) NOT NULL,
+    b NUMBER(3) NOT NULL,
+    percentage NUMBER(5,2),
+    CONSTRAINT fk_dominant_color_Photo FOREIGN KEY (photo_id) REFERENCES PHOTO(id)
 );
 
 CREATE TABLE ALBUM (

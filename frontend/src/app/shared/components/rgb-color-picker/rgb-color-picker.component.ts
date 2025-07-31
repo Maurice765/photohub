@@ -43,10 +43,14 @@ export class RgbColorPickerComponent implements ControlValueAccessor {
     }
 
     public onColorInputChange(channel: 'r' | 'g' | 'b', value: number): void {
-        if (!this.rgbColor) {
-            this.rgbColor = { r: 0, g: 0, b: 0 };
-        }
-        this.rgbColor[channel] = value;
+        const newColor: RGBColor = {
+            r: this.rgbColor?.r ?? 0,
+            g: this.rgbColor?.g ?? 0,
+            b: this.rgbColor?.b ?? 0
+        };
+
+        newColor[channel] = value;
+        this.rgbColor = newColor;
         this.handleColorChange();
     }
 

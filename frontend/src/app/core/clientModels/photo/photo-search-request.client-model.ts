@@ -17,6 +17,7 @@ export class PhotoSearchRequestClientModel {
     public cameraModel?: string;
     public uploadDateRange?: DateRangeClientModel;
     public captureDateRange?: DateRangeClientModel;
+    public useHistogram?: boolean;
     public limit?: number;
     public offset?: number;
 
@@ -38,6 +39,7 @@ export class PhotoSearchRequestClientModel {
         if (viewModel.captureDateStart && viewModel.captureDateEnd) {
             this.captureDateRange = new DateRangeClientModel(viewModel.captureDateStart, viewModel.captureDateEnd);
         }
+        this.useHistogram = viewModel.useHistogram;
         this.limit = viewModel.limit;
         this.offset = viewModel.offset;
     }
@@ -55,6 +57,7 @@ export class PhotoSearchRequestClientModel {
             cameraModel: this.cameraModel,
             uploadDate: this.uploadDateRange?.toApiModel(),
             captureDate: this.captureDateRange?.toApiModel(),
+            useHistogram: this.useHistogram,
             limit: this.limit,
             offset: this.offset
         };

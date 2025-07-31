@@ -40,24 +40,28 @@ async def process_and_store_photo(file: UploadFile,
     height, width, _ = image.shape
     orientation = utils.calculate_orientation(width, height)
 
-    preview = utils.generate_preview(image)
+    preview_bytes, preview_image = utils.generate_preview(image)
 
     # 4. Convert image to RGB and calculate color histograms
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     histogram = utils.calculate_color_histograms(image_rgb)
 
-    # 5. Database Operations
+    # 5. Convert preview to RGB and extract dominant colors
+    preview_rgb = cv2.cvtColor(preview_image, cv2.COLOR_BGR2RGB)
+    dominant_colors = utils.extract_dominant_colors(preview_rgb, k=5)
+
+    # 6. Database Operations
     conn = get_connection()
     cur = conn.cursor()
 
     try:
-        # 5a. Check for duplicate file based on hash
+        # 6a. Check for duplicate file based on hash
         cur.execute("SELECT id FROM PHOTO WHERE file_hash = :fhash", {"fhash": file_hash})
         existing_photo = cur.fetchone()
         if existing_photo:
             raise exceptions.DuplicateFileError()
 
-        # 5b. Insert into CONTENT table
+        # 6b. Insert into CONTENT table
         content_id_var = cur.var(int)
         cur.execute("""
             INSERT INTO CONTENT (user_id, title, category_id, description, visibility, content_type) 
@@ -69,7 +73,7 @@ async def process_and_store_photo(file: UploadFile,
         })
         content_id = content_id_var.getvalue()[0]
 
-        # 5c. Insert into PHOTO table
+        # 6c. Insert into PHOTO table
         photo_id_var = cur.var(int)
         cur.execute("""
             INSERT INTO PHOTO (
@@ -93,13 +97,13 @@ async def process_and_store_photo(file: UploadFile,
             "width": width,
             "height": height,
             "orientation": orientation.value,
-            "preview": preview,
+            "preview": preview_bytes,
             "photo_id": photo_id_var
         })
         
         photo_id = photo_id_var.getvalue()[0]
 
-        # 5d. Insert into COLOR_HISTOGRAM table
+        # 6d. Insert into COLOR_HISTOGRAM table
         array_type = conn.gettype("INT_ARRAY_256_T")
         cur.execute("""
             INSERT INTO COLOR_HISTOGRAM (
@@ -113,6 +117,22 @@ async def process_and_store_photo(file: UploadFile,
             "g_bins": array_type.newobject(histogram.g_bins),
             "b_bins": array_type.newobject(histogram.b_bins),
         })
+
+        # 6e. Insert into DOMINANT_COLOR table
+        for color in dominant_colors:
+            cur.execute("""
+                INSERT INTO DOMINANT_COLOR (
+                    photo_id, r, g, b, percentage
+                ) VALUES (
+                    :photo_id, :r, :g, :b, :percentage
+                )
+            """, {
+                "photo_id": photo_id,
+                "r": color["r"],
+                "g": color["g"],
+                "b": color["b"],
+                "percentage": color["percentage"]
+            })
 
         conn.commit()
 
@@ -143,7 +163,7 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
         array_type = conn.gettype("INT_ARRAY_256_T") if request.rgbColor else None
 
         use_score_1 = use_score_2 = False
-
+    
         if request.query:
             q = re.sub(r'[^\wäöüßÄÖÜ0-9]', '', request.query.strip().lower())
             text_expr = f'STEM("{q}") OR FUZZY("{q}")'
@@ -154,32 +174,54 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
             params["search_expr1"] = text_expr
             params["search_expr2"] = text_expr
 
-            score_components.append("NVL(SCORE(1), 0) * 0.6 + NVL(SCORE(2), 0) * 0.4")
+            score_components.append("NVL(SCORE(1), 0) * 0.4 + NVL(SCORE(2), 0) * 0.2")
             use_score_1 = True
             use_score_2 = True
-            
-        # RGB similarity score
+        
+        # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
         if request.rgbColor and array_type:
-            joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
-            target = utils.create_single_color_histogram(
-                request.rgbColor.r,
-                request.rgbColor.g,
-                request.rgbColor.b
-            )
-            params.update({
-                "r_bins": array_type.newobject(target.r_bins),
-                "g_bins": array_type.newobject(target.g_bins),
-                "b_bins": array_type.newobject(target.b_bins),
-            })
+            if request.useHistogram:
+                joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
+                target = utils.create_single_color_histogram(
+                    request.rgbColor.r,
+                    request.rgbColor.g,
+                    request.rgbColor.b
+                )
+                params.update({
+                    "r_bins": array_type.newobject(target.r_bins),
+                    "g_bins": array_type.newobject(target.g_bins),
+                    "b_bins": array_type.newobject(target.b_bins),
+                })
+            
+                score_components.append("""
+                    (1 - LEAST(
+                        euclidean_distance_rgb_hist(
+                            ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
+                            :r_bins, :g_bins, :b_bins
+                        ) / 441.67, 1.0)
+                    ) * 0.4
+                """)
+            else:
+                # use a subquery that selects only the closest dominant color per photo
+                joins.append("""
+                    JOIN (
+                        SELECT dc_inner.photo_id,
+                            MIN(euclidean_distance_dominant(dc_inner.r, dc_inner.g, dc_inner.b, :r, :g, :b)) AS min_distance
+                        FROM dominant_color dc_inner
+                        GROUP BY dc_inner.photo_id
+                    ) dc ON dc.photo_id = p.id
+                """)
 
-            score_components.append("""
-                (1 - LEAST(
-                    euclidean_distance_rgb_hist(
-                        ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
-                        :r_bins, :g_bins, :b_bins
-                    ) / 441.67, 1.0)
-                ) * 0.4
-            """)
+                params.update({
+                    "r": request.rgbColor.r,
+                    "g": request.rgbColor.g,
+                    "b": request.rgbColor.b,
+                })
+
+                # use the min_distance from the subquery
+                score_components.append("""
+                    (1 - LEAST(dc.min_distance / 441.67, 1.0)) * 0.4
+                """)
 
         # Optional field boosts
         if request.category_id:

@@ -18,6 +18,7 @@ export class FilterPanelViewModel {
     public uploadDateEnd?: Date;
     public captureDateStart?: Date;
     public captureDateEnd?: Date;
+    public useHistogram?: boolean;
 
     constructor(form: FilterPanelFormValue) {
 
@@ -35,5 +36,6 @@ export class FilterPanelViewModel {
         this.uploadDateEnd = form.uploadDateRange?.[1] ?? undefined;
         this.captureDateStart = form.captureDateRange?.[0] ?? undefined;
         this.captureDateEnd = form.captureDateRange?.[1] ?? undefined;
+        this.useHistogram = form?.useHistogram ?? undefined;
     }
 }
