@@ -46,7 +46,7 @@ export class FilterPanelComponent {
     public colorSearchMethods = [
         { name: "Dominant Color", key: false },
         { name: "Histogram", key: true }
-    ]
+    ];
 
     public filterForm = new FormGroup<FilterPanelFormViewModel>({
         rgbColor: new FormControl<RGBColor | null>(null),

@@ -69,16 +69,16 @@ def generate_preview(image: np.ndarray, max_dim: int = 300) -> bytes:
 
 
 def extract_dominant_colors(image_rgb: np.ndarray, k: int = 5):
-    # Bild grob verkleinern für Speed (z.B. 100x100)
+    # Downsize the image for faster processing
     small_image = cv2.resize(image_rgb, (100, 100), interpolation=cv2.INTER_AREA)
 
-    # Bilddaten in 2D-Array umformen: (N, 3)
+    # Reshape the image to a 2D array of pixels
     pixels = small_image.reshape((-1, 3))
     pixels = np.float32(pixels)
 
-    # Einzigartige Farben zählen
+    # Count unique colors
     unique_colors = np.unique(pixels, axis=0)
-    k = min(k, len(unique_colors))  # Sicherheitscheck
+    k = min(k, len(unique_colors))
 
     if k == 0:
         return []
@@ -91,17 +91,17 @@ def extract_dominant_colors(image_rgb: np.ndarray, k: int = 5):
             "percentage": 100.0
         }]
 
-    # KMeans Parameter
+    # K-means clustering to find dominant colors
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 50, 1.0)
     flags = cv2.KMEANS_PP_CENTERS
 
-    compactness, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, flags)
+    compactness, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, flags) # type: ignore
 
-    # Rundung + Umwandlung
+    # Round and convert
     centers = np.round(centers).astype(int)
     labels = labels.flatten()
 
-    # Prozentualer Anteil
+    # Percentage
     counts = np.bincount(labels)
     total = counts.sum()
     percentages = (counts / total) * 100
