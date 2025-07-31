@@ -1,8 +1,8 @@
 <p-panel header="Extended Search" [toggleable]="true">
     <form [formGroup]="filterForm">
-        <div class="grid grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
 
-            <div>
+            <div class="w-full">
                 <p-input-group>
                     <p-inputgroup-addon>
                         <i class="pi pi-palette"></i>
@@ -14,11 +14,11 @@
                 </p-input-group>
             </div>
 
-            <div>
+            <div class="w-full">
                 <rgb-color-picker formControlName="rgbColor"/>
             </div>    
 
-            <div>
+            <div class="w-full">
                 <p-input-group>
                     <p-inputgroup-addon>
                         <i class="pi pi-arrow-up-right-and-arrow-down-left-from-center"></i>
@@ -36,7 +36,7 @@
                 </p-input-group>
             </div>
 
-            <div>
+            <div class="w-full">
                 <p-input-group>
                     <p-inputgroup-addon>
                         <i class="pi pi-objects-column"></i>
@@ -48,7 +48,7 @@
                 </p-input-group>
             </div>
 
-            <div>
+            <div class="w-full">
                 <p-input-group>
                     <p-inputgroup-addon>
                         <i class="pi pi-file"></i>
@@ -60,13 +60,21 @@
                 </p-input-group>
             </div>
 
-            <location-selector formControlName="location" />
+            <div class="w-full">
+                <location-selector formControlName="location" />
+            </div>
 
-            <camera-model-selector formControlName="cameraModel" />
+            <div class="w-full">
+                <camera-model-selector formControlName="cameraModel" />
+            </div>
 
-            <date-picker formControlName="uploadDateRange" selectionMode="range" label="Upload Date" />
+            <div class="w-full">
+                <date-picker formControlName="uploadDateRange" selectionMode="range" label="Upload Date" />
+            </div>
 
-            <date-picker formControlName="captureDateRange" selectionMode="range" label="Capture Date" />
+            <div class="w-full">
+                <date-picker formControlName="captureDateRange" selectionMode="range" label="Capture Date" />
+            </div>
 
         </div>
     </form>
