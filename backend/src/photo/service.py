@@ -1,5 +1,3 @@
-import syslog
-
 from fastapi import UploadFile
 from typing import Optional
 import oracledb
