@@ -1,0 +1,23 @@
+<div>
+    <p-input-group>
+        <p-inputgroup-addon>
+            <i class="pi pi-book"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+            <p-select 
+                [options]="categories" 
+                [(ngModel)]="selectedCategory"
+                [showClear]="true" 
+                [filter]="true" 
+                [invalid]="isInvalid"
+                [disabled]="disabled"
+                appendTo="body"
+                optionValue="key" 
+                optionLabel="name" 
+                (onChange)="onCategoryChange($event.value)"
+            />
+            <label>Category</label>
+        </p-floatlabel>
+    </p-input-group>
+    <form-error-message label="Category" (invalidState)="isInvalid = $event"/>
+</div>

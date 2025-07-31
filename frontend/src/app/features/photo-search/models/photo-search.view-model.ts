@@ -1,11 +1,11 @@
-import { FileFormatClientEnum } from "@core/clients/enums/file-format.client-enum";
-import { OrientationClientEnum } from "@core/clients/enums/orientation.client-enum";
+import { FileFormatClientEnum } from "@core/clientEnums/file-format.client-enum";
+import { OrientationClientEnum } from "@core/clientEnums/orientation.client-enum";
 import { FilterPanelViewModel } from "./filter-panel.view-model";
 import { RGBColorViewModel } from "./rgb-color.view-model";
 
 export class PhotoSearchViewModel {
     public query?: string;
-    public category?: string;
+    public categoryId?: number;
     public rgbColor?: RGBColorViewModel;
     public minHeight?: number;
     public minWidth?: number;
@@ -20,9 +20,9 @@ export class PhotoSearchViewModel {
     public limit?: number;
     public offset?: number;
 
-    constructor(filter?: FilterPanelViewModel, category?: string, query?: string) {
+    constructor(categoryId: number, query: string, filter?: FilterPanelViewModel) {
         this.query = query?.trim() ? query : undefined;
-        this.category = category?.trim() ? category : undefined;
+        this.categoryId = categoryId === -1 ? undefined : categoryId;
         if (filter) {
             this.rgbColor = filter.rgbColor;
             this.minHeight = filter.minHeight;

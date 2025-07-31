@@ -7,6 +7,7 @@ import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { SelectChangeEvent, SelectModule } from "primeng/select";
 import { FormErrorMessageComponent } from "../form-error-message/form-error-message.component";
+import { SelectorItem } from "@shared/models/selector-item.interface";
 
 @Component({
     selector: "location-selector",
@@ -28,7 +29,7 @@ import { FormErrorMessageComponent } from "../form-error-message/form-error-mess
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationSelectorComponent implements ControlValueAccessor {
-    public locations = LOCATIONS;
+    public locations: SelectorItem[] = LOCATIONS;
     public selectedLocation: string | null = null;
     public disabled: boolean = false;
     public touched: boolean = false;

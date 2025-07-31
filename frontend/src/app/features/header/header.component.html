@@ -4,9 +4,16 @@
         <div class="flex items-center gap-x-6">
             <span class="text-2xl font-bold">PhotoHub</span>
             <p-button icon="pi pi-home" label="Feed" variant="text" severity="secondary" (onClick)="navigateToFeed()"/>
-            <p-button icon="pi pi-star" label="Explore" variant="text" severity="secondary" (onClick)="navigateToExplore()"/>
+            <p-button icon="pi pi-camera" label="PhotoSearch" variant="text" severity="secondary" (onClick)="navigateToExplore()"/>
             <p-inputgroup>
-                <p-select [(ngModel)]="selectedCategory" variant="filled" [options]="categories" optionLabel="name" optionValue="key" />
+                <p-select 
+                    [(ngModel)]="selectedCategoryId" 
+                    variant="filled" 
+                    [filter]="true"
+                    [options]="categories" 
+                    optionLabel="name" 
+                    optionValue="key" 
+                />
                 <input 
                     pInputText 
                     type="text" 

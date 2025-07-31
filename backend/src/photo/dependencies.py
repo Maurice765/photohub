@@ -4,7 +4,7 @@ from src.photo.config import photo_settings
 from src.photo.constants import AllowedPhotoContentEnum
 from src.photo import exceptions
 
-async def validate_photo_upload(file: UploadFile) -> UploadFile:
+async def validate_photo(file: UploadFile) -> UploadFile:
     """
     A dependency to validate an uploaded photo.
     """

@@ -4,7 +4,7 @@ import { ColorPickerChangeEvent, ColorPickerModule } from "primeng/colorpicker";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { InputNumberModule } from "primeng/inputnumber";
-import { RGBColor } from "../../models/rgbColor.interface";
+import { RGBColor } from "../../models/rgb-color.interface";
 import { ButtonModule } from "primeng/button";
 import { FloatLabelModule } from "primeng/floatlabel";
 

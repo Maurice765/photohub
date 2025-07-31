@@ -1,4 +1,4 @@
-import { PhotoSearchResultItemClientModel } from "@core/clients/models/photo/photo-search-result-item.client-model";
+import { PhotoSearchResultItemClientModel } from "@core/clientModels/photo/photo-search-result-item.client-model";
 
 export class PhotoGridItemViewModel {
     public id: number;

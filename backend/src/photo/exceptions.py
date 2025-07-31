@@ -67,3 +67,11 @@ class DuplicateFileError(AppException):
             status_code=status.HTTP_409_CONFLICT,
             detail="This photo has already been uploaded."
         )
+
+class PreviewGenerationError(AppException):
+    """Exception raised for errors during preview generation."""
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate photo preview."
+        )
