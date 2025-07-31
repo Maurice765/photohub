@@ -25,6 +25,7 @@ export interface PhotoSearchRequest {
     cameraModel?: string | null;
     uploadDate?: DateRange | null;
     captureDate?: DateRange | null;
+    useHistogram?: boolean | null;
     limit?: number | null;
     offset?: number | null;
 }
