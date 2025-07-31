@@ -50,18 +50,18 @@ async def process_and_store_photo(file: UploadFile,
     preview_rgb = cv2.cvtColor(preview_image, cv2.COLOR_BGR2RGB)
     dominant_colors = utils.extract_dominant_colors(preview_rgb, k=5)
 
-    # 5. Database Operations
+    # 6. Database Operations
     conn = get_connection()
     cur = conn.cursor()
 
     try:
-        # 5a. Check for duplicate file based on hash
+        # 6a. Check for duplicate file based on hash
         cur.execute("SELECT id FROM PHOTO WHERE file_hash = :fhash", {"fhash": file_hash})
         existing_photo = cur.fetchone()
         if existing_photo:
             raise exceptions.DuplicateFileError()
 
-        # 5b. Insert into CONTENT table
+        # 6b. Insert into CONTENT table
         content_id_var = cur.var(int)
         cur.execute("""
             INSERT INTO CONTENT (user_id, title, category_id, description, visibility, content_type) 
@@ -73,7 +73,7 @@ async def process_and_store_photo(file: UploadFile,
         })
         content_id = content_id_var.getvalue()[0]
 
-        # 5c. Insert into PHOTO table
+        # 6c. Insert into PHOTO table
         photo_id_var = cur.var(int)
         cur.execute("""
             INSERT INTO PHOTO (
@@ -103,7 +103,7 @@ async def process_and_store_photo(file: UploadFile,
         
         photo_id = photo_id_var.getvalue()[0]
 
-        # 5d. Insert into COLOR_HISTOGRAM table
+        # 6d. Insert into COLOR_HISTOGRAM table
         array_type = conn.gettype("INT_ARRAY_256_T")
         cur.execute("""
             INSERT INTO COLOR_HISTOGRAM (
@@ -118,7 +118,7 @@ async def process_and_store_photo(file: UploadFile,
             "b_bins": array_type.newobject(histogram.b_bins),
         })
 
-        # # 5e. Insert into DOMINANT_COLOR table
+        # 6e. Insert into DOMINANT_COLOR table
         for color in dominant_colors:
             cur.execute("""
                 INSERT INTO DOMINANT_COLOR (
