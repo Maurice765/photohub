@@ -175,60 +175,54 @@ async def search_photos(request: schemas.PhotoSearchRequest) -> schemas.PhotoSea
             params["search_expr1"] = text_expr
             params["search_expr2"] = text_expr
 
-            score_components.append("NVL(SCORE(1), 0) * 0.6 + NVL(SCORE(2), 0) * 0.4")
+            score_components.append("NVL(SCORE(1), 0) * 0.4 + NVL(SCORE(2), 0) * 0.2")
             use_score_1 = True
             use_score_2 = True
         
         # RGB similarity score (max distance = sqrt(255^2 * 3) = ~441.67)
-        # if request.rgbColor and array_type:
-        #     joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
-        #     target = utils.create_single_color_histogram(
-        #         request.rgbColor.r,
-        #         request.rgbColor.g,
-        #         request.rgbColor.b
-        #     )
-        #     params.update({
-        #         "r_bins": array_type.newobject(target.r_bins),
-        #         "g_bins": array_type.newobject(target.g_bins),
-        #         "b_bins": array_type.newobject(target.b_bins),
-        #     })
-        #
-        #     score_components.append("""
-        #         (1 - LEAST(
-        #             euclidean_distance_rgb_hist(
-        #                 ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
-        #                 :r_bins, :g_bins, :b_bins
-        #             ) / 441.67, 1.0)
-        #         ) * 0.4
-        #     """)
-
-        # RGB similarity score
         if request.rgbColor and array_type:
-            # rmax = min(request.rgbColor.r + 20, 255)
-            # rmin = max(request.rgbColor.r - 20, 0)
-            #
-            # gmax = min(request.rgbColor.g + 20, 255)
-            # gmin = max(request.rgbColor.g - 20, 0)
-            #
-            # bmax = min(request.rgbColor.b + 20, 255)
-            # bmin = max(request.rgbColor.b - 20, 0)
+            if request.useHistogram:
+                joins.append("JOIN color_histogram ch ON ch.photo_id = p.id")
+                target = utils.create_single_color_histogram(
+                    request.rgbColor.r,
+                    request.rgbColor.g,
+                    request.rgbColor.b
+                )
+                params.update({
+                    "r_bins": array_type.newobject(target.r_bins),
+                    "g_bins": array_type.newobject(target.g_bins),
+                    "b_bins": array_type.newobject(target.b_bins),
+                })
+            
+                score_components.append("""
+                    (1 - LEAST(
+                        euclidean_distance_rgb_hist(
+                            ch.r_bins_norm, ch.g_bins_norm, ch.b_bins_norm,
+                            :r_bins, :g_bins, :b_bins
+                        ) / 441.67, 1.0)
+                    ) * 0.4
+                """)
+            else:
+                # use a subquery that selects only the closest dominant color per photo
+                joins.append("""
+                    JOIN (
+                        SELECT dc_inner.photo_id,
+                            MIN(euclidean_distance_dominant(dc_inner.r, dc_inner.g, dc_inner.b, :r, :g, :b)) AS min_distance
+                        FROM dominant_color dc_inner
+                        GROUP BY dc_inner.photo_id
+                    ) dc ON dc.photo_id = p.id
+                """)
 
-            joins.append("JOIN dominant_color dc ON dc.photo_id = p.id")
+                params.update({
+                    "r": request.rgbColor.r,
+                    "g": request.rgbColor.g,
+                    "b": request.rgbColor.b,
+                })
 
-            params.update({
-                "r": request.rgbColor.r,
-                "g": request.rgbColor.g,
-                "b": request.rgbColor.b,
-            })
-
-            score_components.append("""
-                (1 - LEAST(
-                    euclidean_distance_dominant(
-                        dc.r, dc.g, dc.b,
-                        :r, :g, :b
-                    ) / 441.67, 1.0)
-                ) * 0.4
-            """)
+                # use the min_distance from the subquery
+                score_components.append("""
+                    (1 - LEAST(dc.min_distance / 441.67, 1.0)) * 0.4
+                """)
 
         # Optional field boosts
         if request.category_id:

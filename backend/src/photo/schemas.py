@@ -41,6 +41,7 @@ class PhotoSearchRequest(CustomModel):
     cameraModel: Optional[str] = Field(default=None, max_length=255)
     uploadDate: Optional[DateRange] = None
     captureDate: Optional[DateRange] = None
+    useHistogram: Optional[bool] = False
     limit: Optional[int] = 200
     offset: Optional[int] = 0
 
