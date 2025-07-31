@@ -17,6 +17,7 @@ export class PhotoSearchViewModel {
     public uploadDateEnd?: Date;
     public captureDateStart?: Date;
     public captureDateEnd?: Date;
+    public useHistogram?: boolean;
     public limit?: number;
     public offset?: number;
 
@@ -35,6 +36,7 @@ export class PhotoSearchViewModel {
             this.uploadDateEnd = filter.uploadDateEnd;
             this.captureDateStart = filter.captureDateStart;
             this.captureDateEnd = filter.captureDateEnd;
+            this.useHistogram = filter.useHistogram;
         }
     }
 }

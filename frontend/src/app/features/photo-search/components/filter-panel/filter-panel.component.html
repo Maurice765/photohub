@@ -3,6 +3,18 @@
         <div class="grid grid-cols-4 gap-8">
 
             <div>
+                <p-input-group>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-palette"></i>
+                    </p-inputgroup-addon>
+                    <p-floatlabel variant="on">
+                        <p-select [options]="colorSearchMethods" formControlName="useHistogram" optionValue="key" optionLabel="name" />
+                        <label>Color Search Method</label>
+                    </p-floatlabel>
+                </p-input-group>
+            </div>
+
+            <div>
                 <rgb-color-picker formControlName="rgbColor"/>
             </div>    
 
