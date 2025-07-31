@@ -42,14 +42,15 @@ async def process_and_store_photo(file: UploadFile,
     height, width, _ = image.shape
     orientation = utils.calculate_orientation(width, height)
 
-    preview = utils.generate_preview(image)
+    preview_bytes, preview_image = utils.generate_preview(image)
 
     # 4. Convert image to RGB and calculate color histograms
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     histogram = utils.calculate_color_histograms(image_rgb)
 
-    # 5. Create extract dominant Colors
-    dominant_colors = utils.extract_dominant_colors(image_rgb, k=5)
+    # 5. Convert preview to RGB and extract dominant colors
+    preview_rgb = cv2.cvtColor(preview_image, cv2.COLOR_BGR2RGB)
+    dominant_colors = utils.extract_dominant_colors(preview_rgb, k=5)
 
     # 5. Database Operations
     conn = get_connection()
@@ -98,7 +99,7 @@ async def process_and_store_photo(file: UploadFile,
             "width": width,
             "height": height,
             "orientation": orientation.value,
-            "preview": preview,
+            "preview": preview_bytes,
             "photo_id": photo_id_var
         })
         

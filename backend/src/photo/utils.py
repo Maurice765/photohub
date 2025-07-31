@@ -56,7 +56,10 @@ def create_single_color_histogram(r: int, g: int, b: int) -> schemas.ColorHistog
         b_bins=color_to_hist(b)
     )
 
-def generate_preview(image: np.ndarray, max_dim: int = 300) -> bytes:
+def generate_preview(image: np.ndarray, max_dim: int = 300) -> tuple[bytes, np.ndarray]:
+    """
+    Generate a preview image and return both bytes (for storage) and numpy array (for processing).
+    """
     height, width = image.shape[:2]
     scale = max_dim / max(height, width)
     new_size = (int(width * scale), int(height * scale))
@@ -65,15 +68,16 @@ def generate_preview(image: np.ndarray, max_dim: int = 300) -> bytes:
     success, encoded = cv2.imencode('.jpg', resized)
     if not success:
         raise exceptions.PreviewGenerationError()
-    return encoded.tobytes()
+    
+    return encoded.tobytes(), resized
 
 
 def extract_dominant_colors(image_rgb: np.ndarray, k: int = 5):
-    # Downsize the image for faster processing
-    small_image = cv2.resize(image_rgb, (100, 100), interpolation=cv2.INTER_AREA)
-
+    """
+    Extract dominant colors from an RGB image array.
+    """
     # Reshape the image to a 2D array of pixels
-    pixels = small_image.reshape((-1, 3))
+    pixels = image_rgb.reshape((-1, 3))
     pixels = np.float32(pixels)
 
     # Count unique colors
